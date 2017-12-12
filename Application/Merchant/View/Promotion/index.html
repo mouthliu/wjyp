@@ -1,0 +1,101 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Promotion/add')}" target-form="ids">新增</button>&nbsp;
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Promotion/forbid',array('model'=>'Promotion','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Promotion/resume',array('model'=>'Promotion','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Promotion/delete',array('model'=>'Promotion','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('Promotion/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('Promotion/index')}" method="post" class="form">
+
+                        
+                        <!--<button class="btn btn-inverse">查询</button>-->
+                        <select name="type" id="shenhe">
+                            <option value="">根据类型筛选</option>
+                            <option value="4">全部</option>
+                            <option value="2">满折</option>
+                            <option value="1">满减</option>
+                        </select>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>优惠名称</th>
+                            <th>优惠类型</th>
+                            <th>面额/折扣</th>
+                            <th>消费满足条件</th>
+                            <th>时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['title']}</td>
+                                <td>{$row['type']==1?'满减':($row['type']==2?'满折':'满赠')}</td>
+                                <td>{$row['value']}</td>
+                                <td>
+                                    {$row['condition']}
+                                </td>
+                                <td>起: {:date("Y-m-d ",$row['start_time'])}<br>
+                                    止: {:date("Y-m-d ",$row['end_time'])}<br>
+
+                                        <switch name="row['time_status']">
+                                            <case value="0"><font color="blue" size="1">时间未到</font></case>
+                                            <case value="1"><font color="red" size="1">时间到</font></case>
+                                            <case value="2"><font color="#ccc" size="1">时间已过期</font></case>
+                                        </switch>
+                                </td>
+                                <td>
+                                    <a href="{:U('Promotion/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+
+                                    <a href="{:U('Promotion/singleEdit',array('model'=>'Promotion','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                            <span class="label label-important">删除</span></a>&nbsp;
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__MODULE__/Promotion/index/type/"+shenhe;
+
+                }
+            })
+        })
+    </script>
+</block>

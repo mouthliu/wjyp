@@ -1,0 +1,115 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+    </style>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <form class="form-horizontal" method="post" action="{:U('CompanyDevelop/update')}" autocomplete="off">
+                    <input type="hidden" name="model" value="CompanyDevelop">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                <div class="tab-content">
+                    <div class="active" id="home">
+                        <!--主要信息-->
+                        <div class="widget-content nopadding">
+                            <div class="control-group">
+                                <label class="control-label">选择商家</label>
+                                <div class="controls">
+                                    <div class="input-append">
+                                        <input type="text"  id="goods_info" name="merchant_name" value="{:getName('Merchant','merchant_name',$row['merchant_id'])}" placeholder="请输入商家名称" >
+                                        <!--<button class="btn" type="button" id="gid">搜ID</button>-->
+                                        <button class="btn" type="button" id="gname">搜名称</button>
+                                        <!--<input type="hidden" name="goods_id" value="{$row['goods_id']}" readonly>-->
+                                        <input type="hidden" name="merchant_id" value="{$row['merchant_id']}" readonly>
+                                    </div>
+                                </div>
+                                <div class="controls" style="width: 500px;max-height: 300px;overflow:auto;display: none;" id="glist">
+                                    <table class="table table-bordered" >
+                                        <tr id="goods_list">
+                                            <th>ID</th>
+                                            <th width="300">名称</th>
+                                            <th>选项</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                                <div class="control-group">
+                                    <label class="control-label">企业封面图</label>
+                                    <div class="controls">
+                                        {:hook('upload',array('is_first'=>1,'unique_sign'=>'face_img','field_name'=>'face_img','field_value'=>$row['face_img'],'save_path'=>'CompanyDevelop'))}
+                                        <span class="help-block">图比例 3:2 用于显示</span>
+                                    </div>
+                                </div>
+                            <div class="control-group">
+                                <label class="control-label">企业简介</label>
+                                <div class="controls">
+                                    <textarea name="content">{$row['content']}</textarea>
+                                    <!--钩子参数:is_first->表示防止重复加载样式
+                                                 name->字段名
+                                                 value->表示的是存到表中的内容
+                                                 width->文本的宽
+                                     -->
+                                    {:hook('adminArticleEdit', array('is_first'=>1,'name'=>'content','value'=>$row['content'],'width'=>800))}
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#gname').click(function(){
+            //清除之前的
+            $("#goods_list").nextAll("tr").remove();
+            var gname = $('#goods_info').val();
+            if(gname){
+                $.post("__MODULE__/CompanyDevelop/getMerchants",{merchant_name:gname},function(data){
+                    //将获取到的数据进行添加到节点
+                    if(data){
+                        $('#goods_list').after(data);
+                        $('#glist').show();
+                    }else{
+                        $('#glist').show();
+                        $('#goods_list').after($("<h5>查询无果</h5>"));
+
+                    }
+
+                })
+            }else{
+                alert('请输入商品名称');
+            }
+        })
+
+        $("a.xuan").live({
+            'click':function(){
+                //获取到商品的名称
+                var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                var shop_price = $(this).parents('td').attr('data-price');
+                $('#goods_info').val(goods_name);
+                //设置值
+                $('input[name=goods_id]').val(goods_id);
+                $('input[name=merchant_id]').val(merchant_id);
+                $('input[name=shop_price]').val(shop_price);
+            }
+        })
+
+
+    </script>
+</block>

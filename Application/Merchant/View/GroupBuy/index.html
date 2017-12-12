@@ -1,0 +1,143 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('GroupBuy/add')}" target-form="ids">新增</button>&nbsp;
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('GroupBuy/forbid',array('model'=>'GroupBuy','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('GroupBuy/resume',array('model'=>'GroupBuy','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('GroupBuy/delete',array('model'=>'GroupBuy','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('GroupBuy/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('GroupBuy/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        {$select}
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>参加活动商品</th>
+
+                            <th>单买价</th>
+                            <th>团购价</th>
+                            <th>成团人数</th>
+                            <th>已被团数</th>
+                            <th>创建时间</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><a href="__MODULE__/Goods/update/id/{$row['goods_id']}">{$row['goods_name']}</a></td>
+                                <td>¥&nbsp;{$row['one_price']}</td>
+                                <td>¥&nbsp;{$row['group_price']}</td>
+                                <td>{$row['group_num']}人/团</td>
+                                <td>{$row['total']}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>
+                                    <switch name="row['status']">
+                                          <case value="0"><font color="blue">新创建</font></case>
+                                          <case value="1"><font color="red">待审核</font></case>
+                                          <case value="2"><font color="green">已通过</font></case>
+                                          <case value="3"><font color="green">未通过</font></case>
+                                    </switch>
+
+                                </td>
+
+                                <td>
+                                    <a href="{:U('GroupBuy/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <switch name="row['status']">
+                                        <case value="0">
+                                            <a href="{:U('GroupBuy/singleEdit',array('model'=>'GroupBuy','id'=>$row['id'],'field'=>'status','value'=>1))}" title="申请" class="tip-bottom ajax-get">
+                                                <span class="label label-success">申请</span></a>&nbsp;
+                                        </case>
+                                        <case value="3">
+                                            <a href="#myModal" role="button" data-toggle="modal" data-gid="{$row['id']}" data-type="4" class="tip-bottom message" data-message="{$row['refuse_desc']}" data-original-title="查看原因">
+                                                <span class="label label-info">查看原因</span></a>
+                                            <a href="{:U('GroupBuy/singleEdit',array('model'=>'GroupBuy','id'=>$row['id'],'field'=>'status','value'=>1))}" title="申请" class="tip-bottom ajax-get">
+                                                <span class="label label-success">再次申请</span></a>&nbsp
+                                            <a href="{:U('GroupBuy/singleEdit',array('model'=>'GroupBuy','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom">
+                                                <span class="label label-warning">删除</span></a>&nbsp;
+                                        </case>
+                                        <case value="1"><font color="red">
+                                            <a href="{:U('GroupBuy/singleEdit',array('model'=>'GroupBuy','id'=>$row['id'],'field'=>'status','value'=>0))}" title="取消申请" class="tip-bottom ajax-get">
+                                                <span class="label label-danger">取消申请</span></a>&nbsp;
+                                        </case>
+                                        <case value="2">
+                                                <a href="{:U('GroupBuy/record',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                                    <span class="label label-inverse">团购纪录</span></a>&nbsp;
+                                        </case>
+                                    </switch>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--拒绝原因查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 700px;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">审核记录--拒绝原因</h3>
+        </div>
+        <div class="modal-body" >
+            <div class="row-fluid show-grid" id="tips">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th >操作时间</th>
+                        <th >操作者</th>
+                        <th >拒绝原因</th>
+                    </tr>
+                    </thead>
+                    <tbody class="tbody" style="width">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        //拒绝
+        $(".message").click(function(){
+            $('#tips .tbody').html('');
+            var id_val = $(this).attr('data-gid');
+            var type = $(this).attr('data-type');
+            $.post("__URL__/getRefuseLog",{id_val:id_val,type:type},function(data){
+                if(data != ''){
+                    $('#tips .tbody').html(data);
+                }
+            })
+        })
+    </script>
+</block>

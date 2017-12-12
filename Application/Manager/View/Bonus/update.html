@@ -1,0 +1,221 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+        .carousel-indicators li {
+            display: block;
+            float: left;
+            width: 10px;
+            height: 10px;
+            margin-left: 5px;
+            text-indent: -999px;
+            background-color: #ccc;
+            background-color: rgba(255,255,255,0.25);
+            border-radius: 5px;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Bonus/doUpdate')}" id="form">
+                        <input type="hidden" name="model" value="BonusFace">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group" >
+                            <label class="control-label">红包广告</label>
+                            <div class="controls">
+                            <!--轮播开始-->
+                            <div id="myCarousel" class="carousel slide span6" data-interval="false" style="position: relative;width: 350px;height: 350px;overflow: hidden">
+                                <div class="carousel-inner">
+                                    <foreach name="ads_list" item="v">
+                                        <if condition="$v['type'] eq 1">
+                                            <div class="item">
+                                                <video controls width="100%" height="300">
+                                                    <source src="__ROOT__{$v['bonus_ads']}" type="video/mp4" >
+                                                    您的浏览器不支持 video 标签。
+                                                </video>
+                                            </div>
+                                            <else />
+                                            <div class="item">
+                                                <img src="__ROOT__{$v['bonus_ads']}" alt="" width="100%" >
+                                            </div>
+                                        </if>
+                                    </foreach>
+
+                                </div>
+                                <a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
+                                <a class="right carousel-control" href="#myCarousel" data-slide="next">›</a>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包总额</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="total_money" value="{$row['total_money']}" disabled>
+                                <span class="help-block">红包总额</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包最小值</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="min_val" value="{$row['min_val']}" disabled>
+                                <span class="help-block">红包上限</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包最大值</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="max_val" value="{$row['max_val']}" disabled>
+                                <span class="help-block">红包下限</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包大约个数</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="" value="{$row['count']}" disabled id="count">
+                                <span class="help-block">仅作为理论推断值，具体个数以实际发放数量为准</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">已发出数量</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="send_num" value="{$row['send_num']}" disabled>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包余额</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="" value="{$row['diff']}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">审核状态</label>
+                            <div class="controls">
+
+                                    <label class="radio inline">
+                                        <input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                                        未审核
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="status" class="no-refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                                        通过
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="status" id="refuse" value="3" <if condition="$row['status'] eq 3" > checked </if>>
+                                        拒绝通过
+                                    </label>
+                            </div>
+                            <div class="controls" id="refuse-text" <if condition="$row['status'] neq 3">style="display: none;"</if> >
+                                <select name="refuse_desc" id="refuse_desc">
+                                    <option value="">请选择拒绝理由</option>
+                                    <option value="999"  selected >填写其他理由</option>
+                                    <option value="红包设置不合理" <if condition="$row['refuse_desc'] eq '红包设置不合理'" > selected </if>>红包设置不合理</option>
+                                    <option value="金额太小" <if condition="$row['refuse_desc'] eq '金额太小'" > selected </if>>金额太小</option>
+                                    <option value="广告内容过于敏感" <if condition="$row['refuse_desc'] eq '广告内容过于敏感'" > selected </if>>广告内容过于敏感</option>
+
+                                </select><h3></h3>
+                                <textarea name="refuse_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由" <if condition="$row['status'] neq 3">style="display: none;"</if>>{$row['refuse_desc']}</textarea>
+                            </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $(function(){
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/Bonus/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#glist').show();
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/Bonus/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#glist').show();
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var shop_price = $(this).parents('td').attr('data-price');
+                    var cat_id = $(this).parents('td').attr('data-catId');
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=shop_price]').val(shop_price);
+                    $('input[name=cat_id]').val(cat_id);
+                }
+            })
+            //拒绝填写理由
+            $('#refuse').click(function(){
+                if($(this).attr('checked')){
+                    $('#refuse-text').show().find('textarea').html('');
+                }
+            })
+            $('.no-refuse').click(function(){
+                $('#refuse-text').hide();
+            })
+            $('#refuse_desc').change(function(){
+                var val = $(this).val();
+                if( val == '999'){
+                    $('textarea[name=refuse_desc]').show();
+                }else{
+                    $('textarea[name=refuse_desc]').html(val).hide();
+                }
+            })
+        })
+    </script>
+</block>

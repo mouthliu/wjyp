@@ -1,0 +1,94 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style>
+        .show-money{
+            height: 130px;
+            color: white;
+            font-size: 1.5rem;
+            text-align: center;
+            line-height: 130px;
+            border-radius: 10px;;
+        }
+    </style>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search" style="height: 140px;">
+                   <div>
+                       <div class="show-money span4" style="background: #00cccc;">
+                           佣金抽成总额 30000 元
+
+                       </div>
+                       <div class="show-money span4" style="background: #3399ff;">
+                           平台收入总额 300000 元
+                       </div>
+                       <div class="show-money span4" style="background: #ff9966;">
+                           <a href="#" style="color: #fff;">未受理佣金 500 单</a>
+                       </div>
+                   </div>
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search ">
+                    <form action="{:U('MerchantDetail/index')}" method="post" class="form-search">
+                        &nbsp;
+                        <input type="text" class="input-medium search-query" name="merchant_name" value="{$_REQUEST['merchant_name']}" placeholder="输入店铺名称查询" style="height:auto">
+
+                        <button type="submit" class="btn">查询</button>
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding" >
+                    <table class="table table-bordered table-striped with-check" >
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>商家名称</th>
+                            <th>订单收入总额(元)</th>
+                            <th>佣金抽成总额(元)</th>
+                            <th>商家实际收入总额(元)</th>
+                            <th>交易时间</th>
+                            <th>处理状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['merchant_name']}</td>
+                                <td>¥&nbsp;{$row['all_money']}</td>
+                                <td>¥&nbsp;{$row['rebate_money']}</td>
+                                <td>¥&nbsp;{$row['result_money']}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>已处理</td>
+                                <td></td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

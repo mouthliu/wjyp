@@ -1,0 +1,171 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Promotion/update')}" id="form">
+                        <input type="hidden" name="model" value="Promotion">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="merchant_id" value="{$_SESSION['wjyp_merchant']['merchant_admin']['a_id']}">
+
+                        <div class="control-group">
+                            <label class="control-label">活动类型及优惠</label>
+                            <div class="controls">
+                                <select name="type" id="">
+                                    <option value="">请选择类型</option>
+                                    <option value="1" <if condition="$row['type'] eq 1">selected</if>>满减</option>
+                                    <option value="2" <if condition="$row['type'] eq 2">selected</if>>满折</option>
+                                </select>
+                                <input type="number" name="value" value="{$row['value']}" placeholder="请根据类型填写减免价值">
+                                <notempty name="row['goods_name']" >
+                                    <input type="text" value="{$row['goods_name']}" readonly>
+                                </notempty>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">消费金额</label>
+                            <div class="controls ">
+                                <input type="number"  name="condition" value="{$row['condition']}" >
+
+                                <span class="help-block">消费多少钱使用</span>
+                            </div>
+
+                        </div>
+
+                        <!--开始结束时间-->
+                        <div class="control-group">
+                            <label class="control-label">活动时间</label>
+                            <div class="controls">
+                                <div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">
+                                    <notempty name="row['id']">
+                                        <input type="text" name="start_time" value="{$row['start_time']|date='Y-m-d',###}" class="text-width-10 form_datetime" placeholder="开始时间">
+                                        ——
+                                        <input type="text" name="end_time" value="{$row['end_time']|date='Y-m-d',###}" class="text-width-10 form_datetime" placeholder="结束时间">
+                                        <else/>
+                                        <input type="text" name="start_time" value="" class="text-width-10 form_datetime" placeholder="开始时间">
+                                        ——
+                                        <input type="text" name="end_time" value="" class="text-width-10 form_datetime" placeholder="结束时间">
+                                    </notempty>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">优惠券名称</label>
+                            <div class="controls">
+                                <input type="text"  name="title" value="{$row['title']}">
+                                <span class="help-block">比如：满100减50</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $(function(){
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/Promotion/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                            $('#glist').show();
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/Promotion/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                            $('#glist').show();
+                        }
+
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var shop_price = $(this).parents('td').attr('data-price');
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=shop_price]').val(shop_price);
+                }
+            })
+        })
+        $('#nocondition').click(function(){
+            if($(this).attr('checked')){
+                $('input[name=condition]').val('0').attr('readonly',true);
+            }else{
+                $('input[name=condition]').attr('readonly',false);
+            }
+        })
+        $('#nolimit').click(function(){
+            if($(this).attr('checked')){
+                $('input[name=limit_num]').val('0').attr('readonly',true);
+            }else{
+                $('input[name=limit_num]').val('1').attr('readonly',false);
+            }
+        })
+//        $('#nogoods').click(function(){
+//                $('#selectgoods').hide();
+//                $('#shopprice').hide();
+//                $('input[name=goods_id]').val(0);
+//        })
+//        $('#goods').click(function(){
+//            $('#selectgoods').show();
+//            $('#shopprice').show();
+//        })
+    </script>
+</block>

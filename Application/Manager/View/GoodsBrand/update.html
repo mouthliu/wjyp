@@ -1,0 +1,201 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('GoodsBrand/update')}" id="form">
+                        <input type="hidden" name="model" value="GoodsBrand">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">品牌名称</label>
+                            <div class="controls">
+                                <input type="text"  name="brand_name" value="{$row['brand_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">品牌级别</label>
+                            <div class="controls">
+                                <select name="zh_level" id="zh_level">
+                                    <option value="">--请选择字号类型--</option>
+                                    <option value="1" <if condition="$row['zh_level'] eq 1"  >selected</if> data-tip1="">中华老字号</option>
+                                    <option value="2" <if condition="$row['zh_level'] eq 2"  >selected</if> data-tip1="">百年老字号</option>
+                                    <option value="3" <if condition="$row['zh_level'] eq 3"  >selected</if> data-tip1="请填写地区名称">地方老字号</option>
+                                    <option value="4" <if condition="$row['zh_level'] eq 4"  >selected</if> data-tip1="请填写地区名称">民间老字号</option>
+                                </select>
+                                <switch name="row['zh_level']">
+                                    <case value="1|2">
+                                        <input type="text" name="zh_info" style="display: none">
+                                    </case>
+                                    <case value="3|4">
+                                        <input type="text" name="zh_info" value="{$row['zh_info']}">
+                                    </case>
+                                    <default />
+                                    <input type="text" name="zh_info" style="display: none">
+                                </switch>
+
+                            </div>
+                            <div class="controls">
+                                <select name="sb_level" id="sb_level">
+                                    <option value="">--请选择商标类型--</option>
+                                    <option value="1" <if condition="$row['sb_level'] eq 1"  >selected</if> data-tip1="">驰名商标</option>
+                                    <option value="2" <if condition="$row['sb_level'] eq 2"  >selected</if> data-tip1="请填写地区名称">著名商标</option>
+                                    <option value="3" <if condition="$row['sb_level'] eq 3"  >selected</if> data-tip1="请填写地区名称">知名商标</option>
+                                </select>
+                                <switch name="row['sb_level']">
+                                    <case value="1">
+                                        <input type="text" name="sb_info" style="display: none">
+                                    </case>
+                                    <case value="2|3">
+                                        <input type="text" name="sb_info" value="{$row['sb_info']}">
+                                    </case>
+                                    <default />
+                                    <input type="text" name="sb_info" style="display: none">
+                                </switch>
+                            </div>
+                            <div class="controls">
+                                <select name="country_level" id="country_level">
+                                    <option value="">--请选择所属国家--</option>
+                                    <option value="1" <if condition="$row['country_level'] eq 1"  >selected</if> data-tip1="">国内商标</option>
+                                    <option value="2" <if condition="$row['country_level'] eq 2"  >selected</if> data-tip1="请填写地区名称">国外商标</option>
+                                </select>
+                                <switch name="row['country_level']">
+                                    <case value="1">
+                                        <input type="text" name="country_info" style="display: none">
+                                    </case>
+                                    <case value="2">
+                                        <input type="text" name="country_info" value="{$row['country_info']}">
+                                    </case>
+                                    <default />
+                                    <input type="text" name="country_info" style="display: none">
+                                </switch>
+
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">品牌Logo</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'brand_logo','field_name'=>'brand_logo','field_value'=>$row['brand_logo'],'save_path'=>'GoodsBrand'))}
+                                <span class="help-block">图片比例：200px:200px</span>
+                            </div>
+                        </div>
+
+                        <empty name="row['license_pic']">
+                            <div class="control-group">
+                                <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>商标相关证书</label>
+                                <div class="controls">
+                                    {:hook('upload',array('unique_sign'=>'license','field_name'=>'license_pic[]','field_value'=>$row['license_pic'],'save_path'=>'GoodsBrand'))}
+                                    <input type="text" placeholder="证件名称" name="license_name[]" >
+                                    <span class="help-block">如：商标注册证书</span>
+                                </div>
+                            </div>
+                            <else />
+                            <foreach name="row['license_pic']" item="v">
+                                <div class="control-group">
+                                    <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>商标相关证书</label>
+                                    <php>$field  = 'license_pic['.$key.']'</php>
+                                    <div class="controls">
+                                        {:hook('upload',array('unique_sign'=>$key,'field_name'=>'license_pic[]','field_value'=>$v['license_pic'],'save_path'=>'GoodsBrand'))}
+                                        <input type="text" name="license_name[]" value="{$v['license_name']}" placeholder="证件名称" >
+                                    </div>
+                                </div>
+                            </foreach>
+                        </empty>
+                        <div class="control-group">
+                            <label class="control-label">品牌简介</label>
+                            <div class="controls">
+                                <textarea name="brand_desc" id="" cols="10" rows="3" placeholder="30字以内即可">{$row['brand_desc']}</textarea>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否启用</label>
+                            <div class="controls">
+                                <select name="status" class="select-c">
+                                    <option value="1" <if condition="$row['status'] eq 1" > selected </if>>启用</option>
+                                    <option value="2" <if condition="$row['status'] eq 2" > selected </if>>不启用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort'] | default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="a"></div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="control-group" style="display: none;" id="pics">
+        <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>商标相关证书</label>
+        <div class="controls">
+            {:hook('upload',array('unique_sign'=>'','field_name'=>'license_pic[]','field_value'=>$row['license_pic'],'save_path'=>'GoodsBrand'))}
+            <input type="text" placeholder="证件名称" name="license_name[]">
+            <span class="help-block">其他证书</span>
+        </div>
+    </div>
+    <script>
+        //当点击加号的时候出现新的节点
+        $('a.add').live({
+            'click':function(){
+
+                //获取到当前父级div
+                var oldDiv = $(this).parents('div.control-group');
+                //克隆节点
+                var newDiv = $('#pics').clone().attr('id','').show();
+
+                newDiv.find('input[name="license_name"]').val("");
+                newDiv.find('div.upload-file-box').children().remove();
+                //替换其中的图标
+                $('<a href="javascript:void(0);" class="desc"><i class="icon-minus" ></i></a>').replaceAll(newDiv.find('a'));
+                //添加到之后
+                oldDiv.after(newDiv);
+            }
+        });
+
+        $('a.desc').live({
+            'click':function(){
+                //获取到当前父级div删除
+                var oldDiv = $(this).parents('div.control-group').remove();
+            }
+        })
+        $('select[name=zh_level]').change(function(){
+            if($(this).val() == '3' || $(this).val() == '4'){
+                $("input[name=zh_info]").show().attr('placeholder','请填写地方名称');
+            }else{
+                $("input[name=zh_info]").val('').hide();
+            }
+//            $str = $(this).find('option[value='+$(this).val()+']').attr('data-tip1');
+//            $('#level-tip').html($str);
+        })
+        $('select[name=sb_level]').change(function(){
+            if($(this).val() == '3' || $(this).val() == '2'){
+                $("input[name=sb_info]").show().attr('placeholder','请填写地方名称');
+            }else{
+                $("input[name=sb_info]").val('').hide();
+            }
+//            $str = $(this).find('option[value='+$(this).val()+']').attr('data-tip1');
+//            $('#level-tip').html($str);
+        })
+        $('select[name=country_level]').change(function(){
+            if($(this).val() == '3' || $(this).val() == '2'){
+                $("input[name=country_info]").show().attr('placeholder','请填写所属国家');
+            }else{
+                $("input[name=country_info]").val('').hide();
+            }
+//            $str = $(this).find('option[value='+$(this).val()+']').attr('data-tip1');
+//            $('#level-tip').html($str);
+        })
+    </script>
+</block>

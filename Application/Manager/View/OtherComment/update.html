@@ -1,0 +1,83 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('OtherComment/update')}" id="form">
+                        <input type="hidden" name="model" value="OtherComment">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">评论对象</label>
+                            <div class="controls">
+                                <switch name="row['type']">
+                                    <case value="1">
+                                        <input type="text"  name="name" value="{:getName('CarBuy','car_name',$row['id_val'])}" disabled>
+                                    </case>
+                                    <case value="2">
+                                        <input type="text"  name="name" value="{:getName('HouseStyle','style_name',$row['id_val'])}" disabled>
+                                    </case>
+                                </switch>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">评论等级</label>
+                            <div class="controls">
+                                <input type="text"  name="all_star" value="{:str_repeat('★',$row['all_star'])}" disabled>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">评论用户</label>
+                            <div class="controls">
+                                <input type="text"  name="nickname" value="{$row['nickname']}" disabled>
+                                <input type="hidden"  name="user_id" value="{$row['user_id']}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">评论图片</label>
+                            <div class="controls">
+                                <img src="__ROOT__{$row['pictures']}" alt="" width="200">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">评论内容</label>
+                            <div class="controls">
+                                <textarea name="content" id="" cols="10" rows="3" placeholder="50字以内即可" disabled>{$row['content']}</textarea>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否显示</label>
+                            <div class="controls">
+                                <select name="status" class="select-c">
+                                    <option value="1" <if condition="$row['status'] eq 1" > selected </if>>显示</option>
+                                    <option value="0" <if condition="$row['status'] eq 0" > selected </if>>不显示</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="number" name="sort" value="{$row['sort'] | default=0}" class="number-only" >
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">回复评论</label>
+                            <div class="controls">
+                                <textarea name="reply" id="" cols="10" rows="3" placeholder="30字以内即可" >{$row['reply']}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

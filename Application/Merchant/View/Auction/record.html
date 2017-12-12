@@ -1,0 +1,72 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('Auction/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Auction/forbid',array('model'=>'Auction','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Auction/resume',array('model'=>'Auction','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('Auction/delete',array('model'=>'Auction','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <!--<span style="display: none">-->
+                    <!--<button class="btn btn-primary ajax-post" url="{:U('Auction/move')}" target-form="ids">确定</button>-->
+                    <!--</span>-->
+                    <h4>拍卖活动行为记录表</h4>
+
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>活动名称</th>
+
+                            <th>出价用户</th>
+                            <th>出价价格</th>
+                            <th>出价时间</th>
+
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['auct_name']}</td>
+                                <td>{:substr_replace($row['phone'],'****',3,4)}</td>
+                                <td>{$row['bid_price']}</td>
+                                <td>{:date('Y-m-d H:i:s',$row['bid_time'])}</td>
+
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

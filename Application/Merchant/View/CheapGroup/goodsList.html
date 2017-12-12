@@ -1,0 +1,155 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success new_type">新增商品</button>&nbsp;
+                    <!--<button class="btn btn-success href" url="{:U('CheapGroup/addGoods',array('cheap_group_id'=>$_GET['id']))}" target-form="ids">添加商品</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Auction/forbid',array('model'=>'Auction','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Auction/resume',array('model'=>'Auction','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('Auction/delete',array('model'=>'Auction','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <!--<span style="display: none">-->
+                    <!--<button class="btn btn-primary ajax-post" url="{:U('Auction/move')}" target-form="ids">确定</button>-->
+                    <!--</span>-->
+
+                </div>
+                <div class="search-main" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('CheapGroup/doAdd')}" id="form">
+                        <div class="search-frame-main">
+                            <input type="hidden" name="model" value="groupGoods">
+                            <input type="hidden" name="cheap_group_id" value="{$_GET['id']}">
+
+                            <select  name="g-cate" id="g-cate" >
+                                <option value="0">--请选择分类--</option>
+                                <volist name="cate_list" id="group_info">
+                                    <option disabled value="{group_info['id']}">{:str_repeat('&nbsp;',3)}├&nbsp;<span>{$group_info['name']}</option>
+                                    <volist name="group_info['underCate']" id="v0">
+                                        <option disabled value="{{$v0['id']}}">{:str_repeat('&nbsp;',7)}└&nbsp;<span>{$v0['name']}</option>
+                                        <notempty name="v0['underCate']">
+                                            <volist name="v0['underCate']" id="v1">
+                                                <if condition="in_array($v1['id'],explode(',',$cates))">
+                                                    <option value="{$v1['id']}" <if condition="$row['cate_id'] eq $v1['id']">selected</if> >{:str_repeat('&nbsp;',13)}└&nbsp;<span>{$v1['name']}✔</span></option>
+
+                                                </if>
+                                            </volist>
+
+                                        </notempty>
+                                    </volist>
+
+                                </volist>
+
+                            </select>
+                            <select  name="goods_id" id="goods_id" }>
+                                <option value="0">--请选择商品--</option>
+                                <if condition="!empty($row['goods_list'])">
+                                    <volist name="row['goods_list']" id="vo">
+                                        <option value="{$vo['id']}" <if condition="$row['goods_id'] eq $vo['id']">selected</if>>{$vo['goods_name']}，¥ {$vo['shop_price']}</option>
+                                    </volist>
+                                </if>
+                            </select>
+
+                            <button class="btn btn-inverse ajax-post " type="submit" id="submit" target-form="form-horizontal" style="margin:4px 10px;">保存</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th width="50">编号</th>
+                            <th width="120">商品图片</th>
+                            <th>商品名称</th>
+                            <th width="150">商品售价</th>
+                            <th width="150">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><img src="__ROOT__{$row['goods_img']}" alt="" width="80"></td>
+                                <td>{$row['goods_name']}</td>
+                                <td>
+                                    ¥&nbsp;{$row['shop_price']}
+                                </td>
+                                <td>
+                                    <a href="{:U('CheapGroup/singleEdit',array('model'=>'CheapGroup','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除商品</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--拒绝原因查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 700px;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">审核记录--拒绝原因</h3>
+        </div>
+        <div class="modal-body" >
+            <div class="row-fluid show-grid" id="tips">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th >操作时间</th>
+                        <th >操作者</th>
+                        <th >拒绝原因</th>
+                    </tr>
+                    </thead>
+                    <tbody class="tbody" style="width">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('.new_type').click(function(){
+                $('.search-main').toggle();
+            });
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+
+            $("select[name=g-cate]").change(function(){
+                var cate_id = $(this).val();
+                $("select[name=goods_id]").children().remove();
+                $.post("__MODULE__/CheapGroup/getGoodsList",{cate_id:cate_id},function(data){
+                    $("select[name=goods_id]").append(data);
+                })
+            })
+            $("select[name=goods_id]").change(function(){
+                var num = $(this).find('option[value='+$(this).val()+']').attr('data-num');
+                $('input[name=limit_store]').val(num);
+                $("#store").html('商品库存'+num+'件，请不要超出商品总库存');
+
+            })
+        })
+    </script>
+</block>

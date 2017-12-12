@@ -1,0 +1,124 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+    </style>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button onclick="javascript:history.back(-1);return false;" class="btn btn-inverse"> << 返回</button>
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                <form action="{:U('ChinaBuy/addChinaBuyGoods')}" method="post" class="form-search">
+                    &nbsp;
+                    <input type="text" name="goods_sn" class="input-medium search-query" placeholder="输入货号精准查询" style="height:auto">
+                    <input type="text" name="merchant_name"  class="input-medium search-query" placeholder="按店铺查询" style="height:auto">
+                    <input type="text" name="goods_name" class="input-medium search-query" placeholder="按商品查询" style="height:auto">
+                    <button type="submit" class="btn">查询</button>
+                </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <!--<th>商品编号</th>-->
+                            <th>货号</th>
+                            <th>商品名称</th>
+                            <th>所属国家</th>
+                            <th>所属店铺</th>
+
+                            <th>所属分类</th>
+
+                            <th>售价</th>
+                            <th>操作</th>
+
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <if condition="$row['status'] neq 3">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"  />
+                                    </td>
+                                    <!--<td>{$row['id']}</td>-->
+                                    <td>{$row['goods_sn']}</td>
+                                    <td>{$row['goods_name']}</td>
+                                    <td>{$row['country_id']?'':'中国内地'}</td>
+                                    <td>{$row['merchant_name']}</td>
+                                    <td>{$row['cat_name']}</td>
+                                    <td>￥{$row['shop_price']}</td>
+                                    <td >
+                                        <a href="{:U('ChinaBuy/addShop',array('goods_id'=>$row['id']))}" title="查看详情" class="tip-bottom ajax-get">
+                                            <span class="label label-info">加入中国质造</span></a>&nbsp;
+                                    </td>
+
+                                </tr>
+                            </if>
+
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="pagination alternate">
+                    <!--<button class="btn btn-danger  ajax-post" url="{:U('',array('is_buy'=>0))}" target-form="ids">批量移出该主题</button>&nbsp;-->
+
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--热门品牌查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">请填写兑换所需积分</h3>
+        </div>
+
+        <div class="modal-body" style="max-height: 500px;overflow: auto;">
+        
+            <h4>所选商品 : <span id="goodsName"></span></h4>
+            <br>
+
+            <input type="number" id="inputPassword" name="use_integral" placeholder="请填写所需积分" data-gid="">
+
+
+        </div>
+        <div class="modal-footer">
+            <button class="ajax-get" url="" id="save">保存</button>
+
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+
+    </div>
+    <script>
+       $(function(){
+           $('.logUser').click(function(){
+               $('#goodsName').text($(this).attr('data-gname'));
+               $('input[name=use_integral]').attr('data-gid',$(this).attr('data-gid'));
+           })
+           $('input[name=use_integral]').blur(function(){
+               $goods_id = $(this).attr('data-gid');
+               $int = $(this).val();
+               if($int){
+                   $url = "__MODULE__/ChinaBuy/addShop/goods_id/"+$goods_id+"/use_integral/"+$int;
+                   $('#save').attr('url',$url);
+               }
+           })
+       })
+
+
+    </script>
+</block>

@@ -1,0 +1,108 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid" >
+
+    </div>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Ads/add')}" target-form="ids">新增广告</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('Ads/forbid',array('model'=>'Ads','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Ads/resume',array('model'=>'Ads','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    
+                    <!--// search start-->
+                    <form action="" method="post" class="form">
+                        <select name="position" class="select-c">
+                            <option value="">全部</option>
+                            <volist name="position_list" id="v">
+                                <if condition="$_GET['position'] eq $v['id']">
+                                    <option value="{$v['id']}" selected>{$v['name']}</option>
+                                    <else />
+                                    <option value="{$v['id']}" >{$v['name']}</option>
+                                </if>
+
+                            </volist>
+
+
+                        </select>
+                    </form>
+                    <!--// search end-->
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>所在位置</th>
+                            <th>略缩图</th>
+                            <th>描述</th>
+                            <th>链接</th>
+                            <th>状态</th>
+                            <th>排序</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['position']}</td>
+                                <td><img src="__ROOT__{$row['picture']}" alt="" width="55"></td>
+                                <td>{$row['desc']|}</td>
+                                <td>{$row['href']|}</td>
+                                <td>
+                                    {$row['status']==1?'<font color="green">启用</font>':'<font color="red">禁用</font>'}
+                                </td>
+
+                                <td>{$row['sort']}</td>
+                                <td>
+                                    <a href="{:U('Ads/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-success">编辑</span></a>&nbsp;
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('Ads/resume',array('model'=>'Ads','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('Ads/forbid',array('model'=>'Ads','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                    <a href="{:U('Ads/delete',array('model'=>'Ads','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+
+        $(function(){
+            $('select[name=position]').change(function(){
+                //获取到对应的id
+                var position = $(this).val();
+                // 调转到对应ID的url地址
+                if(position){
+                    location="__MODULE__/Ads/index/position/"+position;
+                }else{
+                    location="__MODULE__/Ads/index";
+                }
+
+
+            })
+        })
+
+    </script>
+</block>

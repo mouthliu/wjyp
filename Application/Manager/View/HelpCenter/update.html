@@ -1,0 +1,55 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('HelpCenter/update')}">
+                        <input type="hidden" name="model" value="HelpCenter">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">请选择类别</label>
+                            <div class="controls">
+                                <select name="type">
+                                    <option value="0">请选择类别</option>
+                                    <option value="1" <eq name="row['type']" value="1">selected</eq> >商家篇</option>
+                                    <option value="2" <eq name="row['type']" value="2">selected</eq> >用户篇</option>
+                                    <option value="3" <eq name="row['type']" value="3">selected</eq> >运营中心篇</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">标题</label>
+                            <div class="controls">
+                                <input type="text" name="title" value="{$row['title']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">内容</label>
+                            <div class="controls">
+                                <textarea type="text" name="content" style="height: 300px">{$row['content']}</textarea>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

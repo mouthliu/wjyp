@@ -1,0 +1,64 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Announce/update')}" id="form">
+                        <input type="hidden" name="model" value="Announce">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="parent_id" value="0">
+
+                        <div class="control-group">
+                            <label class="control-label">标题</label>
+                            <div class="controls">
+                                <input type="text" name="title" value="{$row['title']}" style="width: 80%">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">内容</label>
+                            <div class="controls">
+                                <textarea name="content">{$row['content']}</textarea>
+                                {:hook('adminArticleEdit', array('name'=>'content','value'=>$row['content']))}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否立即发布</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio" id="uniform-themeRadio2"><span class="checked">
+                                        <input type="radio" name="status" id="themeRadio2" value="0" style="opacity: 0;" <if condition="$row['status'] eq 0">checked</if>  ></span>
+                                    </div>
+                                    否
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio" id="uniform-themeRadio"><span class="">
+                                        <input type="radio" name="status" id="themeRadio" value="1" style="opacity: 0;" <if condition="$row['status'] eq 1">checked</if> ></span>
+                                    </div>
+                                    是
+                                </label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort']|default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

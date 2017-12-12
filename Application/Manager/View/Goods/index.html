@@ -1,0 +1,219 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        .yuan{
+            border: 1px solid purple;
+            border-radius: 50%;
+            padding: 3px;
+            transition: all 0.5s;
+            display: inline-block;
+        }
+        .yuan:hover{
+            transform: scale(1.4);
+        }
+        th,td{
+            font-size: small;
+        }
+    </style>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <ul class="nav nav-tabs">
+                        <li <eq name="_REQUEST['status']" value="1">class="active"</eq>>
+                        <a href="{:U('Goods/index',array('status'=>1))}" data-toggle="">未审核商品</a>
+                        </li>
+                        <li <eq name="_REQUEST['status']" value="2">class="active"</eq>>
+                        <a href="{:U('Goods/index',array('status'=>2))}" data-toggle="">审核通过商品</a>
+                        </li>
+                        <li <eq name="_REQUEST['status']" value="3">class="active"</eq>>
+                        <a href="{:U('Goods/index',array('status'=>3))}" data-toggle="">审核失败商品</a>
+                        </li>
+                    </ul>
+                </div>
+                <eq name="_REQUEST['status']" value="2">
+                    <div class="widget-title widget-title-search">
+                        <button class="btn btn-success  ajax-post" url="{:U('Goods/setBuy',array('is_buy'=>1))}" target-form="ids">批量上架</button>&nbsp;
+                        <button class="btn btn-danger  ajax-post" url="{:U('Goods/setBuy',array('is_buy'=>0))}" target-form="ids">批量下架</button>&nbsp;
+                        <!--<a href="{:U('Goods/index')}" title="查看所有" class="btn btn-info">-->
+                            <!--查看所有</a>&nbsp;-->
+                        <!--<form action="" class="form">-->
+                            <!--<select name="type" class="select-c" id="shenhe">-->
+                                <!--<option value="" >按审核状态筛选</option>-->
+                                <!--<option value="1" >待审核</option>-->
+                                <!--<option value="2" >通过审核</option>-->
+                            <!--</select>-->
+                        <!--</form>-->
+                    </div>
+                </eq>
+
+
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                <form action="{:U('Goods/index')}" method="post" class="form-search">
+                    &nbsp;
+                    <input type="text" name="goods_sn" class="input-medium search-query" placeholder="输入货号精准查询" style="height:auto">
+                    <input type="text" name="merchant_name" class="input-medium search-query" placeholder="按店铺查询" style="height:auto">
+                    <input type="text" name="goods_name" class="input-medium search-query" placeholder="按商品查询" style="height:auto">
+                    <button type="submit" class="btn">查询</button>
+                    <button type="reset" class="btn">重置</button>
+
+                </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>商品名称</th>
+                            <th>所属分类</th>
+                            <th>所属店铺</th>
+                            <th>货号</th>
+                            <!--<th>市场价</th>-->
+                            <th>售价</th>
+                            <th>会员价</th>
+                            <th>参与活动</th>
+                            <th>点击量</th>
+                            <th>库存</th>
+                            <th>审核状态</th>
+                            <th>是否上架</th>
+                            <th>是否推荐</th>
+                            <!--<th>领导审核意见</th>-->
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <if condition="$row['status'] neq 3">
+                                <tr>
+                                    <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                    <td>{$row['id']}</td>
+                                    <td  title="{$row['goods_name']}"><if condition="$row['is_active'] eq 1"><font color="orange" size="1">(活动)</font></if>
+                                        {:mb_substr($row['goods_name'],0,5,'utf-8')}</td>
+                                    <td><a href="{:U('Goods/index',array('cat_id'=>$row['cat_id']))}">{:getName('GoodsCategory','name',$row['cat_id'])}</a></td>
+                                    <td><a href="{:U('Goods/index',array('merchant_id'=>$row['merchant_id']))}">{$row['merchant_name']}</a></td>
+                                    <td>{$row['goods_sn']}</td>
+                                    <td><span style="color: #c6c6c6">¥&nbsp;<del>{$row['market_price']}</del></span>
+                                        <br>
+                                        ¥&nbsp;{$row['shop_price']}</td>
+                                    <td style="font-size: small"></span>无忧专享:¥&nbsp;{$row['wy_price']}<br>
+                                        优享专享:¥&nbsp;{$row['yx_price']}
+                                    </td>
+                                    <td >
+                                        <if condition="$row['limit_buy_id'] gt 0"><a href="{:U('LimitBuy/update',array('id'=>$row['limit_buy_id']))}" class="yuan"><font color="red" >限</font></a>
+                                            </if>
+                                        <if condition="$row['group_buy_id'] gt 0"><a href="{:U('GroupBuy/update',array('id'=>$row['group_buy_id']))}" class="yuan"><font color="orange" >团</font></a></if>
+                                        <if condition="$row['one_buy_id'] gt 0"><a href="{:U('OneBuy/update',array('id'=>$row['one_buy_id']))}" class="yuan"><font color="green" >壹</font></a></if>
+                                        <if condition="$row['pre_buy_id'] gt 0"><a href="{:U('PreBuy/update',array('id'=>$row['pre_buy_id']))}" class="yuan"><font color="#008b8b" >预</font></a></if>
+                                        <if condition="$row['auction_id'] gt 0"><a href="{:U('Auction/update',array('id'=>$row['auction_id']))}" class="yuan"><font color="#ffc0cb" >拍</font></a></if>
+                                        <if condition="$row['theme_id'] gt 0"><a href="" class="yuan"><font color="purple" >主</font></a></if>
+                                        <if condition="$row['integral_buy_id'] gt 0"><a href="" class="yuan">兑</a></if>
+                                        <if condition="$row['ticket_buy_id'] gt 0"><a href="" class="yuan"><font color="blue" >票</font></a></if>
+                                    </td>
+                                    <td class="editArea" data-gid="{$row['id']}"><i >{$row['click_num']}</i></td>
+                                    <td style="color:{$row['goods_num']>$row['warning_num']?'#999':'red'}">{$row['goods_num']}</td>
+                                    <td>
+                                        <switch name="row['status']">
+                                            <case value="1"><font color="orange">待审核</font></case>
+                                            <case value="2"><font color="#228b22">已通过</font></case>
+                                        </switch>
+                                    </td>
+                                    <td >{$row['is_buy']?'<i class="icon-ok"></i>':'<i class="icon-remove"></i>'}</td>
+                                    <td class="recommend" data-rec="{$row['is_recommend']}" data-gid="{$row['id']}" style="cursor: pointer;">
+                                        {$row['is_recommend']?'<span class="label label-success">✔</span>':'<span class="label label-important">✘</span>'}
+                                    </td>
+
+                                    <td>
+                                        <a href="{:U('Goods/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                            <span class="label label-info">查看详情</span></a>&nbsp;
+                                        <if condition="$row['is_buy'] eq 1">
+                                            <a href="{:U('Goods/setBuy',array('model'=>'Goods','id'=>$row['id'],'is_buy'=>0))}" title="下架" class="tip-bottom confirm ajax-get">
+                                                <span class="label label-important">强制下架</span></a>
+                                        <else />
+                                            <a href="" title="未上架" class="tip-bottom  ajax-get">
+                                                <span class="label label-danger">未上架</span></a>
+                                        </if>
+                                        <eq name="row['is_doing_adjustment']" value="1">
+                                            <a href="{:U('Goods/adjustment',array('id'=>$row['id']))}" title="查看调价" class="tip-bottom">
+                                                <span class="label label-info">查看调价</span></a>&nbsp;
+                                        </eq>
+                                    </td>
+                                </tr>
+                            </if>
+
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function(){
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__MODULE__/Goods/index/shenhe/"+shenhe;
+                }
+            });
+            $('.recommend').click(function(){
+                $this = $(this);
+                var gid = $(this).attr('data-gid');
+                //获取到是否是推荐
+                var is = $(this).attr('data-rec');
+                if( is != '0'){
+                    $.post('__MODULE__/Goods/setRecommend',{goods_id:gid,is_recommend:0},function(data){
+                        if(data=='1'){
+                            $this.html('<span class="label label-important">✘</span>');
+                            $this.attr('data-rec','0');
+                        }
+                    })
+                }else{
+                    $.post('__MODULE__/Goods/setRecommend',{goods_id:gid,is_recommend:1},function(data){
+                        if(data=='1'){
+                            $this.html('<span class="label label-success">✔</span>');
+                            $this.attr('data-rec','1');
+                        }
+                    })
+
+                }
+            });
+            $('.editArea').dblclick(function(){
+
+                var input = $('<input type="number" name="clicknum" value="" style="max-width:80px;" />');
+                var val = $(this).find('i').text();
+                ($(this).find('i')).after(input.val(val));
+                $(this).find('i').remove();
+            })
+            $('input[name="clicknum"]').live({
+                'blur':function(){
+                    var $this = $(this);
+                    var id = $(this).parents('td').attr('data-gid');
+
+                    var num = $(this).val();
+
+                    $.post("__MODULE__/Goods/setField",{model:'Goods',field:'click_num',value:num,id:id},function(data){
+                        $this.after('<i>'+num+'</i>');
+                        $this.remove();
+                    })
+                }
+
+            })
+         });
+
+
+    </script>
+</block>

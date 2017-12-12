@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+		<title>注册新用户</title>
+		 <script src="__ROOT__/Public/Static/jquery.min.js"></script>
+		<style type="text/css">
+		    *{margin:0;padding:0;font-family: "微软雅黑";box-sizing: border-box;}
+		    html{
+		    	font-size:12px;
+		    }
+			body{
+
+				background:#f6f6f6;
+			}
+			.weui-flex {
+			    display: -webkit-box;
+			    display: -webkit-flex;
+			    display: flex;
+			}
+			.head {
+			    position: fixed;
+			    top: 0;
+			    left: 0;
+			    right: 0;
+			    z-index: 10;
+			}
+			.h50 {
+			    height: 4.0625rem !important;
+			}
+			.pad10-15 {
+			    padding: 0.8125rem 1.21875rem;
+			}
+			.pad0-15 {
+			    padding: 0 1.21875rem !important;
+			}
+			.bg-f {
+			    background-color: #fff;
+			}
+			.login-close{
+			    -webkit-user-select: none;
+			    -moz-user-select: none;
+			    -o-user-select: none;
+			    -ms-user-select: none;
+			    user-select: none;
+			    -webkit-tap-highlight-color: transparent;
+			}
+			.login-head-close {
+			    background: url("__ROOT__/Public/Static/Register/images/close2.png")0 center no-repeat;
+			    background-size: 100% 1.21875rem;
+			    width: 1.21875rem;
+			    height: 100%;
+			}
+			.weui-flex__item {
+			    -webkit-box-flex: 1;
+			    -webkit-flex: 1;
+			    flex: 1;
+			    width: 20%;
+			}
+			.textcen {
+			    text-align: center;
+			}
+			.mat10 {
+			    margin-top: 0.8125rem;
+			}
+			.login-user {
+			    background-image: url("__ROOT__/Public/Static/Register/images/user.png");
+			}
+			.login-code {
+			    background-image: url("__ROOT__/Public/Static/Register/images/password.png");
+			}
+			.login-icon {
+			    background-position: 0 center;
+			    background-repeat: no-repeat;
+			    background-size: 1.625rem 1.625rem;
+			    width: 1.625rem;
+			    height: 100%;
+			}
+			a, span, i, img {
+			    display: inline-block;
+			}
+			a{
+				text-decoration:none;
+			}
+			.modpw1-in {
+			    height: 100%;
+			    border: 0;
+			    outline: none;
+			    background: transparent;
+			}
+			.mal10 {
+			    margin-left: 0.8125rem;
+			}
+			.fs13 {
+			    font-size: 1.05625rem;
+			}
+			.fs15 {
+			    font-size: 1.21875rem;
+			}
+			.fl {
+			    float: left;
+			}
+			[contenteditable = "true"], input, textarea {
+			    -webkit-user-select: auto!important;
+			    -khtml-user-select: auto!important;
+			    -moz-user-select: auto!important;
+			    -ms-user-select: auto!important;
+			    -o-user-select: auto!important;
+			    user-select: auto!important;
+			}
+			a, input, textarea {
+			    -webkit-tap-highlight-color: transparent;
+			}
+			.mat20 {
+			    margin-top: 1.625rem;
+			}
+			.btn-jx {
+			    -webkit-user-select: none;
+			    -moz-user-select: none;
+			    -o-user-select: none;
+			    -ms-user-select: none;
+			    user-select: none;
+			    -webkit-tap-highlight-color: transparent;
+			}
+			.lh40 {
+			    line-height: 3.25rem !important;
+			}
+			.boras3 {
+			    border-radius: 0.24375rem;
+			}
+			.bg-red1 {
+			    background-color: #F23030 !important;
+			}
+
+			.fc-f {
+			    color: #fff !important;
+			}
+			.fc-gray0 {
+			    color: #ABABAB !important;
+			}
+			.fc-red1 {
+			    color: #F23030;
+			}
+			.pad0-20 {
+			    padding: 0 1.625rem !important;
+			}
+			.mat50 {
+			    margin-top: 4.0625rem;
+			}
+			.mat5{
+				margin-top:0.40625rem;
+			}
+			.login-third img {
+			    width: 50%;
+			    height: auto;
+			}
+            .fc-3{
+            	color:#333;
+            }
+            .h40{
+            	height:3.25rem;
+            }
+		</style>
+	</head>
+	<body>
+		<!--
+		<div class="login-head pad10-15 h50 weui-flex head bg-f">
+			<div class="login-head-close"></div>
+			<div class="weui-flex__item textcen">
+				<span class="ovhid login-head-tab lh28 boras3 fs15">
+					<a href="#" class="fl on btn-jx fc-3">注册</a>
+				</span>
+			</div>
+		</div>-->
+
+			<div class=" bg-f pad0-15">
+				<div class="login-head-input1 h50 weui-flex">
+					<span class="login-icon login-user"></span>
+					<input type="text" placeholder="手机号" name="phone" class="fl modpw1-in weui-flex__item mal10 fs15"/>
+				</div>
+				<div class="login-head-input1 h50 weui-flex">
+					<span class="login-icon login-code"></span>
+					<input type="text" placeholder="密码" name="password" class="fl modpw1-in weui-flex__item mal10 fs15"/>
+				</div>
+				<div class="login-head-input1 h50 weui-flex">
+					<span class="login-icon login-code"></span>
+					<input type="text" placeholder="验证码" name="verify" class="fl modpw1-in weui-flex__item mal10 fs15"/>
+					<a class="btn-jx mal10 lh40 pad0-15 bg-red1 fc-f mat5 h40 fs13" href="javascript:;" id="verify">获取验证码</a>
+				</div>
+				<div class="login-head-input1 h50 weui-flex">
+					<span class="login-icon login-code"></span>
+					<input type="text" placeholder="邀请码" readonly value="{$invite_code}" name="invite_code" class="fl modpw1-in weui-flex__item mal10 fs15"/>
+				</div>
+			</div>
+			<div class="mat20 pad0-15">
+				<div class="bg-red1 fc-f fs15 textcen btn-jx boras3 lh40" id="register">确认注册</div>
+			</div>
+			<!--
+			<p class="mat20 fs15 pad0-15 fc-gray0">继续注册表示已经阅读并同意<a href="#" class="fc-red1 btn-jx">《服务条款》</a></p>
+			-->
+			<!--<div class="mat50 pad0-20 weui-flex">
+				<div class="weui-flex__item login-third textcen">
+					<img src="__ROOT__/Public/Static/Register/images/weixin1.png" class="btn-jx"/>
+				</div>
+				<div class="weui-flex__item login-third textcen">
+					<img src="../img/qq1.png" class="btn-jx"/>
+				</div>
+				<div class="weui-flex__item login-third textcen">
+					<img src="../img/weibo1.png" class="btn-jx"/>
+				</div>
+			</div>-->
+
+	</body>
+	<script>
+		$(function(){
+			$('#verify').click(function(){
+				var $this = $(this);
+				//获取验证码
+				var phone = $('input[name=phone]').val();
+				var url = "{:U('Register/sendVerify')}";
+				$.ajax({
+                    'type':'post',
+                    'url':url,
+                    'dataType':'json',
+                     'data':{phone:phone,type:'activate'},
+                     'success':function(data){
+                        if(data.code == '1'){
+                            $this.html("已发送").click(function(){
+                                return false;
+                            });
+                        }else{
+                            alert(data.message);
+                        }
+                     }
+                })
+				// $.post("{:U('Register/sendVerify')}",{phone:phone,type:'activate'},function(data){
+				// 		if(data.code == '1'){
+				// 			$this.html("剩余时间120秒");
+				// 		}else{
+				// 			alert(data.message);
+				// 		    }
+				// })
+			})
+
+			//注册
+			$("#register").click(function(){
+					var phone = $('input[name=phone]').val();
+					var password = $('input[name=password]').val();
+					var verify = $('input[name=verify]').val();
+					var invite_code = $('input[name=invite_code]').val();
+					var data1 = new Object();
+					data1.phone = phone;
+					data1.password = password;
+					data1.verify = verify;
+					data1.invite_code = invite_code;
+					$.post("{:U('Register/scanRegister')}",data1,function(data){
+						if(data.code == '1'){
+						    alert(data.message);
+							location.reload();
+						}else{
+							alert(data.message);
+						}
+				})
+			})
+		})
+	</script>
+</html>

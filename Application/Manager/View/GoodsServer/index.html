@@ -1,0 +1,98 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('GoodsServer/doAdd')}" target-form="ids">新增</button>&nbsp;
+                    <form action="{:U('GoodsServer/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        {$select}
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+
+                            <th>编号 </th>
+                            <th>服务名称</th>
+                            <th>图标</th>
+                            <th>服务描述</th>
+                            <th>是否必选</th>
+                            <th>排序</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['server_name']}</td>
+                                <td><img src="__ROOT__{:getPath($row['icon'])}" alt="" width="25px"></td>
+                                <td>{$row['desc']}</td>
+                                <td>{$row['is_default']==1?'是':'否'}</td>
+                                <td class="editArea" data-id="{$row['id']}" data-field="sort" data-model="GoodsServer"><i >{$row['sort']}</i></td>
+                                <td>
+                                    <a href="{:U('GoodsServer/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('GoodsServer/delete',array('model'=>'GoodsServer','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+            //修改字段值开始
+            $('.editArea').dblclick(function(){
+                var input = $('<input type="number" name="CarBuy_num" value="" style="max-width:80px;" />');
+                var val = $(this).find('i').text();
+                ($(this).find('i')).after(input.val(val));
+                $(this).find('i').remove();
+            })
+            $('input[name="CarBuy_num"]').live({
+                'blur':function(){
+                    var $this = $(this);
+                    var model = $(this).parents('td').attr('data-model');
+                    var id = $(this).parents('td').attr('data-id');
+                    var field = $(this).parents('td').attr('data-field');
+                    var num = $(this).val();
+                    $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                        $this.after('<i>'+num+'</i>');
+                        $this.remove();
+                    })
+                }
+            })
+            //修改字段值结束
+        })
+    </script>
+</block>

@@ -1,0 +1,301 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="info-fluid">
+
+        <div>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5></h5>
+                </div>
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li ><a href="#home">基本信息</a></li>
+                    <li><a href="#cate_list">经营分类</a></li>
+                    <li><a href="#info">资质信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('Merchant/update')}" id="form" autocomplete="off">
+                    <div class="tab-content">
+                        <div class="tab-pane" id="home">
+                            <div class="widget-content nopadding">
+                                    <input type="hidden" name="model" value="Merchant">
+                                    <input type="hidden" name="id" value="{$info['id']}">
+                                    <div class="control-group">
+                                        <label class="control-label">店铺名称</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$info['merchant_name']}" disabled>
+                                            <span class="help-block">90个字符以内</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">所属招商人员</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$info['a_name']}" disabled>
+                                            <span class="help-block">90个字符以内</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label">经营品牌</label>
+                                        <div class="controls" style="max-height:200px;overflow:auto;">
+                                            <blockquote>
+                                                <foreach name="info['brand_list']" item="bra">
+                                                    <div style="display: inline-block;width: 70px;text-align: center;margin-right: 5px;">
+                                                        <img src="__ROOT__{$bra['logo']}" alt="" width="70">
+                                                        <p style="width: 100%;overflow: hidden;">{$bra['brand_name']}</p>
+                                                    </div>
+                                                </foreach>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">经营商品来源地</label>
+                                        <div class="controls" style="width:600px;max-height:200px;overflow:auto;">
+                                            <foreach name="info['country_list']" item="bra">
+                                                <div style="display: inline-block;width: 100px;text-align: center;margin-right: 5px;">
+                                                    <img src="__ROOT__{$bra['path']}" alt="" width="70">
+                                                    <p style="width: 100%;overflow: hidden;">{$bra['country_name']}</p>
+                                                </div>
+                                            </foreach>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">店铺logo</label>
+                                        <div class="controls">
+                                            {:hook('upload',array('is_first'=>1,'unique_sign'=>'logo','field_name'=>'logo','field_value'=>$info['logo'],'save_path'=>'Merchant'))}
+                                            <span class="help-block">图片比例 3:2</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">店铺描述</label>
+                                        <div class="controls">
+                                            <textarea name="merchant_desc">{$info['merchant_desc']}</textarea>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="control-group">
+                                            <label class="control-label" >门店地址</label>
+                                            <div style="float: left;margin-left: 10px;" class="controls">
+                                                <input type="text" style="display: block; width: 80px;" value="{$info['province_id']}" disabled>
+                                                <span class="help-block">省</span>
+                                            </div>
+                                            <div style="float: left;margin-left:10px;" class="controls">
+                                                <input type="text" style="display: block; width: 80px;" value="{$info['city_id']}" disabled>
+                                                <span class="help-block">市</span>
+                                            </div>
+                                            <div style="float: left;margin-left:10px;" class="controls">
+                                                <input type="text" style="display: block; width: 80px;" value="{$info['area_name']}" disabled>
+                                                <span class="help-block">区</span>
+                                            </div>
+                                            <div style="float: left;margin-left:10px;" class="controls">
+                                                <input type="text" style="display: block; width: 80px;" value="{$info['street_id']}" disabled>
+                                                <span class="help-block">街道</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">详细地址</label>
+                                        <div class="controls">
+                                            <textarea name="address" disabled>{$info['address']}</textarea>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">门店电话</label>
+                                        <div class="controls">
+                                            <input type="text" name="merchant_phone" value="{$info['merchant_phone']}" >
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">营业时间</label>
+                                        <div class="controls">
+                                            <input type="text" name="open_time" value="{$info['open_time']}" >
+                                            <span class="help-block">格式要求:  09:00-20:00</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">店铺类型</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$info['level']}" disabled>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="cate_list">
+                            <div class="control-group" >
+                                <volist name="cate_list" id="bra">
+                                    <div class="cate-area">
+                                        <if condition="in_array($bra['id'],explode(',',$info['range_id']))">
+                                        <label class="checkbox inline range_name">
+                                            <h4>
+                                                <input type="hidden" class="hidden" value="1">
+                                                {$bra['short_name']}</h4>
+                                        </label>
+                                        </if>
+                                        <div class="ooo" style="display: none;">
+                                        <volist name="bra['under']" id="val2">
+                                            <if condition="in_array($val2['id'],$second_id)">
+                                            <div class="new-update clearfix cate-check" >
+                                            <i class="">
+                                                <div class="checker"></div>
+                                            </i>
+                                            <div class="update-done">
+                                                <a href="javascript:void(0)" title=""><strong>{$val2['short_name']}</strong></a>
+                                                <span style="margin-top: 10px;">
+                                                    <volist name="val2['under']" id="val3">
+                                                        <div class="checker spss" style=" height: auto;width: 100%;">
+                                                            <p style="display: block;float: left;height: auto;width: 80px;">{$val3['short_name']}</p>
+                                                            <input style="opacity:1;display:block;float:left; height: auto;width: 300px;margin-left: 20px;" type="text"  name="min_rate[]"
+                                                            <foreach name="range" item="vo"> <if condition="$vo['cates_id'] eq $val3['id']">value="{$vo['min_rate']}"</if> <if condition="in_array($val3['id'],explode(',',$row['cates']))"><else/>disabled="true"</if> </foreach> placeholder="平台服务费（百分比，填写 例如:50.55）" min="0" step="0.01" max="100">
+                                                        </div>
+                                                     </volist>
+                                                </span>
+                                            </div>
+                                    </div>
+                                    </if>
+                                </volist>
+                                </div>
+                            </div>
+                            </volist>
+                        </div>
+                        </div>
+                    <div class="tab-pane" style="height: 800px;" id="info">
+                        <!--资质信息-->
+                        <div class="control-group">
+                            <label class="control-label">营业执照</label>
+                            <div class="controls">
+                                <a href="__ROOT__{$info['business_license']}"><img src="__ROOT__{$info['business_license']}" alt="" width="200"></a>
+                            </div>
+                        </div>
+                        <foreach name="info['other_licenses']" item="val">
+                            <div class="control-group">
+                                <label class="control-label">{$val['license_name']}</label>
+                                <div class="controls">
+                                    <a href="__ROOT__{$val['license_pic']}"><img src="__ROOT__{$val['license_pic']}" alt="" width="200"></a>
+                                </div>
+                            </div>
+                        </foreach>
+                    </div>
+            </div>
+                <input type="hidden" name="id" value="{$info['id']}">
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">确认提交</button>
+                </div>
+        </form>
+    </div>
+    </div>
+    </div>
+    <script>
+        $('.range_name').click(function(){
+            var hidden = $('.hidden').val();
+            if(hidden == 1){
+                $(this).next('.ooo').show();
+                $('.hidden').val(2);
+            }else {
+                $(this).next('.ooo').hide();
+                $('.hidden').val(1);
+            }
+        })
+        $(function () {
+            $('#myTab a:first').tab('show');
+        })
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show();
+            }
+        })
+        $('.no-refuse').click(function(){
+            $('#refuse-text').hide();
+        })
+        //城市级联
+        $('.province').change(function(){
+            var province = $(this).val();
+//                $('input[name="province"]').val($(this).find('option:selected').text());
+            $.ajax({
+                url:"{:U('Merchant/ajaxGetRegion')}",
+                type:'get',
+                data:{id:province},
+                success:function(data){
+                    var html ='<option value="">城市</option>';
+                    for(var i in data){
+                        html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                    }
+                    $('.city').html(html);
+                }
+            })
+        });
+
+        $('.city').change(function(){
+            var city = $(this).val();
+            $.ajax({
+                url:"{:U('Merchant/ajaxGetRegion')}",
+                type:'get',
+                data:{id:city},
+                success:function(data){
+                    var html = '<option value="">区/县</option>';
+                    for(var i in data){
+                        html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                    }
+                    $('.area').html(html);
+                }
+            })
+        });
+        $('.area').change(function(){
+            var area = $(this).val();
+            $.ajax({
+                url:"{:U('Merchant/ajaxGetStreet')}",
+                type:'get',
+                data:{id:area},
+                success:function(data){
+                    var html = '<option value="">街道</option>';
+                    for(var i in data){
+                        html += '<option value="'+data[i].street_id+'">'+data[i].street_name+'</option>';
+                    }
+                    $('.street').html(html);
+                }
+            })
+        })
+        $('.top-cate').click(function(){
+            if($(this).attr('checked')){
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('disabled',false);
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker').removeClass('disabled');
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').css({background:'#fff',opacity:'1'});
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').show();
+            }else{
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',true);
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('disabled',true);
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',false);
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker').addClass('disabled');
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker span').removeClass('checked');
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').hide();
+                $(this).parents('label').nextAll('div.cate-check,div.cate-check2').css({background:'#ccc',opacity:'0.5'});
+            }
+        })
+        //全选/全部选
+        $('.check-nexts-all').click(function(){
+            if($(this).attr('checked')){
+                $(this).parents('.cate-check,div.cate-check2').find('.checker span').addClass('checked');
+                $(this).parents('.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',true);
+                $(this).parents('.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',false);
+            }else{
+                $(this).parents('.cate-check,div.cate-check2').find('.checker span').removeClass('checked');
+                $(this).parents('.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',false);
+                $(this).parents('.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',true);
+            }
+        })
+
+    </script>
+</block>

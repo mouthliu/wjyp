@@ -1,0 +1,79 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <form action="{:U('Price/index')}" method="post" class="form">
+                        <input type="text" name="agreement_number" value="{$_REQUEST['agreement_number']}" placeholder="协议编号" style="height:auto;">
+                        <input type="text" name="agreement_name" value="{$_REQUEST['agreement_name']}" placeholder="协议名称" style="height:auto;">
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                    <button class="btn btn-success href" url="{:U('Contract/adds',array('id'=>$contract['contract_id']))}" target-form="ids">新增</button>&nbsp;
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('Fee/delete',array('model'=>'LimitBuy','t_status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                </div>
+                <!--选项卡-->
+                <div class="widget-title">
+                    <ul class="nav nav-tabs">
+                        <li <eq name="_REQUEST['status']" value="1">class="active"</eq>>
+                        <a href="{:U('Fee/index',array('contract_id'=>$contract['contract_id'],'status'=>1))}" data-toggle="">费用单</a>
+                        </li>
+                        <li <eq name="_REQUEST['status']" value="2">class="active"</eq>>
+                        <a href="{:U('Price/index',array('contract_id'=>$contract['contract_id'],'status'=>2))}" data-toggle="">价格单</a>
+                        </li>
+                        <li <eq name="_REQUEST['status']" value="3">class="active"</eq>>
+                        <a href="{:U('Adjustment/index',array('contract_id'=>$contract['contract_id'],'status'=>3))}" data-toggle="">调价单</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>协议编号</th>
+                            <th>协议名称</th>
+                            <th>协议类型</th>
+                            <th>所属协议</th>
+                            <th>签订日期</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['agreement_number']}</td>
+                                <td>{$row['agreement_name']}</td>
+                                <td>价格单</td>
+                                <td>{$contract['agreement_name']}</td>
+                                <td>{$row['create_time']|date='Y-m-d',###}</td>
+                                <td>
+                                    <if condition="$row['status'] eq 0">待审核</if>
+                                    <if condition="$row['status'] eq 1">审核通过</if>
+                                    <if condition="$row['status'] eq 2">未通过</if>
+                                </td>
+                                <td>
+                                    <a href="{:U('Price/update',array('id'=>$row['id'],'contract_id'=>$contract['contract_id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-success">查看详情</span></a>&nbsp;
+                                    <a href="{:U('PricePrice/index',array('price_id'=>$row['id']))}" title="查看补充内容" class="tip-bottom">
+                                    <span class="label label-success">查看补充内容</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+</block>

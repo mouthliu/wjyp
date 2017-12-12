@@ -1,0 +1,63 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('MerchantAddress/add')}" target-form="ids">新添地址</button>&nbsp;
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>类型</th>
+                            <th>联系人</th>
+                            <th>地址</th>
+                            <th>手机号</th>
+                            <th>电话</th>
+                            <!--<th>是否默认</th>-->
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><eq name="row['type']" value="1">发货地址</eq>
+                                    <eq name="row['type']" value="2">退货地址</eq>
+                                </td>
+                                <td>{$row['contact_name']}</td>
+                                <td>{$row['address']}</td>
+                                <td>{$row['receiver_cellphone']}</td>
+                                <td>{$row['receiver_phone']}</td>
+                                <!--<td>-->
+                                <!--<eq name="row['is_default']" value="0">非默认</eq>-->
+                                <!--<eq name="row['is_default']" value="1">默认</eq>-->
+                                <!--</td>-->
+                                <td>
+                                    <a href="{:U('MerchantAddress/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('MerchantAddress/delete',array('model'=>'MerchantAddress','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-important">删除</span>
+                                    </a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>

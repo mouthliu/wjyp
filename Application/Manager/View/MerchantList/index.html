@@ -1,0 +1,119 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <if condition="$_GET['act'] eq 'apply'">
+                        <button class="btn btn-success href" url="{:U('Merchant/add')}" target-form="ids">新增</button>&nbsp;
+                    </if>
+                    <form action="{:U('Merchant/index')}" method="post" class="form">
+                        <input type="text" name="merchant_name" value="{$_REQUEST['merchant_name']}" placeholder="商家名称" style="height:auto;">
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>店铺名称</th>
+                            <th>企业名称</th>
+                            <th>电话</th>
+                            <th>店铺等级</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['merchant_name']}</td>
+                                <td>{$row['enterprise_name']}</td>
+                                <td>{$row['merchant_phone']}</td>
+                                <td>
+                                    <if condition="$row['level'] ==1">旗舰店</if>
+                                    <if condition="$row['level']==2" >专营店</if>
+                                    <if condition="$row['level']==3" >专卖店</if>
+                                </td>
+                                <td>
+                                    <if condition="$row['is_pass'] eq 0">正常<else/>禁用</if>
+                                </td>
+                                <td>
+                                    <a href="{:U('MerchantList/updates',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-success">查看详情</span></a>&nbsp;
+                                    <if condition="$row['is_pass'] eq 0">
+                                    	<a onclick="if(confirm('确定禁用?')==false)return false;" href="{:U('MerchantList/forbidden',array('id'=>$row['id'],is_pass=>1))}" title="禁用" class="tip-bottom">
+                                            <span class="label label-error">禁用</span></a>&nbsp;
+                                        <else/>
+                                        <a onclick="if(confirm('确定启用?')==false)return false;" href="{:U('MerchantList/forbidden',array('id'=>$row['id'],is_pass=>0))}" title="启用" class="tip-bottom">
+                                            <span class="label label-success">启用</span></a>&nbsp;
+                                    </if>
+                                    <a href="{:U('Contract/index',array('merchant_id'=>$row['id']))}" title="查看协议" class="tip-bottom">
+                                        <span class="label label-success">查看协议</span></a>&nbsp;
+                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改密码</button></a>
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-- -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">修改密码</h3>
+        </div>
+        <form class="form1" method="post" action="{:U('MerchantList/setPwd')}" >
+            <input type="hidden" name="id" value="{$row['id']}">
+            <div class="modal-body" >
+                <div class="control-group">
+                    <label class="control-label">新密码</label>
+                    <div class="controls">
+                        <input type="password"  name="newPassword" value="" >
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" >
+                <div class="control-group">
+                    <label class="control-label">确认密码</label>
+                    <div class="controls">
+                        <input type="password"  name="newPasswords" value="" >
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary ajax-post" type="submit" target-form="form1">确认修改</button>
+            </div>
+        </form>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

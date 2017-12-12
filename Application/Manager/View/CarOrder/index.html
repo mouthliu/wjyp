@@ -1,0 +1,123 @@
+<extend name="Public/base" />
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <!--<div class="widget-box">-->
+                <!--<div class="widget-title widget-title-search">-->
+                    <!--<form action="{:U('CarOrder/index')}" method="post" class="form-search">-->
+                        <!--<b>搜索：</b>-->
+                        <!--&nbsp;-->
+                        <!--<input type="text" class="input-medium search-query" name="car_name" value="{$_REQUEST['car_name']}" placeholder="输入汽车名称查询" style="height:auto" name="">-->
+                        <!--<button type="submit" class="btn">查询</button>-->
+                        <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;-->
+                        <!--<select name="theme" class="select-c xuan" data-field="brand_id">-->
+                            <!--<option value="" >按品牌筛选</option>-->
+                            <!--<foreach name="brand_list" item="v">-->
+                                <!--<option value="{$v['id']}" <if condition="$_REQUEST['brand_id'] eq $v['id']">selected</if> >-->
+                                <!--{$v['brand_name']}-->
+                                <!--</option>-->
+                            <!--</foreach>-->
+                        <!--</select>-->
+                        <!--<select name="theme" class="select-c xuan" data-field="car_style_id">-->
+                            <!--<option value="" >按车型筛选</option>-->
+                            <!--<foreach name="style_list" item="v">-->
+                                <!--<option value="{$v['id']}" <if condition="$_REQUEST['car_style_id'] eq $v['id']">selected</if> >{$v['style_name']}</option>-->
+                            <!--</foreach>-->
+                        <!--</select>-->
+                    <!--</form>-->
+                <!--</div>-->
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>订单编号</th>
+                            <!--<th>用户姓名</th>-->
+                            <th>购车联系人</th>
+                            <th>购车者联系电话</th>
+                            <th>汽车名称</th>
+                            <th>车全价</th>
+                            <th>店铺名称</th>
+                            <th>店铺联系电话</th>
+                            <th>购买时间</th>
+                            <!--<th><i class="icon-edit"></i> 赠送积分</th>-->
+                            <!--<th><i class="icon-edit"></i> 抵扣券比例</th>-->
+                            <th>订单状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['order_sn']}</td>
+                                <!--<td>{:getName('User','real_name',$row['user_id'])}</td>-->
+                                <td>{$row['contact_name']}</td>
+                                <td>{$row['contact_mobile']}</td>
+                                <td>{$row['car_name']}</td>
+                                <td>{$row['all_price']}</td>
+                                <td>{$row['shop_name']}<br>
+                                <td>{$row['shop_mobile']}<br>
+                                    <!--<font color="#00f" size="1">可抵车款: ¥&nbsp;{$row['true_pre_money']}</font>-->
+                                </td>
+                                <td>{:date('Y-m-d H:i:s',$row['create_time'])}</td>
+                                <!--<td><img src="__ROOT__{:getPath(getName('CarBrand','true_brand_logo',$row['brand_id']))}" alt="" style="width:40px;"></td>-->
+                                <!--<td class="editArea" data-id="{$row['id']}" data-field="integral" data-model="CarBuy"><i >{$row['integral']}</i></td>-->
+                                <!--<td class="editArea" data-id="{$row['id']}" data-field="ticket_discount" data-model="CarBuy"><i >{$row['ticket_discount']}</i></td>-->
+
+                                <td>{$row['status']|get_car_order_status}</td>
+                                <td>
+                                    <a href="{:U('CarOrder/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <!--<a href="{:U('CarBuy/delete',array('model'=>'CarBuy','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom ajax-get">-->
+                                        <!--<span class="label label-warning">删除</span></a>&nbsp;-->
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        //修改字段值开始
+        $('.editArea').dblclick(function(){
+            var input = $('<input type="number" name="CarBuy_num" value="" style="max-width:80px;" />');
+            var val = $(this).find('i').text();
+            ($(this).find('i')).after(input.val(val));
+            $(this).find('i').remove();
+        })
+        $('input[name="CarBuy_num"]').live({
+            'blur':function(){
+                var $this = $(this);
+                var model = $(this).parents('td').attr('data-model');
+                var id = $(this).parents('td').attr('data-id');
+                var field = $(this).parents('td').attr('data-field');
+                var num = $(this).val();
+                $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                    $this.after('<i>'+num+'</i>');
+                    $this.remove();
+                })
+            }
+        })
+        //修改字段值结束
+        $('.xuan').change(function(){
+            var val = $(this).val();
+            if(val){
+                var field = $(this).attr('data-field');
+                // 调转到对应ID的url地址
+                location="__URL__/index/"+field+"/"+val;
+
+            }
+        })
+    </script>
+</block>

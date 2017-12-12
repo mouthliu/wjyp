@@ -1,0 +1,149 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__CSS__/css.css"/>
+</block>
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <ul class="nav nav-tabs"></ul>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" metdod="post" action="{:U('Order/update')}" id="form">
+                        <input type="hidden" name="model" value="Order">
+                        <input type="hidden" name="id" value="{$row['id']}" class='id'>
+                            <div class="controls">
+                                <div class="row">
+                                    <div class="span10">
+                                        <h3  class="text-warning">订单信息</h3>
+                                        <table class="table table-hover">
+                                            <tr>
+                                                <td class="text-info" >订单编号</td>
+                                                <td>{$row['order_sn']}</td>
+                                                <td class="text-info">下单时间</td>
+                                                <td>{$row['create_time']|date="Y-m-d H:i:s",###}</td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-info">购买者联系人</td>
+                                                <td>{:getName('User','real_name',$row['user_id'])}</td>
+                                                <td class="text-info">购买者联系电话</td>
+                                                <td>{:getName('User','phone',$row['user_id'])}</td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-info">楼盘联系人</td>
+                                                <td>{$row['link_man']}</td>
+                                                <td class="text-info">楼盘联系电话</td>
+                                                <td>{$row['link_phone']}</td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-info" >代金券金额</td>
+                                                <td>{$row['pre_money']}</td>
+                                                <td class="text-info" >代金券可抵金额</td>
+                                                <td>{$row['true_pre_money']}</td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-info" >购买数量</td>
+                                                <td>{$row['num']}</td>
+                                                <td class="text-info">商品总金额</td>
+                                                <td>￥{$row['goods_price']}</td>
+                                                <td class="text-info">订单总金额</td>
+                                                <td>￥{$row['order_price']}</td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="text-info" >使用红色代金券的比例</td>
+                                                <td>{$row['discount']}</td>
+                                                <td class="text-info" >使用黄色代金券的比例</td>
+                                                <td>{$row['yellow_discount']}</td>
+                                                <td class="text-info" >使用蓝色代金券的比例</td>
+                                                <td>{$row['blue_discount']}</td>
+                                                <td class="text-info" >使用积分数</td>
+                                                <td>{$row['integral']}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-info" >订单金额</td>
+                                                <td>￥{$row['order_price']}</td>
+                                                <td class="text-info">支付方式</td>
+                                                <td>
+                                                    <eq name="row['pay_type']" value="0">待支付</eq>
+                                                    <eq name="row['pay_type']" value="1">支付宝支付</eq>
+                                                    <eq name="row['pay_type']" value="2">微信支付</eq>
+                                                    <eq name="row['pay_type']" value="3">余额支付</eq>
+                                                    <eq name="row['pay_type']" value="4">积分支付</eq>
+                                                </td>
+                                                <td class="text-info"  >订单状态</td>
+                                                <td>
+                                                    <eq name="row['status']" value="0">待付款</eq>
+                                                    <eq name="row['status']" value="1">办手续中</eq>
+                                                    <eq name="row['status']" value="2">待评价</eq>
+                                                    <eq name="row['status']" value="3">待定</eq>
+                                                    <eq name="row['status']" value="4">已完成</eq>
+                                                    <eq name="row['status']" value="5">已取消</eq>
+                                                </td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="span10">
+                                        <h3  class="text-warning" style="border-bottom:1px solid ">楼盘信息</h3>
+                                        <table class="table table-hover">
+                                            <tr>
+                                                <td class="text-info" >楼盘名称</td>
+                                                <td>{$row['house_name']}</td>
+                                                <td class="text-info" >楼盘地址</td>
+                                                <td>{$row['sell_address']}</td>
+                                                <td class="text-info">户型</td>
+                                                <td>{$row['style_name']}</td>
+                                                <td class="text-info">房全款</td>
+                                                <td>{$row['one_price']}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-info" >户型图</td>
+                                                <td><img src="__ROOT__{:getPath(getName('HouseOrder','house_style_img',$row['id']))}" alt="" style="width:100px;"></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                                <td class="text-info"></td>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <block name="script">
+
+    </block>
+
+</block>

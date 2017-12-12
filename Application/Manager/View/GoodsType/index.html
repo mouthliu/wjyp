@@ -1,0 +1,85 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('GoodsType/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('GoodsType/forbid',array('model'=>'GoodsType','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('GoodsType/resume',array('model'=>'GoodsType','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('GoodsType/delete',array('model'=>'GoodsType','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('Article/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('GoodsType/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        {$select}
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>类型名称</th>
+                            <th>所属分类</th>
+                            <th>包含属性数</th>
+                            <!--<th>添加时间</th>-->
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['type_name']}</td>
+                                <td>{:getCatePath('GoodsCategory',$row['cate_id'])}</td>
+                                <td>{$row['att_num']}</td>
+                                <!--<td>{:date('Y-m-d H:i:s',$row['addtime'])}</td>-->
+                                <td>{$row['status']==1?'<font color="green">启用</font>':'<font color="red">禁用</font>'}</td>
+                                <td>
+                                    <a href="{:U('Attribute/index',array('id'=>$row['id']))}" title="属性列表" class="tip-bottom">
+                                        <span class="label label-success">属性列表</span></a>&nbsp;
+                                    <a href="{:U('GoodsType/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('GoodsType/delete',array('model'=>'GoodsType','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

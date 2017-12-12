@@ -1,0 +1,97 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Country/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Country/delete',array('model'=>'Country','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('Country/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('Country/index')}" method="post" class="form">
+
+                        <input type="text" name="country_name" value="{$_REQUEST['country_name']}" placeholder="根据国家名称或关键字检索">
+
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>国家名称</th>
+                            <th>所属州</th>
+                            <th>国家国旗</th>
+                            <th>国家场馆图</th>
+                            <th>排序</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['country_name']}</td>
+                                <td>
+                                    <switch name="row['continent']">
+                                        <case value="1">亚洲</case>
+                                        <case value="2">欧洲</case>
+                                        <case value="3">北美洲</case>
+                                        <case value="4">南美洲</case>
+                                        <case value="5">非洲</case>
+                                        <case value="6">澳洲</case>
+                                        <case value="7">南极洲</case>
+                                    </switch>
+                                </td>
+                                <td><img src="__ROOT__{$row['country_logo']}" alt="" style="width:60px;height:35px;"></td>
+                                <td><img src="__ROOT__{$row['house_img']}" alt="" style="width:60px;height:35px;"></td>
+                                <td>{$row['sort']}</td>
+                                <td>{$row['status']|get_status_title}</td>
+                                <td>
+                                    <a href="{:U('Country/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('Country/resume',array('model'=>'Country','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('Country/forbid',array('model'=>'Country','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                    <a href="{:U('Country/delete',array('model'=>'Country','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

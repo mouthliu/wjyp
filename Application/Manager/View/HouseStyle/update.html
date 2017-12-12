@@ -1,0 +1,236 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <empty name="row['id']">
+                        <h5>编辑 {:getName('HouseBuy','house_name',$_GET['house_id'])} 户型</h5>
+                        <else />
+                        <h5>编辑 {:getName('HouseBuy','house_name',$row['house_id'])} 户型</h5>
+                    </empty>
+
+                </div>
+
+                <form class="form-horizontal" method="post" action="{:U('HouseStyle/update')}" autocomplete="off">
+                    <input type="hidden" name="model" value="HouseStyle">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <empty name="row['id']">
+                        <input type="hidden" name="house_id" value="{$_GET['house_id']}">
+                        <else />
+                        <input type="hidden" name="house_id" value="{$row['house_id']}">
+                    </empty>
+
+                <div class="tab-content">
+                        <!--主要信息-->
+                        <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label">户型名称</label>
+                                    <div class="controls">
+                                        <input type="text" name="style_name" value="{$row['style_name']}">
+                                        <span class="help-block">15个字符以内 英文字母</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">户型标签</label>
+                                    <div class="controls">
+                                        <input type="text" name="tags" value="{$row['tags']}">
+                                        <span class="help-block">用逗号隔开</span>
+                                    </div>
+                                </div>
+
+
+                                <div class="control-group">
+                                    <label class="control-label">房价</label>
+                                    <div class="controls">
+                                        <input type="number" name="one_price" value="{$row['one_price']}">/平米
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">建筑面积</label>
+                                    <div class="controls">
+                                        <input type="number" name="area" value="{$row['area']}">平米
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">全款房价</label>
+                                    <div class="controls">
+                                        <input type="number" name="all_price" value="{$row['all_price']}" readonly>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">代金券</label>
+                                    <div class="controls">
+                                        <input type="number" name="pre_money" value="{$row['pre_money']}">
+                                        <span class="help-block">可用来抵现,用做一部分车款</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">可抵现金额</label>
+                                    <div class="controls">
+                                        <input type="number" name="true_pre_money" value="{$row['true_pre_money']}">
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">户型描述</label>
+                                    <div class="controls">
+                                        <textarea name="house_style_desc">{$row['house_style_desc']}</textarea>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">户型封面图</label>
+                                    <div class="controls">
+                                        {:hook('upload',array('is_first'=>1,'unique_sign'=>'house_style_img','field_name'=>'house_style_img','field_value'=>$row['house_style_img'],'save_path'=>'HouseStyle'))}
+                                        <span class="help-block">图比例 3:2 用于显示</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">轮播图</label>
+                                    <div class="controls">
+                                        {:hook('upload',array('unique_sign'=>'pictures','queue_limit'=>4,'field_name'=>'pictures','field_value'=>$row['pictures'],'save_path'=>'HouseStyle'))}
+                                        <span class="help-block">长宽比为390px:190px</span>
+                                    </div>
+                                </div>
+                                <!--<div class="control-group">-->
+                                    <!--<label class="control-label">赠送积分</label>-->
+                                    <!--<div class="controls">-->
+                                        <!--<input type="number" name="integral" value="{$row['integral']}">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="control-group">-->
+                                    <!--<label class="control-label">可使用购物券比例</label>-->
+                                    <!--<div class="controls">-->
+                                        <!--<input type="number" name="ticket_discount" value="{$row['ticket_discount']}">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <div class="control-group">
+                                <label class="control-label">红色代金券使用比例</label>
+                                <div class="controls">
+                                    <input <if condition="$row['discount'] != 0.00"> checked </if>  type="checkbox" class="discount">
+                                    <input <if condition="$row['discount'] == 0.00">style="display: none;" </if>  type="number" min="0" max="100" step="0.01" name="discount" value="{$row['discount']}" placeholder="请输入百分比 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">黄色代金券使用比例</label>
+                                <div class="controls">
+                                    <input <if condition="$row['yellow_discount'] != 0.00"> checked </if> type="checkbox" class="yellow_discount">
+                                    <input <if condition="$row['yellow_discount'] == 0.00">style="display: none;"</if> type="number" min="0" max="100" step="0.01" name="yellow_discount" value="{$row['yellow_discount']}" placeholder="请输入百分比 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">蓝色代金券使用比例</label>
+                                <div class="controls">
+                                    <input <if condition="$row['blue_discount'] != 0.00"> checked </if> type="checkbox" class="blue_discount">
+                                    <input <if condition="$row['blue_discount'] != 0.00">style="display: black;"<else/>style="display: none;"</if> type="number" min="0" max="100" step="0.01" name="blue_discount" value="{$row['blue_discount']}" placeholder="请输入百分比 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">可使用积分数</label>
+                                <div class="controls">
+                                    <input <if condition="$row['integral'] != 0.00"> checked </if> type="checkbox" class="integral">
+                                    <input class="is_integral" type="hidden" name="is_integral" value="0" >
+                                    <input <if condition="$row['integral'] == 0.00">style="display: none;" </if> type="number" min="0" max="100" step="0.01" name="integral" value="{$row['integral']}" placeholder="请输入积分 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        var integral = $("input[name='integral']");
+        var discount = $("input[name='discount']");
+        var blue_discount = $("input[name='blue_discount']");
+        var yellow_discount = $("input[name='yellow_discount']");
+
+        $('.integral').change(function(){
+            if($(this).is(':checked')){
+                integral.show();
+                $('.is_integral').val('1');
+            }else{
+                integral.hide();
+                integral.val('0');
+                $('.is_integral').val('0');
+            }
+        })
+        $('.discount').change(function(){
+            if($(this).is(':checked')){
+                discount.show();
+                discount.val('0');
+            }else{
+                discount.hide();
+                discount.val('0');
+//                discount.attr("disabled",true);
+            }
+        })
+        $('.blue_discount').change(function(){
+            if($(this).is(':checked')){
+                blue_discount.show();
+//                blue_discount.attr("disabled",false);
+            }else{
+                blue_discount.hide();
+                blue_discount.val('0');
+//                blue_discount.attr("disabled",true);
+            }
+        })
+        $('.yellow_discount').change(function(){
+            if($(this).is(':checked')){
+                yellow_discount.show();
+//                yellow_discount.attr("disabled",false);
+            }else{
+                yellow_discount.hide();
+                blue_discount
+//                yellow_discount.attr("disabled",true);
+            }
+        })
+    $(function () {
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+
+        //下拉选择图片动态显示 开始
+        $('.dropdown-menu li a.brand').click(function(){
+                //获取到当前的品牌名称
+            var brand_name = $(this).find('span').text();
+            //获取到图片
+            $(this).parents('div.btn-group').nextAll('div.btn-group').find("img").attr("src",$(this).attr('data-src')) ;
+        })
+        //下拉选择图片动态显示 结束
+        //计算房价
+        $("input[name='one_price'],input[name='area']").blur(function(){
+            suan();
+        })
+        function suan(){
+            var one_price = $("input[name='one_price']").val();
+            var area = $("input[name='area']").val();
+            var total = 0;
+            total = parseFloat(one_price)*parseFloat(area);
+            $("input[name='all_price']").val(total);
+        }
+    })
+    </script>
+</block>

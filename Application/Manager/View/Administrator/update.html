@@ -1,0 +1,118 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <link rel="stylesheet" href="__PUBLIC__/Static/datetimepicker/css/datetimepicker.css" />
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Administrator/update')}" autocomplete="off">
+                        <input type="hidden" name="model" value="Administrator">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">账号</label>
+                            <div class="controls">
+                                <input type="text" name="account" value="{$row['account']}">
+                                <span class="help-block">15个字符以内 英文字母</span>
+                            </div>
+                        </div>
+                        <if condition="empty($_GET['id'])">
+                        <div class="control-group">
+                            <label class="control-label">密码</label>
+                            <div class="controls">
+                                <input type="text" name="password" value="">
+                                <span class="help-block">密码长度6--18位</span>
+                            </div>
+                        </div>
+                            <else/>
+                            <div class="control-group">
+                                <label class="control-label">密码</label>
+                                <div class="controls">
+                                    <input type="text" name="password" value="******">
+                                    <span class="help-block">密码长度6--18位</span>
+                                </div>
+                            </div>
+                        </if>
+                        <div class="control-group">
+                            <label class="control-label">真实姓名</label>
+                            <div class="controls">
+                                <input type="text" name="real_name" value="{$row['real_name']}">
+                                <span class="help-block">密码长度6--18位</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">联系方式</label>
+                            <div class="controls">
+                                <input type="text" name="phone" value="{$row['phone']}">
+                                <span class="help-block">密码长度6--18位</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">入职日期</label>
+                            <div class="controls">
+                                <input type="text" name="start_time" <if condition="!empty($row['start_time'])">value="{:date('Y-m-d',$row['start_time'])}"</if>  class="form_datetime input-sm">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <label class="checkbox">
+                                    <input <if condition="$row['is_service'] == 1">checked</if> name="is_service" value="1" type="checkbox">
+                                    客服人员
+                                </label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <label class="checkbox">
+                                    <input <if condition="$row['is_attract'] == 1">checked</if> name="is_attract" value="1" type="checkbox">
+                                    招商人员
+                                </label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">所属分组</label>
+                            <div class="controls">
+                                <div class="btn-group">
+                                    <button type="button" class="btn checked" data-default="--选择分组--"></button>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <volist name="groups" id="group_row">
+                                        <li data-value="{$group_row['id']}" data-title="{$group_row['title']}" <eq name="group_row['id']" value="$row['group_id']">class="selected"</eq>>
+                                            <a href="javascript:void(0)">{$group_row['title']}</a>
+                                        </li>
+                                        </volist>
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="group_id" value="{$row['group_id']}">
+                                <span class="help-block">必选项*</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">部门</label>
+                            <div class="controls">
+                                {$select}
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post" target-form="form-horizontal" type="submit">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+    </script>
+</block>

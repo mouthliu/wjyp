@@ -1,0 +1,108 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success new_type">+ 新增位置</button>&nbsp;
+                </div>
+
+                <!--// search start-->
+                <div class="search-main" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('Ads/updatePosition')}" id="form">
+                        <div class="search-frame-main">
+                            <input type="hidden" name="model" value="Ads">
+                            <input type="hidden" name="id" value="">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            位置名称：
+                            <input class="search-frame"  id="row_type_name" style="width:300px;" type="text" name="name" value="" placeholder="请输入位置名称">
+                            图片宽高：
+                            <input class="search-frame"  id="row_sort" style="width:50px;" type="text" name="width" value="" placeholder="宽度">
+                            :
+                            <input class="search-frame"  id="row_sort" style="width:50px;" type="text" name="height" value="" placeholder="高度">
+                            <button class="btn btn-inverse ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal" style="margin:4px 10px;">保存</button>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>ID</th>
+                            <th>位置名称</th>
+                            <th>图片宽高</th>
+                            <th>目前显示图片数</th>
+                            <th>状态</th>
+                            <th width="350">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                            <foreach name="list" item="val">
+                                <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$val['id']}" class="ids"/></td>
+                                <td>
+                                    {$val['id']}
+                                </td>
+                                <td>{$val['name']}</td>
+                                <td>{$val['width']} X {$val['height']}</td>
+                                <td>{$val['adNum']}</td>
+                                <td>
+                                    {$val['status']==1?'<font color="green">启用</font>':'<font color="red">禁用</font>'}
+                                </td>
+                                <td>
+                                    <a href="javaacript:;" title="修改" class="tip-bottom editInfo" data-id="{$val['id']}"
+                                    data-name="{$val['name']}" data-width="{$val['width']}" data-height="{$val['height']}">
+                                        <span class="label label-warning">修改</span></a>&nbsp;
+                                    <a href="__MODULE__/Ads/index/position/{$val['id']}" title="修改" class="tip-bottom ">
+                                        <span class="label label-info">查看所属图片</span></a>&nbsp;
+                                    <eq name="val['status']" value="0">
+                                        <a href="{:U('Ads/presume',array('model'=>'AdPosition','ids'=>$val['id'],'status'=>abs(1-$val['status'])))}" title="{$val['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$val['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('Ads/pforbid',array('model'=>'AdPosition','ids'=>$val['id'],'status'=>abs(1-$val['status'])))}" title="{$val['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$val['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                    <a href="{:U('Ads/pdelete',array('model'=>'AdPosition','ids'=>$val['id'],'status'=>9))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+                                </td>
+                                </tr>
+                            </foreach>
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</block>
+<block name="script">
+    <script>
+        $('.new_type').click(function(){
+            $('.search-main').find('input[name=id]').val('');
+            $('.search-main').toggle();
+        });
+        $('.editInfo').click(function(){
+            $('.search-main').find('input[name=id]').val($(this).attr('data-id'));
+            $('.search-main').find('input[name=name]').val($(this).attr('data-name'));
+            $('.search-main').find('input[name=width]').val($(this).attr('data-width'));
+            $('.search-main').find('input[name=height]').val($(this).attr('data-height'));
+            $('.search-main').toggle();
+
+        })
+
+    </script>
+</block>

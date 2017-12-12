@@ -1,0 +1,105 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+    </style>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success  href" url="{:U('Theme/addThemeGoods',array('theme_id'=>$_REQUEST['id']))}" >添加商品到该主题</button>&nbsp;
+                    <button class="btn btn-danger  ajax-post" url="{:U('Theme/removeThemeGoods',array('theme_id'=>$_GET['id']))}" target-form="ids">批量移出该主题</button>&nbsp;
+                    <form action="" class="form">
+
+                        <select name="theme" class="select-c" id="shenhe">
+                            <option value="" >按主题筛选</option>
+                            <foreach name="theme_list" item="v">
+                                <option value="{$v['id']}" <if condition="$_REQUEST['id'] eq $v['id']">selected</if> >{$v['theme_name']}</option>
+                            </foreach>
+                        </select>
+                    </form>
+
+                </div>
+
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+
+                    <form action="{:U('Theme/showGoods')}" method="post" class="form-search">
+                        &nbsp;
+                        <input type="text" name="goods_sn" value="{$_REQUEST['goods_sn']}" class="input-medium search-query" placeholder="输入货号精准查询" style="height:auto">
+                        <input type="text" name="goods_name" value="{$_REQUEST['goods_name']}" class="input-medium search-query" placeholder="按商品查询" style="height:auto">
+                        <button type="submit" class="btn">查询</button>
+
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>货号</th>
+                            <th>所属主题</th>
+                            <th>商品名称</th>
+                            <th>所属分类</th>
+
+                            <th>售价</th>
+                            <th>是否上架</th>
+                            <th>库存</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <if condition="$row['status'] neq 3">
+                                <tr>
+                                    <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                    <td>{$row['goods_sn']}</td>
+                                    <td><a href="{:U('Theme/update',array('id'=>$row['theme_id']))}">{$row['theme_name']}</a></td>
+                                    <td><a href="{:U('Goods/update',array('id'=>$row['id']))}">{$row['goods_name']}</a></td>
+                                    <td>{$row['cat_name']}</td>
+                                    <td>￥{$row['shop_price']}</td>
+                                    <td>{$row['is_buy']?'<i class="icon-ok"></i>':'<i class="icon-remove"></i>'}</td>
+                                    <td style="color:{$row['goods_num']>$row['warning_num']?'green':'red'}">{$row['goods_num']}</td>
+                                    <td>
+                                        <a href="{:U('Theme/singleEdit',array('model'=>'Goods','id'=>$row['id'],'field'=>'theme_id','value'=>0))}" title="查看详情" class="tip-bottom ajax-get">
+                                            <span class="label label-info">移出主题活动</span></a>&nbsp;
+
+                                    </td>
+                                </tr>
+                            </if>
+
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__MODULE__/Theme/showGoods/id/"+shenhe;
+
+
+
+                }
+            })
+        })
+
+
+    </script>
+</block>

@@ -1,0 +1,79 @@
+<extend name="Public/bases" />
+<block name="main">
+    <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <link rel="stylesheet" href="__CSS__/index.css">
+    <div class="row-fluid"  style="margin:50px 0">
+        <div class="">
+            <div class="span4 " onclick="window.location.href='javascript:void(0)'">
+                <div class="color-block-orange">
+                    <div style="margin:10px auto 0px 10px;font-size:50px;">
+                        <i class="fa fa-user"></i>
+                        <span style="float: right;margin:10px 10px auto auto;line-height:30px;color:#FFFFFF">{$visit_num}</span>
+                    </div>
+                    <h3 style="float:right;margin:0px 10px auto auto;">总访问量</h3>
+                </div>
+            </div>
+            <div class="span4 ">
+                <div class="color-block-violet" style="">
+                    <div style="margin:10px auto 0px 10px;font-size:50px;">
+                        <i class="fa fa-line-chart"></i>
+                        <span style="float: right;margin:10px 10px auto auto;line-height:30px;color:#FFFFFF">{$order_num}</span>
+                    </div>
+                    <h3 style="float:right;margin:0px 10px auto auto;">订单数量</h3>
+                </div>
+            </div>
+            <div class="span4 ">
+                <div class="color-block-green" style="">
+                    <div style="margin:10px auto 0px 10px;font-size:50px;">
+                        <i class="fa fa-inbox"></i>
+                        <span style="float: right;margin:10px 10px auto auto;line-height:30px;color:#FFFFFF">{$goods_num}</span>
+                    </div>
+                    <h3 style="float:right;margin:0px 10px auto auto;">商品数量</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="container" style="margin-bottom: 10px"></div>
+
+    <script>
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: '日访问统计',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: {$xAxis}
+                },
+                yAxis: {
+                    title: {
+                        text: '单位：人'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '人'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: {$yAxis}
+            });
+            });
+    </script>
+</block>

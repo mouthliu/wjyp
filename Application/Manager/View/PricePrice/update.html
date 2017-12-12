@@ -1,0 +1,77 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+</block>
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('FeePrice/update')}" id="form">
+                        <input type="hidden" name="model" value="PricePrice">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="price_id" value="{$price['price_id']}">
+                        <div class="control-group">
+                            <label class="control-label">商品名称</label>
+                            <div class="controls">
+                                <input type="text" name="goods_name" value="{$row['goods_name']}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">商品条码</label>
+                            <div class="controls">
+                                <input type="number" name="goods_code" value="{$row['goods_code']}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">商品规格</label>
+                            <div class="controls">
+                                <input type="text" name="goods_specification" value="{$row['goods_specification']}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">结算价</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" name="settlement_price" value="{$row['settlement_price']}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">销售价</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" name="shop_price" value="{$row['shop_price']}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">市场价</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" name="market_price" value="{$row['market_price']}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">产品照片</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'goods_img','queue_limit'=>10,'field_name'=>'goods_img','field_value'=>$row['goods_img'],'save_path'=>'Goods'))}
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+    </script>
+</block>

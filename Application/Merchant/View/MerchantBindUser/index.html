@@ -1,0 +1,191 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-primary bind_new_user" target-form="ids">绑定用户</button>&nbsp;
+                </div>
+                <div class="widget-content nopadding" >
+                    <table class="table table-bordered table-striped with-check" >
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>用户真实姓名</th>
+                            <th>手机号</th>
+                            <th>部门</th>
+                            <th>职位</th>
+                            <th>是否是领导</th>
+                            <th>添加时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['real_name']}</td>
+                                <td>{$row['phone']}</td>
+                                <td>{$row['department_name']}</td>
+                                <td>{$row['position']}</td>
+                                <td>
+                                    <eq name="row['is_leader']" value="0">非领导</eq>
+                                    <eq name="row['is_leader']" value="1">领导</eq>
+                                </td>
+                                <td>{$row['create_time']|date='Y-m-d',###}</td>
+                                <td>
+                                    <a href="{:U('MerchantBindUser/remove',array('model'=>'MerchantBindUser','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom confirm ajax-get"><span class="label label-important">删除</span></a>
+                                    <if condition="$user_id != $row['user_id']">
+                                        <button value="{$row['user_id']}" class="label save btn-primary">设置客服</button>
+                                        <input class="merchant" type="hidden" value="{$row['merchant_id']}">
+                                    </if>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal hide fade" id="bind_user_model">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>绑定用户</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">手机号:</label>
+                <div class="controls">
+                    <input type="text" name="phone" class="phone">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">密码:</label>
+                <div class="controls">
+                    <input type="text" name="password" class="password">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">部门:</label>
+                <div class="controls">
+                    <!--<input type="text" name="department" class="department">-->
+                    <!--<span class="help-block"></span>-->
+                    {$select}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">职位:</label>
+                <div class="controls">
+                    <input type="text" name="position" class="position">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">是否是领导:</label>
+                <div class="controls">
+                    <label class="radio inline">
+                        <div class="radio">
+                            <span class="checked">
+                                <input type="radio" name="is_leader" class="is_leader" value="0" style="opacity: 0;" checked>
+                            </span>
+                        </div>
+                        非领导
+                    </label>
+                    <label class="radio inline">
+                        <div class="radio">
+                            <span class="">
+                                <input type="radio" name="is_leader" class="is_leader" value="1" style="opacity: 0;"></span>
+                        </div>
+                        领导
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn close_model">关闭</a>
+            <a href="#" class="btn btn-primary submit_data">确认绑定</a>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+//            $('.save').click(function(){
+//                var aaa= $('.save').val();
+//                alert(aaa);
+//            })
+            $(".save").click(function(){
+                var user_id = $(this).val();
+                var merchant_id = $('.merchant').val();
+                $.post("{:U('MerchantBindUser/save')}",{user_id:user_id,merchant_id:merchant_id},function(data){
+                    if(data.status == 1){
+                        window.location.reload();
+                    }
+                });
+            });
+            //打开模态
+            $('.bind_new_user').click(function () {
+                $('#bind_user_model').modal('show');
+            });
+            //关闭模态框
+            $('.close_model').click(function () {
+                $('#bind_user_model').modal('hide');
+            });
+            //提交数据绑定
+            $('.submit_data').click(function(){
+                var phone = $("[name='phone']").val();
+                var password = $("[name='password']").val();
+                var department_id = $("[name='department_id']").val();
+                var position = $("[name='position']").val();
+                var is_leader = $("input[name='is_leader']:checked").val();
+                if(phone.length<=0){
+                    alert('请输入手机号');return false;
+                }
+                if(password.length<=0){
+                    alert('请输入密码');return false;
+                }
+                if(department_id.length<=0){
+                    alert('请选择部门');
+                    return false;
+                }
+                if(position.length<=0){
+                    alert('请输入职位');
+                    return false;
+                }
+                var redirect_url = "{:U('MerchantBindUser/checkUserMsg')}";
+                $.ajax({
+                    type : "POST",  //提交方式
+                    url : redirect_url,
+                    data : {
+                        phone:phone,
+                        password:password,
+                        department_id:department_id,
+                        position:position,
+                        is_leader:is_leader
+
+                    },
+                    success : function(result){
+                        if (result['success']){
+                            alert('绑用户成功！');
+                            window.location.reload();
+                        }else{
+                            alert(result['error']);
+                            return false;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</block>

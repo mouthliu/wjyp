@@ -1,0 +1,103 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <if condition="$_GET['act'] eq 'apply'">
+                        <button class="btn btn-success href" url="{:U('Merchant/add')}" target-form="ids">新增</button>&nbsp;
+                    </if>
+                    <form action="{:U('Merchant/index')}" method="post" class="form">
+                        <input type="text" name="merchant_name" value="{$_REQUEST['merchant_name']}" placeholder="商家名称" style="height:auto;">
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>账户名</th>
+                            <th>商家名称</th>
+                            <!--<th>经营范围</th>-->
+                            <th>电话</th>
+                            <if condition="$Think.get.is_pass eq 1">
+                                <th>申请时间</th>
+                            <else />
+                                <th>店铺等级</th>
+                                <!--<th>最近登录时间</th>-->
+                            </if>
+                            <!--<th>状态</th>-->
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['account']}</td>
+                                <td>{$row['merchant_name']}</td>
+                                <!--<td>{$row['range_id']}</td>-->
+                                <td>{$row['merchant_phone']}</td>
+                                <if condition="$Think.get.is_pass eq 1">
+                                    <td>{$row['create_time']|date='Y-m-d H:i',###}</td>
+                                    <else />
+                                    <td>
+                                        <if condition="$row['level'] ==1">
+                                        旗舰店
+                                        </if>
+                                <if condition="$row['level']==2" >
+                                专营店
+                                </if>
+                                <if condition="$row['level']==3" >
+                                专卖店
+                                </if>
+                                    </td>
+                                </if>
+                                <td>
+                                    <if condition="$row['status'] eq 2">
+                                    	<a href="{:U('Merchant/updates',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                            <span class="label label-success">查看详情</span></a>&nbsp;
+                                    <else/>
+                                    	<a href="{:U('Merchant/updates',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                            <span class="label label-success">查看详情</span></a>&nbsp;
+                                    </if>
+                                    <if condition="$row['is_pass'] eq 3">
+                                        <a href="{:U('Merchant/delate',array('id'=>$row['id']))}" title="删除" class="tip-bottom">
+                                            <span class="label label-success">删除</span></a>&nbsp;
+                                    </if>
+                                    <a href="{:U('Contract/index',array('merchant_id'=>$row['id']))}" title="查看协议" class="tip-bottom">
+                                        <span class="label label-success">查看协议</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

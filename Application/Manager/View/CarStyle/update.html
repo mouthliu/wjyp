@@ -1,0 +1,60 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('CarStyle/update')}" id="form">
+                        <input type="hidden" name="model" value="CarStyle">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">车型名称</label>
+                            <div class="controls">
+                                <input type="text"  name="style_name" value="{$row['style_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">车型未选择图标</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'style_img','field_name'=>'style_img','field_value'=>$row['style_img'],'save_path'=>'CarStyle'))}
+                                <span class="help-block">Logo比例 3:2</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">选中图标</label>
+                            <div class="controls">
+                                {:hook('upload',array('unique_sign'=>'true_style_img','field_name'=>'true_style_img','field_value'=>$row['true_style_img'],'save_path'=>'CarStyle'))}
+                                <span class="help-block">Logo比例 3:2</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否启用</label>
+                            <div class="controls">
+                                <select name="status" class="select-c">
+                                    <option value="1" <if condition="$row['status'] eq 1" > selected </if>>启用</option>
+                                    <option value="0" <if condition="$row['status'] eq 0" > selected </if>>不启用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort'] | default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

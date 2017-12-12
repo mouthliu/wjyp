@@ -1,0 +1,112 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('Auction/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Auction/forbid',array('model'=>'Auction','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Auction/resume',array('model'=>'Auction','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('Auction/delete',array('model'=>'Auction','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <!--<span style="display: none">-->
+                    <!--<button class="btn btn-primary ajax-post" url="{:U('Auction/move')}" target-form="ids">确定</button>-->
+                    <!--</span>-->
+                    <h4>拼单购参与记录表</h4>
+
+                </div>
+                <!--每新开一次团就新增加一个期号,后来根据这个期号来判断参团人数  开团说明已经付款-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>团购ID</th>
+                            <th>开团时间</th>
+                            <th>团购状态</th>
+                            <!--待成团  已成团 未成团-->
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['group_buy_id']}</td>
+                                <td>{:date('Y-m-d H:i:s',$row['start_time'])}</td>
+                                <td>
+                                    <switch name="row['status']">
+                                        <case value="0">待成团  </case>
+                                        <case value="1">已成团  </case>
+                                        <case value="2">未成团  </case>
+                                    </switch>
+                                </td>
+                                <td>
+
+
+                                    <!--&lt;!&ndash;这里用模态框显示参团人数表  -->
+                                    <a href="#myModal" role="button" data-toggle="modal" data-id="{$row['id']}" class="tip-bottom logUser"  data-original-title="查看原因">
+                                        <span class="label label-info">查看参团人</span></a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--热门品牌查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">参团人信息表</h3>
+        </div>
+        <div class="modal-body" style="max-height: 500px;overflow: auto;">
+            <table class="table table-bordered table-striped with-check" >
+                <tr id="user_head">
+                    <th>ID</th>
+                    <th>本次团号</th>
+                    <th>用户</th>
+                    <th>开团者</th>
+                </tr >
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $(".logUser").click(function(){
+                //清楚之前的
+                $('#user_head').nextAll().remove();
+               //获取到团购记录的id
+                var logId = $(this).attr('data-id');
+                if(logId){
+                    //清除之前的
+                    $('#user_head').nextAll('tr').remove();
+                    $.post("__MODULE__/GroupBuy/getLogUsers",{id:logId},function(data){
+                       //将获取到的信息进行处理
+                        $('#user_head').after(data);
+
+                    });
+                }
+            })
+
+        })
+    </script>
+</block>

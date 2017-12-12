@@ -1,0 +1,118 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('Auction/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Auction/forbid',array('model'=>'Auction','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Auction/resume',array('model'=>'Auction','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('Auction/delete',array('model'=>'Auction','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <!--<span style="display: none">-->
+                    <!--<button class="btn btn-primary ajax-post" url="{:U('Auction/move')}" target-form="ids">确定</button>-->
+                    <!--</span>-->
+                    <form action="" class="form">
+                        <select name="type" class="select-c" id="shenhe">
+                            <option value="" >按审核状态筛选</option>
+                            <option value="" >全部显示</option>
+                            <option value="1" >待审核</option>
+                            <option value="2" >通过审核</option>
+                            <option value="3" >未通过审核</option>
+
+                        </select>
+                    </form>
+                    <h4>红包列表</h4>
+
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>红包封面图</th>
+                            <th>所属店铺</th>
+                            <th>红包总金额</th>
+                            <th>最大红包</th>
+                            <th>最小红包</th>
+                            <th>创建时间</th>
+                            <th>已发出</th>
+                            <th>状态</th>
+                            <th>排序</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><img src="__ROOT__{$row['bonus_face']}" alt="" width="80"></td>
+                                <td>{:getName('Merchant','merchant_name',$row['merchant_id'])}</td>
+                                <td>{$row['total_money']}</td>
+                                <td>{$row['max_val']}</td>
+                                <td>{$row['min_val']}</td>
+                                <td>{:date('Y-m-d H:i:s',$row['create_time'])}</td>
+                                <td>{$row['send_num']}个</td>
+                                <td>
+                                    {$row['t_status']}
+                                </td>
+                                <td>{$row['sort']}</td>
+                                <td>
+                                    <switch name="row['status']">
+                                        <case value="1"><font color="red">未审核</font></case>
+                                        <case value="2"><font color="green">已通过</font></case>
+                                        <case value="3"><font color="#483d8b">未通过</font></case>
+                                    </switch>
+                                </td>
+                                <td>
+                                    <a href="{:U('Bonus/update',array('id'=>$row['id'],'merchant_id'=>$row['merchant_id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <if condition="$row['status'] eq 2">
+                                        <a href="{:U('Bonus/record',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                            <span class="label label-warning">领取记录</span></a>&nbsp;
+                                    </if>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            //审核跳转
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__URL__/face/status/"+shenhe;
+                }else{
+                    location="__URL__/face";
+                }
+            });
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,73 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        .text-box{
+            width: 80px;
+        }
+    </style>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <form class="form-horizontal" method="post" action="{:U('MerchantTemplate/defaultUpdate')}" id="form">
+                    <input type="hidden" name="model" value="MerchantTemplate">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <input type="hidden" name="template_id" value="{$row['tem_id']}" <if condition="empty($row['tem_id'])">url="{:U('MerchantTemplate/defaultIndex',array('id'=>$tem_id))}"<else />
+                    url="{:U('MerchantTemplate/defaultIndex',array('id'=>$row['tem_id']))}"</if>>
+                    <input type="hidden" name="tem_id" value="{$tem_id}">
+                    <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr> 
+                            <th>运送方式</th>
+                            <th>计件方式</th>
+                            <th>首件</th>
+                            <th>首件价格</th>
+                            <th>续件</th>
+                            <th>续件价格</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                            <tr>
+                                <td>
+                                    <select name="trans_method">
+                                        <option value="">请选择运送方式</option>
+                                        <option value="1" <eq name="row['trans_method']" value="1">selected</eq> >快递</option>
+                                        <option value="2" <eq name="row['trans_method']" value="2">selected</eq> >EMS</option>
+                                        <option value="3" <eq name="row['trans_method']" value="3">selected</eq>>平邮</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="unit">
+                                        <option value="">请选择计件方式</option>
+                                        <option value="1" <eq name="row['unit']" value="1">selected</eq>>按件数</option>
+                                        <option value="2" <eq name="row['unit']" value="2">selected</eq>>按重量</option>
+                                        <option value="3" <eq name="row['unit']" value="3">selected</eq>>按体积</option>
+                                     </select>
+                                </td>
+                                <td><input class="text-box"  type="text" name="first_piece" value="{$row['first_piece']}" style="width: 60px;"></td>
+                                <td><input class="text-box"  type="text" name="first_price" value="{$row['first_price']}" style="width: 60px;"></td>
+                                <td><input class="text-box"  type="text" name="another_piece" value="{$row['another_piece']}" style="width: 60px;"></td>
+                                <td><input class="text-box"  type="text" name="another_price" value="{$row['another_price']}" style="width: 60px;"></td>
+                                <td>
+                                    <input type="button" class="btn back" value="返 回">　
+                                    <button class="btn btn-info ajax-post" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="application/javascript">
+           $('.back').click(function(){
+               location.href = $('input[name="template_id"]').attr('url');
+           })
+    </script>
+</block>

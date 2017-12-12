@@ -1,0 +1,153 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <link rel="stylesheet" href="__PUBLIC__/Static/datetimepicker/css/datetimepicker.css" />
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        .cate-check{
+            /*background: #ccc;
+            opacity: 0.5;*/
+        }
+    </style>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('GoodsServer/doAdd')}" id="form">
+                        <input type="hidden" name="model" value="GoodsServer">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="status" value="{$row['status']}">
+                        <div class="control-group">
+                            <label class="control-label">服务名称</label>
+                            <div class="controls">
+                                <input type="text"  name="server_name" value="{$row['server_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">图标</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'icon','field_name'=>'icon','field_value'=>$row['icon'],'save_path'=>'GoodsServer'))}
+                                <span class="help-block">比例 3:2</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">服务描述</label>
+                            <div class="controls">
+                                <textarea name="desc" id="" cols="10" rows="5">{$row['desc']}</textarea>
+                                <span class="help-block">50个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否必选</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio" id="uniform-theme"><span class="checked">
+                                        <input type="radio" name="is_default" id="themeRad" value="0" style="opacity: 0;" <if condition="$row['is_default'] eq 0">checked</if>  ></span>
+                                    </div>
+                                    否
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio" id="uniform-"><span class="">
+                                        <input type="radio" name="is_default" id="themeRa" value="1" style="opacity: 0;" <if condition="$row['is_default'] eq 1">checked</if> ></span>
+                                    </div>
+                                    是
+                                </label>
+                                <span class="help-block">非必须选的商家可以自由选择</span>
+                            </div>
+
+                        </div>
+                        <div id="bbb" <if condition="$row.is_default != 1">style="display: none;"</if>class="control-group" >
+                            <volist name="cate_list" id="bra">
+                                <div class="cate-area">
+                                    <label class="checkbox inline">
+                                        <h4>{$bra['short_name']}
+                                            <!-- <input type="checkbox" name="range_id[]" value="{$bra['id']}" class="top-cate"> -->
+                                        </h4>
+                                    </label>
+                                    <volist name="bra['under']" id="val2">
+                                        <div class="new-update clearfix cate-check">
+                                            <i class="">
+                                                <div class="checker" >
+                                                    <span>
+                                                        <input type="checkbox" class="check-nexts-all" style="opacity: 0;">
+                                                    </span>
+                                                </div>
+                                            </i>
+                                            <div class="update-done">
+                                                <a href="javascript:void(0)" title=""><strong>{$val2['short_name']}</strong></a>
+                                                        <span style="margin-top: 10px;">
+                                                        <volist name="val2['under']" id="val3">
+                                                            <div class="checker spss" style=" height: auto; float: left;width: auto;">
+                                                                <span class="sps" style="float: left;">
+                                                                <!-- <span>{$row['cat_id']}</span> -->
+                                                                
+                                                                    <input <if condition=" in_array($val3['id'],explode(',',$row['cat_id'])) ">checked</if> type="checkbox" name="cates[]" value="{$val3['id']}"  style="display: block;float: left;">
+                                                                    </span>
+                                                                    <!--<div style="border: solid 1px black;">-->
+                                                                    <p style="display: block;float: left;height: auto;width: 80px;">{$val3['short_name']}</p>
+                                                                
+                                                                <!--</div>-->
+                                                            </div>
+                                                        </volist>
+                                                        </span>
+                                            </div>
+                                        </div>
+                                    </volist>
+                                </div>
+                            </volist>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <script>
+        $(function () {
+            $('#themeRa').click(function(){
+                $('#bbb').show();
+            })
+            $('#themeRad').click(function(){
+                $('#bbb').hide();
+            })
+            // $('.top-cate').click(function(){
+            //     if($(this).attr('checked')){
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('disabled',false);
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker').removeClass('disabled');
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').css({background:'#fff',opacity:'1'});
+            //     }else{
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',true);
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('disabled',true);
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',false);
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker').addClass('disabled');
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker span').removeClass('checked');
+            //         $(this).parents('label').nextAll('div.cate-check,div.cate-check2').css({background:'#ccc',opacity:'0.5'});
+            //     }
+            // })
+
+            //全选/全部选
+            $('.check-nexts-all').click(function(){
+                if($(this).attr('checked')){
+                    $(this).parents('.cate-check,div.cate-check2').find('.checker span').addClass('checked');
+                    $(this).parents('.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',true);
+                    $(this).parents('.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',false);
+                }else{
+                    $(this).parents('.cate-check,div.cate-check2').find('.checker span').removeClass('checked');
+                    $(this).parents('.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',false);
+                    $(this).parents('.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',true);
+                }
+            })
+
+        })
+    </script>
+</block>

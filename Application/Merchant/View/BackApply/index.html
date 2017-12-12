@@ -1,0 +1,100 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('BackApply/add')}" target-form="ids">新增</button>&nbsp;
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('BackApply/forbid',array('model'=>'BackApply','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('BackApply/resume',array('model'=>'BackApply','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('BackApply/delete',array('model'=>'BackApply','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('BackApply/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('BackApply/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding" >
+                    <table class="table table-bBackApplyed table-striped with-check" >
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>原订单号</th>
+                            <th>售后类型</th>
+                            <th>商品</th>
+                            <th>申请时间</th>
+                            <th>应退金额</th>
+                            <th>收货人</th>
+                            <th>退换状态</th>
+                            <th>申请人</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{:getName("Order","order_sn",$row['order_id'])}</td>
+                                <td>{$row['apply_type']==1?'退货':'退款'}</td>
+                                <td>{:getName("order_goods",'goods_name',$row['order_goods_id'])}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>{$row['back_money']}</td>
+                                <td>{$row['receiver']}</td>
+                                <td>{:apply_status($row['status'])}</td>
+                                <td>{:getName("User","nickname",$row['user_id'])}</td>
+
+                                <td>
+
+                                    <a href="{:U('BackApply/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <switch name="row['status']">
+                                        <case value="0">
+                                              <a href="{:U('BackApply/update',array('id'=>$row['id']))}" title="同意" class="tip-bottom">
+                                                  <span class="label label-success">同意</span></a>&nbsp;
+                                              <a href="{:U('BackApply/update',array('id'=>$row['id']))}" title=拒绝 class="tip-bottom">
+                                                <span class="label label-warning">拒绝</span></a>&nbsp;
+                                        </case>
+                                        <case value="3">
+                                            <a href="{:U('BackApply/update',array('id'=>$row['id']))}" title="删除" class="tip-bottom">
+                                                <span class="label label-success">删除</span></a>&nbsp;
+                                        </case>
+                                    </switch>
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

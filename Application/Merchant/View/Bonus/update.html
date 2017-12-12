@@ -1,0 +1,166 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Bonus/update')}" id="form">
+                        <input type="hidden" name="model" value="Bonus">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="merchant_id" value="{:getMerchantId()}">
+                        <if condition="$_GET['bonus_face_id'] gt 0">
+                            <input type="hidden" name="bonus_face_id" value="{$_GET['bonus_face_id']}">
+                        </if>
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">红包标题</label>-->
+                            <!--<div class="controls">-->
+                                <!--<input type="text" name="bonus_title" value="{$row['bonus_title']}" />-->
+                                <!--<span class="help-block">10个字符以内</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">红包链接</label>-->
+                            <!--<div class="controls">-->
+                                <!--<input type="text" name="bonus_url" value="{$row['bonus_url']}" />-->
+                                <!--<span class="help-block">10个字符以内</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="control-group">
+                            <label class="control-label">广告类型</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio" ><span >
+                                        <input type="radio" name="type" value="1" {$row['type']==1?'checked':''} style="opacity: 0;" id="video-type" ></span></div>
+                                       视频
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio" ><span >
+                                        <input type="radio" name="type" value="2" {$row['type']==2?'checked':''} style="opacity: 0;" id="pic-type"></span></div>
+                                       图片
+                                </label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">标题</label>
+                            <div class="controls">
+                                <input type="text" name="bonus_title" value="{$row['bonus_title']}" >
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">广告内容</label>
+                            <div class="controls" id="video">
+                                {:hook('upload',array('is_first'=>1,'type'=>'video','unique_sign'=>'video','field_name'=>'bonus_ads','field_value'=>$row['bonus_ads'],'save_path'=>'Bonus','exts'=>'mp4','max_size'=>'3145728'))}
+                                <span class="help-block">上传广告时间不得多于8s,大小不超过3M</span>
+                            </div>
+                            <div class="controls " id="pic" style="display: none;">
+                                {:hook('upload',array('unique_sign'=>'pictures','field_name'=>'bonus_ads','field_value'=>$row['bonus_ads'],'save_path'=>'Bonus'))}
+                                <span class="help-block">商品略缩图比例 3:2</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort']|default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $(function(){
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/Bonus/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#glist').show();
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/Bonus/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#glist').show();
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+
+                        }
+
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var shop_price = $(this).parents('td').attr('data-price');
+                    var cat_id = $(this).parents('td').attr('data-catId');
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=shop_price]').val(shop_price);
+                    $('input[name=cat_id]').val(cat_id);
+                }
+            })
+
+            $('#video-type').click(function(){
+                $('#video').show();
+                $('#pic').hide();
+            })
+            $('#pic-type').click(function(){
+                $('#video').hide();
+                $('#pic').show();
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,65 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('MerchantTemplate/add')}" target-form="ids">添加运费模板</button>&nbsp;
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>模板名称</th>
+                            <th>是否包邮</th>
+                            <th>发货地址</th>
+                            <th>退货地址</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['template_name']}</td>
+                                <td>
+                                    <eq name="row['is_postage']"  value="1">包邮</eq>
+                                    <eq name="row['is_postage']"  value="2">不包邮</eq>
+                                </td>
+                                <td>{$row['shipping_address']}</td>
+                                <td>{$row['back_address']}</td>
+                                <td>
+                                    <a href="{:U('MerchantTemplate/defaultIndex',array('id'=>$row['id']))}" class="tip-bottom" data-original-title="添加默认">
+                                        <span class="label label-info">添加默认运费</span>
+                                    </a>&nbsp;
+                                    <a href="{:U('MerchantTemplate/areaIndex',array('id'=>$row['id']))}" data-originaltitle="添加地区运费" class="tip-bottom">
+                                        <span class="label label-warning">添加地区运费</span>
+                                    </a>&nbsp;
+                                    <a href="{:U('MerchantTemplate/postIndex',array('id'=>$row['id']))}" data-originaltitle="设置包邮地区和条件" class="tip-bottom">
+                                        <span class="label label-primary">包邮设置</span>
+                                    </a>&nbsp;
+                                    <a href="{:U('MerchantTemplate/update',array('id'=>$row['id']))}" class="tip-bottom" data-original-title="编辑">
+                                        <span class="label label-success">编辑</span>
+                                    </a>&nbsp;
+                                    <a href="{:U('MerchantTemplate/delete',array('model'=>'MerchantTemplate','ids'=>$row['id'],'status'=>9))}" data-original-title="删除"  class="tip-bottom confirm ajax-get">
+                                            <span class="label label-important">删除</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>

@@ -1,0 +1,302 @@
+<extend name="Public/base" />
+
+
+<block name="main">
+    <style type="text/css">
+        .necessary{
+            color: #FF0000;
+        }
+        th,td{
+            width: auto;
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5>编辑地址</h5>
+                </div>
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li ><a href="#home">基本信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('MerchantTemplate/update')}" id="form">
+                    <input type="hidden" name="model" value="MerchantTemplate">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <input type="hidden" name="template_id" value="{$row['tem_id']}" <if condition="empty($row['tem_id'])">url="{:U('MerchantTemplate/defaultIndex',array('id'=>$tem_id))}"<else />
+                    url="{:U('MerchantTemplate/defaultIndex',array('id'=>$row['tem_id']))}"</if>>
+                    <input type="hidden" name="tem_id" value="{$tem_id}">
+                    <div class="tab-content">
+                        <div class="tab-pane" id="home">
+                            <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 模板名称</label>
+                                    <div class="controls">
+                                        <input type="text"  name="template_name" value="{$row['template_name']}" >
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 发货地址</label>
+                                    <div class="controls">
+                                        <select name="d_id">
+                                            <option value="">请选择发货地址</option>
+                                            <volist name="shipping_address" id="vo">
+                                                <option value="{$vo['id']}" <eq name="vo['id']" value="$row['d_id']">selected</eq> >{$vo['address']}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 退货地址</label>
+                                    <div class="controls">
+                                        <select name="b_id">
+                                            <option value="">请选择退货地址</option>
+                                            <volist name="back_address" id="vo">
+                                                <option value="{$vo['id']}" <eq name="vo['id']" value="$row['b_id']">selected</eq> >{$vo['address']}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 运费设置</label>
+                                    <div class="controls">
+                                        <label class="radio">
+                                            <input type="radio" name="is_postage" value="1" checked>自定义运费
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="is_postage" value="2" <eq name="row['is_postage']" value="2">checked</eq>>卖家承担运费
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group postage-type" style="display: none;">
+                                    <label class="control-label">运送方式</label>
+                                    <div class="controls">
+                                        <input type="checkbox" name="trans_method[]" value="1">快递 <span class="icon-chevron-down" id="express" style="cursor: pointer;"></span>&nbsp;
+                                        <input type="checkbox" name="trans_method[]" value="2">EMS &nbsp;
+                                        <input type="checkbox" name="trans_method[]" value="3">平邮 &nbsp;
+                                        <input type="checkbox" name="trans_method[]" value="4">物流 <span class="icon-chevron-down"  id="logistics" style="cursor: pointer;"></span>&nbsp;
+                                    </div>
+                                </div>
+                                <div class="control-group express" style="display: none;margin-top: 15px;">
+                                    <div class="controls">
+                                        <volist name="express_company" id="vo">
+                                            <input type="checkbox" name="express_company[]" value="{$vo['id']}">{$vo['shipping_name']} &nbsp;
+                                        </volist>
+                                    </div>
+                                </div>
+                                <div class="control-group logistics" style="display: none;margin-top: 15px;">
+                                    <div class="controls">
+                                        <volist name="logistics_company" id="vo1">
+                                            <input type="checkbox" name="logistics_company[]" value="{$vo1['id']}">{$vo1['shipping_name']} &nbsp;
+                                        </volist>
+                                    </div>
+                                </div>
+                                <div class="control-group unit">
+                                    <label class="control-label">计件方式</label>
+                                    <div class="controls">
+                                        <label class="radio">
+                                            <input type="radio" name="unit" value="1" checked>件数
+                                        </label>&nbsp;
+                                        <label class="radio">
+                                            <input type="radio" name="unit" value="2">重量
+                                        </label>&nbsp;
+                                        <label class="radio">
+                                            <input type="radio" name="unit" value="3">体积
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group" id="table-father">
+                                    <label class="control-label">默认运费</label>
+                                    <div class="controls" style="width: 60%;">
+
+                                            <div class="widget-content nopadding">
+                                                <table class="table table-bordered table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>选择</th>
+                                                        <th>运送方式</th>
+                                                        <th>首件</th>
+                                                        <th>首件价格</th>
+                                                        <th>续件</th>
+                                                        <th>续件价格</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">
+                                                    <tr class="change-attr">
+                                                        <td><input type="checkbox" name="trans_method[]" value="1"></td>
+                                                        <td>快递
+                                                        </td>
+                                                        <td><input class="text-box"  type="text" name="first_piece[]" value="{$row['first_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="first_price[]" value="{$row['first_price']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_piece[]" value="{$row['another_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_price[]" value="{$row['another_price']}" style="width: 60px;"></td>
+                                                    </tr>
+                                                    <tr class="change-attr">
+                                                        <td><input type="checkbox" name="trans_method[]" value="2"></td>
+                                                        <td>EMS
+                                                        </td>
+                                                        <td><input class="text-box"  type="text" name="first_piece[]" value="{$row['first_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="first_price[]" value="{$row['first_price']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_piece[]" value="{$row['another_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_price[]" value="{$row['another_price']}" style="width: 60px;"></td>
+                                                    </tr>
+                                                    <tr class="change-attr">
+                                                        <td><input type="checkbox" name="trans_method[]" value="3"></td>
+                                                        <td>平邮
+                                                        </td>
+                                                        <td><input class="text-box"  type="text" name="first_piece[]" value="{$row['first_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="first_price[]" value="{$row['first_price']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_piece[]" value="{$row['another_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_price[]" value="{$row['another_price']}" style="width: 60px;"></td>
+                                                    </tr>
+                                                    <tr class="change-attr">
+                                                        <td><input type="checkbox" name="trans_method[]" value="4"></td>
+                                                        <td>物流
+                                                        </td>
+                                                        <td><input class="text-box"  type="text" name="first_piece[]" value="{$row['first_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="first_price[]" value="{$row['first_price']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_piece[]" value="{$row['another_piece']}" style="width: 60px;"></td>
+                                                        <td><input class="text-box"  type="text" name="another_price[]" value="{$row['another_price']}" style="width: 60px;"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!--<div class="control-group">-->
+                                <!--<label class="control-label">物流信息</label>-->
+                                <!--<div class="controls">-->
+                                <!--<p>重货价格: <input style="width: 60px" type="text" name="heavy_price" <if condition="!empty($row['heavy_price'])">value="{$row['heavy_price']}"</if>> 元/公斤-->
+                                <!--&nbsp;<span style="margin-left: 130px;">轻货价格: </span> <input style="width: 60px;" type="text" name="light_price" <if condition="!empty($row['light_price'])">value="{$row['light_price']}"</if>> 元/立方-->
+                                <!--</p>-->
+                                <!--<p style="margin-top: 15px;">续货最低: <input style="width: 60px" type="text" name="lowest_price" <if condition="!empty($row['lowest_price'])"> value="{$row['lowest_price']}"</if>> 元-->
+                                <!--&nbsp;<span style="margin-left: 162px;">送货上门: </span><input style="width: 60px;" type="text" name="home_delivery" <if condition="!empty($row['home_delivery'])">value="{$row['home_delivery']}"</if>> 元-->
+                                <!--</p>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('#myTab a:first').tab('show');
+            $('#myTab a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+
+            $('#table-father').find('input[type="text"]').attr('disabled',true);
+            var aACheckBox  = $('#table-father').find('input[type="checkbox"]');
+            var aChangeAttr = $('.change-attr');
+            $.each(aACheckBox,function(i){
+                (function(i){
+                    $(aACheckBox[i]).change(function(){
+                        if($(aACheckBox[i]).is(":checked")){
+                            $(aChangeAttr[i]).find('input[type="text"]').removeAttr('disabled');
+                        }else{
+                            $(aChangeAttr[i]).find('input[type="text"]').attr('disabled',true);
+                        }
+                    })
+                })(i);
+            });
+
+            console.log($('input[name="is_postage"]').length);
+            function pageShow(){
+                    for(var i=0;i<=$('input[name="is_postage"]').length;i++){}
+                   if( $(this) == 2 ){
+                       $('.unit').hide();
+                       $('.unit').find('input[type="radio"]').attr('disabled',true);
+                       $('#table-father').hide();
+                       $('#table-father').find('input[type="checkbox"]').attr('disabled',true);
+                       $('.postage-type').show();
+                       $('.postage-type').find('input[type="checkbox"]').removeAttr('disabled');
+                       $('.express').find('input[type="checkbox"]').removeAttr('disabled');
+                       $('.logistics').find('input[type="checkbox"]').removeAttr('disabled');
+                   } else {
+                       $('.express').hide();
+                       $('.logistics').hide();
+                       $('.unit').show();
+                       $('.unit').find('input[type="radio"]').removeAttr('disabled');
+                       $('#table-father').show();
+                       $('#table-father').find('input[type="checkbox"]').removeAttr('disabled');
+                       $('.postage-type').hide();
+                   }
+
+
+            }
+            pageShow();
+            $('input[name="is_postage"]').change(function(){
+                if( $(this).attr('value') == 2 ){
+                    $('.unit').hide();
+                    $('.unit').find('input[type="radio"]').attr('disabled',true);
+                    $('#table-father').hide();
+                    $('#table-father').find('input[type="checkbox"]').attr('disabled',true);
+                    $('.postage-type').show();
+                    $('.postage-type').find('input[type="checkbox"]').removeAttr('disabled');
+                    $('.express').find('input[type="checkbox"]').removeAttr('disabled');
+                    $('.logistics').find('input[type="checkbox"]').removeAttr('disabled');
+                } else {
+                    $('.express').hide();
+                    $('.logistics').hide();
+                    // $('.express').find('input[type="checkbox"]').attr('disabled',true);
+                    $('.logistics').find('input[type="checkbox"]').attr('disabled',true);
+                    $('.unit').show();
+                    $('.unit').find('input[type="radio"]').removeAttr('disabled');
+                    $('#table-father').show();
+                    $('#table-father').find('input[type="checkbox"]').removeAttr('disabled');
+                    $('.postage-type').hide();
+                    // $('.postage-type').find('input[type="checkbox"]').attr('disabled',true);
+                }
+            });
+
+           $('#express').click(function () {
+
+               if($('.express').is(':hidden')){
+                   $('.express').show();
+                   $('.logistics').hide();
+                   $(this).removeClass('icon-chevron-down');
+                   $(this).addClass('icon-chevron-up');
+                   $('#logistics').removeClass('icon-chevron-up');
+                   $('#logistics').addClass('icon-chevron-down');
+               }else{
+                   $('.express').hide();
+                   $(this).removeClass('icon-chevron-up');
+                   $(this).addClass('icon-chevron-down');
+               }
+           });
+            $('#logistics').click(function () {
+                if($('.logistics').is(':hidden')){
+                    $('.logistics').show();
+                    $('.express').hide();
+                    $(this).removeClass('icon-chevron-down');
+                    $(this).addClass('icon-chevron-up');
+                    $('#express').removeClass('icon-chevron-up');
+                    $('#express').addClass('icon-chevron-down');
+                }else{
+                    $('.logistics').hide();
+                    $(this).removeClass('icon-chevron-up');
+                    $(this).addClass('icon-chevron-down');
+                }
+            });
+        });
+    </script>
+</block>

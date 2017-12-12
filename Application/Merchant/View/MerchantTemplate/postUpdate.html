@@ -1,0 +1,439 @@
+
+<extend name="Public/base" />
+<block name="main">
+    <style type="text/css">
+
+        .select-city{
+            position: relative;
+        }
+        .condition p{
+            display: none;
+        }
+
+        input.confirm{
+            background: #49afcd;
+            color:#fff;
+            height:30px;
+            width: 58px;
+            outline: none;
+            border: none;
+        }
+
+        input.cancel{
+            background: #c5c5c5;
+            color:#333;
+            width: 58px;
+            outline: none;
+            border: none;
+            height: 30px;
+        }
+
+        .city-block{
+            position: absolute;
+            left:0px;
+            top: 15px;
+            width: 130px;
+            background:	#F7F7F7;
+            display: none;
+            z-index: 100;
+            border: 1px solid #DDDDDD;
+        }
+
+        .city-display{
+            padding: 10px 10px;
+        }
+
+        .select-btn{
+            margin-top: 15px;
+            margin-left: 5px;
+        }
+
+    </style>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+
+                <form class="form-horizontal" method="post" action="{:U('MerchantTemplate/postUpdate')}" id="form">
+                    <input type="hidden" name="model" value="MerchantTemplate">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <input type="hidden" name="template_id" value="{$row['t_id']}" <if condition="empty($row['t_id'])">url="{:U('MerchantTemplate/postIndex',array('id'=>$t_id))}"<else />
+                    url="{:U('MerchantTemplate/postIndex',array('id'=>$row['t_id']))}"</if>>
+                    <input type="hidden" name="t_id" value="{$t_id}">
+                    <div class="widget-content nopadding">
+                        <table class="table table-bordered table-striped with-check">
+                            <thead>
+                            <tr>
+                                <th>运送方式</th>
+                                <th>包邮方式</th>
+                                <th>包邮地区</th>
+                                <th>包邮条件</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody class="tbody">
+                            <tr>
+                                <td>
+                                    <select name="ef_postage_type">
+                                        <option value="">请选择运送方式</option>
+                                        <option value="1" <eq name="row['ef_postage_type']" value="1">selected</eq> >快递</option>
+                                        <option value="2" <eq name="row['ef_postage_type']" value="2">selected</eq> >EMS</option>
+                                        <option value="3" <eq name="row['ef_postage_type']" value="3">selected</eq>>平邮</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="ef_postage_condition" class="ef-postage">
+                                        <option value="">请选择包邮方式</option>
+                                        <option value="1" <eq name="row['ef_postage_condition']" value="1">selected</eq>>件数</option>
+                                        <option value="2" <eq name="row['ef_postage_condition']" value="2">selected</eq>>金额</option>
+                                        <option value="3" <eq name="row['ef_postage_condition']" value="3">selected</eq>>件数+金额</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div id="example" class="modal hide fade in" style="display: none;  min-width:950px;">
+                                        <div class="modal-header">
+                                            <a class="close" data-dismiss="modal">×</a>
+                                            <h3>选择区域</h3>
+                                        </div>
+                                        <div class="modal-body" style="margin-left: 10px;margin-top: 15px;height:600px;">
+                                            <h5>华东地区：
+                                                <volist name="area_ec" id="vo1">
+                                                    <input type="checkbox" name="province-name" value="{$vo1['id']}">{$vo1['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                     <div class="city-block">
+                                                         <div class="city-display">
+                                                             <div class="hidden"></div>
+                                                         </div>
+                                                         <p class="select-btn">
+                                                             <input type="button" class="confirm" value="确 定">
+                                                             <input type="button" class="cancel" value="取 消">
+                                                         </p>
+                                                     </div>
+                                                  </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>华南地区：
+                                                <volist name="area_sc" id="vo2">
+                                                    <input type="checkbox" name="province-name" value="{$vo2['id']}">{$vo2['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                        <div class="city-block">
+                                                             <div class="city-display">
+                                                                 <div class="hidden"></div>
+                                                             </div>
+                                                             <p class="select-btn">
+                                                                 <input type="button" class="confirm" value="确 定">
+                                                                 <input type="button" class="cancel" value="取 消">
+                                                             </p>
+                                                         </div>
+                                                      </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>华中地区：
+                                                <volist name="area_mc" id="vo3">
+                                                    <input type="checkbox" name="province-name" value="{$vo3['id']}">{$vo3['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                        <div class="city-block">
+                                                            <div class="city-display">
+                                                                <div class="hidden"></div>
+                                                            </div>
+                                                           <p class="select-btn">
+                                                                 <input type="button" class="confirm" value="确 定">
+                                                                 <input type="button" class="cancel" value="取 消">
+                                                             </p>
+                                                        </div>
+                                                     </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>华北地区：
+                                                <volist name="area_nc" id="vo4">
+                                                    <input type="checkbox" name="province-name" value="{$vo4['id']}">{$vo4['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                        <div class="city-block">
+                                                            <div class="city-display">
+                                                                <div class="hidden"></div>
+                                                            </div>
+                                                            <p class="select-btn">
+                                                                 <input type="button" class="confirm" value="确 定">
+                                                                 <input type="button" class="cancel" value="取 消">
+                                                             </p>
+                                                        </div>
+                                                     </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>西南地区：
+                                                <volist name="area_sw" id="vo5">
+                                                    <input type="checkbox" name="province-name" value="{$vo5['id']}">{$vo5['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                        <div class="city-block">
+                                                            <div class="city-display">
+                                                                <div class="hidden"></div>
+                                                            </div>
+                                                            <p class="select-btn">
+                                                                 <input type="button" class="confirm" value="确 定">
+                                                                 <input type="button" class="cancel" value="取 消">
+                                                             </p>
+                                                        </div>
+                                                     </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>东北地区：
+                                                <volist name="area_ne" id="vo6">
+                                                    <input type="checkbox" name="province-name" value="{$vo6['id']}">{$vo6['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                        <div class="city-block">
+                                                            <div class="city-display">
+                                                                <div class="hidden"></div>
+                                                            </div>
+                                                           <p class="select-btn">
+                                                                 <input type="button" class="confirm" value="确 定">
+                                                                 <input type="button" class="cancel" value="取 消">
+                                                            </p>
+                                                        </div>
+                                                     </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>西北地区：
+                                                <volist name="area_nw" id="vo7">
+                                                    <input type="checkbox" name="province-name" value="{$vo7['id']}">{$vo7['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                         <div class="city-block">
+                                                             <div class="city-display">
+                                                                 <div class="hidden"></div>
+                                                             </div>
+                                                             <p class="select-btn">
+                                                                 <input type="button" class="confirm" value="确 定">
+                                                                 <input type="button" class="cancel" value="取 消">
+                                                             </p>
+                                                         </div>
+                                                     </span>
+                                                </volist>
+                                            </h5>
+                                            <h5>港澳台地区：
+                                                <volist name="area_hmt" id="vo8">
+                                                    <input type="checkbox" name="province-name" value="{$vo8['id']}">{$vo8['region_name']}
+                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                     <div class="city-block">
+                                                         <div class="city-display">
+                                                             <div class="hidden"></div>
+                                                         </div>
+                                                         <p class="select-btn">
+                                                             <input type="button" class="confirm" value="确 定">
+                                                             <input type="button" class="cancel" value="取 消">
+                                                         </p>
+                                                     </div>
+                                                 </span>
+                                                </volist>
+                                            </h5>
+                                        </div>
+                                        <div class="city-box" style="display: none">
+                                            <volist name="city_id" id="v">
+                                                <input type="hidden" value="{$v}">
+                                            </volist>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="#" class="btn btn-success" data-dismiss="modal">确定</a>
+                                            <a href="#" class="btn" data-dismiss="modal">关闭</a>
+                                        </div>
+                                    </div>
+                                    <p><a data-toggle="modal" href="#example" class="select-area"><if condition="!empty($areas)">{$areas}<else />选择地区</if></a></p>
+                                </td>
+                                <td class="condition">
+                                    <p class="num-package" <eq name="row['ef_postage_condition']" value="1">style="display: block"</eq>> 满 <input class="condition-one" style="width: 60px;" type="text" <eq name="row['ef_postage_condition']" value="1">name="condition_fill_one" value="{$row['condition_fill_one']}"</eq>
+                                    > 件 包邮</p>
+                                    <p class="num-money"   <eq name="row['ef_postage_condition']" value="2">style="display: block"</eq>> 满 <input class="condition-one" style="width: 60px;" type="text" <eq name="row['ef_postage_condition']" value="2">name="condition_fill_one" value="{$row['condition_fill_one']}"</eq>
+                                    > 元 包邮</p>
+                                    <p class="num-pag-money"  <eq name="row['ef_postage_condition']" value="3">style="display: block"</eq>> 满 <input class="condition-one" style="width: 60px;" type="text" <eq name="row['ef_postage_condition']" value="3">name="condition_fill_one" value="{$row['condition_fill_one']}"</eq>
+                                    > 件
+                                        <input style="width: 60px" type="text" name="condition_fill_two" <if condition="empty($row['condition_fill_two'])">value=''<else/>value="{$row['condition_fill_two']}"</if>
+                                    > 元 包邮
+                                    </p>
+                                </td>
+                                <td style="width:120px;">
+                                    <input type="button" class="btn back" value="返 回">
+                                    <button class="btn btn-info ajax-post" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="application/javascript">
+        $(document).ready(function(){
+            $('.back').click(function(){
+                location.href = $('input[name="template_id"]').attr('url');
+            });
+
+            var aIcon        =  $('.icon-chevron-down');
+            var aCityBlock   =  $('.city-block');
+            var aCityDisplay =  $('.city-display');
+            var aCheckBox    =  $('.modal-body').find('input[type="checkbox"]');
+            var aHidden      =  $('.hidden');
+
+            for( var i=0;i<aIcon.length;i++ ){
+                (function(i){
+                    $(aIcon[i]).unbind('click').click(function(){
+                        if($(aCityBlock[i]).is(':hidden')){
+                            $(aIcon).removeClass('icon-chevron-up');
+                            $(aIcon).addClass('icon-chevron-down');
+                            $(aCityBlock).hide();
+                            $(aIcon[i]).removeClass('icon-chevron-down');
+                            $(aIcon[i]).addClass('icon-chevron-up');
+                            var oProvinceId = $(aCheckBox[i]).attr('value');
+                            var oCheckExist = $(aCityBlock[i]).find('input[type="checkbox"]');
+                            if( oCheckExist.length == 0 ){
+                                $.ajax({
+                                    url:"{:U('MerchantTemplate/ajaxGetCity')}",
+                                    type:'post',
+                                    data:{p_id:oProvinceId},
+                                    success:function(data){
+                                        html= '';
+                                        for(var j in data){
+                                            html += '<input type="checkbox" value="'+data[j].id+'" region="'+data[j].region_name+'" name="city_id[]">'+data[j].region_name;
+                                        }
+                                        $(aCityDisplay[i]).append(html);
+                                        var aCheck = $(aCityBlock[i]).find('input[type="checkbox"]');
+                                        var oValue = $('.city-box').find('input[type="hidden"]');
+                                        for( var m=0; m<aCheck.length; m++ ){
+                                            (function(m){
+                                                for( var n=0; n<oValue.length; n++){
+                                                    (function(n){
+                                                        console.log($(aCheck[m]).attr('region'));
+                                                        if ( $(aCheck[m]).attr('value') == $(oValue[n]).attr('value')) {
+                                                            $(aCheck[m]).attr('checked',true);
+                                                        }
+                                                    })(n);
+                                                }
+                                            })(m);
+                                        }
+                                    }
+                                });
+                            }
+                            $(aCityBlock[i]).slideDown();
+                            var aInput = $(aCityDisplay[i]).find("input:checked");
+                            if( aInput.length>0 ){
+                                var oContent = '';
+                                for(var j=0; j<aInput.length; j++ ){
+                                    (function (j){
+                                        oContent += "<input type='hidden' value="+$(aInput[j]).attr('value')+ ">";
+                                    })(j);
+                                }
+                                $(aHidden[i]).html(oContent);
+                            }
+
+                        }else{
+                            $(aIcon[i]).removeClass('icon-chevron-up');
+                            $(aIcon[i]).addClass('icon-chevron-down');
+                            $(aCityBlock[i]).slideUp();
+                        }
+                    })
+                })(i);
+            }
+
+
+            var aCancel      =  $('.cancel');
+            var aIcon        =  $('.icon-chevron-down');
+            var aCityBlock   =  $('.city-block');
+            var aConfirm     =  $('.confirm');
+            var aCityDisplay =  $('.city-display');
+            var aHidden      =  $('.hidden');
+
+            for( var i=0; i<aConfirm.length; i++ ){
+                (function(i){
+                    $(aConfirm[i]).click(function(){
+                        $(aIcon).removeClass('icon-chevron-up');
+                        $(aIcon).addClass('icon-chevron-down');
+                        $(aCityBlock[i]).slideUp();
+                    });
+                    $(aCancel[i]).click(function(){
+                        var oCheckExist = $(aCityBlock[i]).find('input[type="checkbox"]');
+                        $(oCheckExist).attr('checked',false);
+                        var aInputHidden = $(aHidden[i]).find("input[type='hidden']");
+                        for( var m=0; m<aInputHidden.length; m++ ){
+                            (function(m){
+                                for (var n = 0; n < oCheckExist.length; n++) {
+                                    (function (n) {
+                                        if ( $(oCheckExist[n]).attr('value') == $(aInputHidden[m]).attr('value')) {
+                                            $(oCheckExist[n]).attr('checked',true);
+                                        }
+                                    })(n);
+                                }
+                            })(m);
+                        }
+                        $(aIcon).removeClass('icon-chevron-up');
+                        $(aIcon).addClass('icon-chevron-down');
+                        $(aCityBlock[i]).slideUp();
+                    })
+                })(i);
+            }
+
+            var oButtonSuccess = $('.btn-success');
+            var aCityBlock     = $('.city-block');
+            var aCityDisplay   = $('.city-display');
+            for( var i=0; i<aCityBlock.length; i++ ){
+                $(oButtonSuccess).click(function(){
+                    var aInput = $(aCityDisplay).find("input:checked");
+                    if( aInput.length == 0 ){
+                        html='选择地区';
+                        $('.select-area').html(html);
+                    } else {
+                        html = '';
+                        for( var j=0; j< aInput.length; j++  ){
+                            (function(j){
+                                html +=  $(aInput[j]).attr('region')+',';
+                            })(j);
+                        }
+                        var html=html.substring(0,html.length-1);
+                        $('.select-area').html(html);
+                    }
+                });
+            }
+            var aCityDisplay   = $('.city-display');
+            var aProvinceName  = $('input[name="province-name"]');
+
+            for( var i=0; i<aProvinceName.length; i++ ){
+                (function(i){
+                    $(aProvinceName[i]).change(function(){
+                        if($(aProvinceName[i]).is(':checked')){
+                            $(aCityDisplay[i]).find('input[type="checkbox"]').attr('checked',true);
+                        }else{
+                            $(aCityDisplay[i]).find('input[type="checkbox"]').attr('checked',false);
+                        }
+                    })
+                })(i);
+            }
+
+            var aEfPostage   = $('.ef-postage');
+            var aNumPackage  = $("p.num-package");
+            var aNumMoney    = $('p.num-money');
+            var aNumPagMoney = $('p.num-pag-money');
+            $(aEfPostage).change(function(){
+                if($(this).find('option:selected').attr('value') == 1 ){
+                    $(aNumPackage).find('.condition-one').attr('name','condition_fill_one');
+                    $(aNumMoney).find('.condition-one').attr('name','');
+                    $(aNumPagMoney).find('.condition-one').attr('name','');
+                    $(aNumPackage).show();
+                    $(aNumMoney).hide();
+                    $(aNumPagMoney).hide();
+                }else if( $(aEfPostage).find('option:selected').attr('value') == 2 ){
+                    $(aNumMoney).find('.condition-one').attr('name','condition_fill_one');
+                    $(aNumPackage).find('.condition-one').attr('name','');
+                    $(aNumPagMoney).find('.condition-one').attr('name','');
+                    $(aNumMoney).show();
+                    $(aNumPackage).hide();
+                    $(aNumPagMoney).hide();
+                }else if( $(aEfPostage).find('option:selected').attr('value') == 3 ){
+                    $(aNumPagMoney).find('.condition-one').attr('name','condition_fill_one');
+                    $(aNumPackage).find('.condition-one').attr('name','');
+                    $(aNumMoney).find('.condition-one').attr('name','');
+                    $(aNumPagMoney).show();
+                    $(aNumPackage).hide();
+                    $(aNumMoney).hide();
+                }
+            })
+        });
+    </script>
+</block>

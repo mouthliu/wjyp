@@ -1,0 +1,101 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('UserCash/update')}" id="form">
+                        <input type="hidden" name="model" value="UserCash">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="action_person" value="{$_SESSION['wjyp_manager']['admin']['account']}">
+                        <div class="control-group">
+                            <label class="control-label">会员名称</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{:getName('User','nickname',$row['id_val'])}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">提现银行卡</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['bank_card_code']}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">金额</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['money']}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">提现手续费率</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['rate']}%" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">实际提现金额</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['true_money']}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">申请时间</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{:date('Y-m-d H:i:s',$row['create_time'])}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">到款状态</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" value="0" <if condition="$row['status'] eq 0" > checked </if>>
+                                    未确认
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                                    已通过
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" id="refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                                    拒绝通过
+                                </label>
+                            </div>
+                            <div class="controls" id="refuse-text" <if condition="$row['status'] neq 2">style="display: none;"</if> >
+                            <textarea name="refuse_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由">{$row['refuse_desc']}</textarea>
+                        </div>
+                    </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                            <if condition="$row['status'] eq 0">
+                                <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                            </if>    　
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show();
+            }
+        })
+        $('.no-refuse').click(function(){
+            $('#refuse-text').hide();
+        })
+    </script>
+</block>

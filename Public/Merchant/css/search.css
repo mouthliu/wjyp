@@ -1,0 +1,12 @@
+.search-main {
+    border: 2px solid #cccccc;
+}
+.search-frame-main{
+    margin:4px 10px;
+}
+.search-frame{
+    margin: 2px 0px!important;
+}
+.search-btn{
+    border-top: 1px solid #cccccc;
+}

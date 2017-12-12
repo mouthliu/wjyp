@@ -1,0 +1,173 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('PreBuy/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('PreBuy/forbid',array('model'=>'PreBuy','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('PreBuy/resume',array('model'=>'PreBuy','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('PreBuy/delete',array('model'=>'PreBuy','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <form action="" class="form">
+                        <select name="type" class="select-c" id="t-status">
+                            <option value="" >按活动状态筛选</option>
+                            <option value="" >全部显示</option>
+                            <option value="0" >未开始</option>
+                            <option value="1" >进行中</option>
+                            <option value="2" >已结束</option>
+                        </select>
+                        <select name="type" class="select-c" id="shenhe">
+                            <option value="" >按审核状态筛选</option>
+                            <option value="" >全部显示</option>
+                            <option value="1" >待审核</option>
+                            <option value="2" >通过审核</option>
+                            <option value="3" >未通过审核</option>
+                        </select>
+                    </form>
+                    <h4>无界预购活动表</h4>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>活动ID</th>
+                            <th>参加活动商品</th>
+                            <th>开始时间</th>
+                            <th>结束时间</th>
+                            <th>保证金</th>
+                            <th>已预购订单</th>
+                            <th>赠送积分</th>
+                            <th>是否推荐</th>
+                            <th>活动状态</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><a href="__MODULE__/Goods/update/id/{$row['goods_id']}">{$row['goods_name']}</a></td>
+                                <td>{:date("Y-m-d H:i:s",$row['start_time'])}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['end_time'])}</td>
+                                <td>¥&nbsp;{$row['deposit']}</td>
+
+                                <td>{$row['sell_num']}</td>
+                                <td>{$row['integral']}</td>
+                                <td class="recommend" data-rec="{$row['is_recommend']}" data-gid="{$row['id']}" data-model="PreBuy" style="cursor: pointer;">
+                                    {$row['is_recommend']?'<span class="label label-success">✔</span>':'<span class="label label-important">✘</span>'}
+                                </td>
+                                <td>
+                                    <switch name="row['t_status']">
+                                        <case value="0"><font color="blue">时间未到</font></case>
+                                        <case value="1"><font color="red">时间到</font></case>
+                                        <case value="2"><font color="#ccc">已过期</font></case>
+                                    </switch>
+                                </td>
+                                <td>
+                                    <switch name="row['status']">
+                                        <case value="0"><font color="blue">新创建</font></case>
+                                        <case value="1"><font color="red">待审核</font></case>
+                                        <case value="2"><font color="green">已通过</font></case>
+                                        <case value="3"><font color="green">未通过</font></case>
+                                    </switch>
+
+                                </td>
+
+                                <td>
+                                    <a href="{:U('PreBuy/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+
+                                    <switch name="row['status']">
+
+                                        <case value="3">
+                                            <a href="{:U('PreBuy/singleEdit',array('model'=>'PreBuy','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                                <span class="label label-warning">删除</span></a>&nbsp;
+                                        </case>
+                                        <case value="1"><font color="red">
+                                            <!--<a href="{:U('PreBuy/singleEdit',array('model'=>'PreBuy','id'=>$row['id'],'field'=>'status','value'=>2))}" title="通过审核" class="tip-bottom ajax-get">-->
+                                                <!--<span class="label label-success">通过审核</span></a>&nbsp;-->
+                                        </case>
+                                        <case value="2">
+
+                                        </case>
+                                    </switch>
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            //审核跳转
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__URL__/index/status/"+shenhe;
+                }else{
+                    location="__URL__/index";
+                }
+            });
+            //活动状态跳转
+            $('#t-status').change(function(){
+                var t_status = $(this).val();
+                if(t_status){
+                    // 调转到对应ID的url地址
+                    location="__URL__/index/t_status/"+t_status;
+                }else{
+                    location="__URL__/index";
+                }
+            });
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+            //设置推荐
+            $('.recommend').click(function(){
+                $this = $(this);
+                var gid = $(this).attr('data-gid');
+                var model = $(this).attr('data-model');
+                //获取到是否是推荐
+                var is = $(this).attr('data-rec');
+                if( is != '0'){
+                    $.post('__URL__/setRecommend',{model:model,id:gid,is_recommend:0},function(data){
+                        if(data=='1'){
+                            $this.html('<span class="label label-important">✘</span>');
+                            $this.attr('data-rec','0');
+                        }
+                    })
+                }else{
+                    $.post('__URL__/setRecommend',{model:model,id:gid,is_recommend:1},function(data){
+                        if(data=='1'){
+                            $this.html('<span class="label label-success">✔</span>');
+                            $this.attr('data-rec','1');
+                        }
+                    })
+
+                }
+            });
+        })
+    </script>
+</block>

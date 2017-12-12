@@ -1,0 +1,80 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Headlines/update')}" id="form">
+                        <input type="hidden" name="model" value="Headlines">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">标题</label>
+                            <div class="controls">
+                                <input type="text" name="title" value="{$row['title']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">来源</label>
+                            <div class="controls">
+                                <input type="text" name="source" value="{$row['source']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">宣传图</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'logo','field_name'=>'logo','field_value'=>$row['logo'],'save_path'=>'Headlines'))}
+                                <span class="help-block">长宽比为530px:220px</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">内容</label>
+                            <div class="controls">
+                                <textarea name="content">{$row['content']}</textarea>
+                                {:hook('adminArticleEdit', array('name'=>'content','value'=>$row['content']))}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否首页显示</label>
+                            <div class="controls">
+                                <label class="radio">
+                                    <if condition="empty($row['is_index_show'])">
+                                        <input type="radio" name="is_index_show" value="0" checked/>不显示
+                                    <else/>
+                                        <input type="radio" name="is_index_show" value="0"/>不显示
+                                    </if>
+                                </label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label class="radio">
+                                    <if condition="$row['is_index_show']">
+                                        <input type="radio" name="is_index_show" value="1" checked/>显示
+                                    <else/>
+                                        <input type="radio" name="is_index_show" value="1"/>显示
+                                    </if>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort']}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

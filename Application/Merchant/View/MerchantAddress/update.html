@@ -1,0 +1,193 @@
+<extend name="Public/base" />
+
+
+<block name="main">
+    <style type="text/css">
+        .necessary{
+            color: #FF0000;
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5>编辑地址</h5>
+                </div>
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li ><a href="#home">基本信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('MerchantAddress/update')}" id="form">
+                    <input type="hidden" name="model" value="MerchantAddress">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <div class="tab-content">
+                        <div class="tab-pane" id="home">
+                            <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 类型</label>
+                                    <div class="controls">
+                                        <label class="radio">
+                                            <input type="radio" name="type" value="1" checked >发货地址
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="type" value="2" <eq name="row['type']" value="2">checked</eq>>退货地址
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 联系人</label>
+                                    <div class="controls">
+                                        <input type="text"  name="contact_name" value="{$row['contact_name']}" >
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 所在地区</label>
+                                    <div class="controls">
+                                        <select name="province_id" class="province">
+                                            <option value="">省份</option>
+                                            <volist name="province" id="vo">
+                                                <option value="{$vo['id']}" <eq name="vo['id']" value="$row['province_id']">selected</eq> >{$vo['region_name']}</option>
+                                            </volist>
+                                        </select>
+
+                                        <select name="city_id" class="city">
+
+                                            <if condition="empty($row['city_id'])">
+                                                <option value="">城市</option>
+                                                <else />
+                                                <volist name="city" id="vo1">
+                                                    <option value="{$vo1['id']}" <eq name="vo1['id']" value="$row['city_id']">selected</eq> >{$vo1['region_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                        <select name="area_id" class="area">
+                                            <if condition="empty($row['area_id'])">
+                                                <option value="">区/县</option>
+                                                <else />
+                                                <volist name="area" id="vo2">
+                                                    <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['area_id']">selected</eq> >{$vo2['region_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 所在街道</label>
+                                    <div class="controls">
+                                        <select name="street_id" class="street">
+                                            <option value="">请选择街道</option>
+                                            <volist name="street" id="vo4">
+                                                <option value="{$vo4['street_id']}" <eq name="vo4['street_id']" value="$row['street_id']">selected</eq> >{$vo4['street_name']}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 详细地址</label>
+                                    <div class="controls">
+                                        <textarea type="text"  name="address"  >{$row['address']}</textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label"><span class="necessary">*</span> 手机号码</label>
+                                    <div class="controls">
+                                        <input type="text"  name="receiver_cellphone" value="{$row['receiver_cellphone']}" >
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">电话号码</label>
+                                    <div class="controls">
+                                        <input type="text"  name="receiver_phone" value="{$row['receiver_phone']}" >
+                                    </div>
+                                    <span class="necessary" style="margin-left: 200px;">* </span>为必填
+                                </div>
+                                <!--<div class="control-group">-->
+                                <!--<label class="control-label">是否默认</label>-->
+                                <!--<div class="controls">-->
+                                <!--<select name="is_default" >-->
+                                <!--<option value="0" <eq name="row['is_default']" value="0">selected</eq>>非默认</option>-->
+                                <!--<option value="1" <eq name="row['is_default']" value="1">selected</eq>>默认</option>-->
+                                <!--</select>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('#myTab a:first').tab('show');
+        })
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //城市级联
+        $(function(){
+            $('.province').change(function(){
+                var province = $(this).val();
+                $('input[name="province"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('MerchantAddress/ajaxGetRegion')}",
+                    type:'post',
+                    data:{id:province},
+                    success:function(data){
+                        var html ='<option value="">城市</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.city').html(html);
+                        $('.area').html('<option value="">区/县</option>');
+                        $('.street').html('<option value="">请选择街道</option>');
+                    }
+                })
+            });
+
+            $('.city').change(function(){
+                var city = $(this).val();
+                $('input[name="city"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('MerchantAddress/ajaxGetRegion')}",
+                    type:'post',
+                    data:{id:city},
+                    success:function(data){
+                        var html = '<option value="">区/县</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.area').html(html);
+                        $('.street').html('<option value="">请选择街道</option>');
+                    }
+                })
+            });
+            $('.area').change(function(){
+                var area = $(this).val();
+                $('input[name="area"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('MerchantAddress/ajaxGetStreet')}",
+                    type:'post',
+                    data:{id:area},
+                    success:function(data){
+                        var html = '<option value="">请选择街道</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].street_id+'">'+data[i].street_name+'</option>';
+                        }
+                        $('.street').html(html);
+                    }
+                })
+            })
+
+        });
+    </script>
+</block>

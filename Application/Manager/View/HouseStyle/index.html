@@ -1,0 +1,133 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('HouseStyle/add',array('house_id'=>$_GET['house_id']))}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('HouseStyle/forbid',array('model'=>'HouseStyle','status'=>0))}" target-form="ids">下架</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('HouseStyle/resume',array('model'=>'HouseStyle','status'=>1))}" target-form="ids">在售</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('HouseStyle/delete',array('model'=>'HouseStyle','status'=>9))}" target-form="ids">删除</button>&nbsp;
+
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                    <form action="{:U('HouseStyle/index')}" method="post" class="form-search">
+                        <h4>{:getName('HouseBuy','house_name',$_GET['house_id'])}户型</h4>
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <!--<input type="text" class="input-medium search-query" name="car_name" value="{$_REQUEST['car_name']}" placeholder="输入汽车名称查询" style="height:auto" name="">-->
+                        <!--<button type="submit" class="btn">查询</button>-->
+                        <!--<select name="theme" class="select-c xuan" data-field="car_style_id">-->
+                            <!--<option value="" >按车型筛选</option>-->
+                            <!--<foreach name="style_list" item="v">-->
+                                <!--<option value="{$v['id']}" <if condition="$_REQUEST['car_style_id'] eq $v['id']">selected</if> >{$v['style_name']}</option>-->
+                            <!--</foreach>-->
+                        <!--</select>-->
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>户型名称</th>
+                            <th>户型封面图</th>
+                            <th>所属楼盘</th>
+                            <th>房价</th>
+                            <th>户型面积</th>
+                            <th>定金（代金券）</th>
+                            <th><i class="icon-edit"></i> 赠送积分</th>
+                            <th><i class="icon-edit"></i> 抵扣券比例</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <notempty name="list">
+                            <volist name="list" id="row">
+                                <tr>
+                                    <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                    <td>{$row['id']}</td>
+                                    <td>{$row['style_name']}</td>
+                                    <td><img src="__ROOT__{:getPath($row['house_style_img'])}" alt="" style="width:60px;height:30px;"></td>
+                                    <td>{:getName('HouseBuy','house_name',$row['house_id'])}</td>
+                                    <td>{$row['one_price']}元/平</td>
+                                    <td>{$row['area']}平米</td>
+                                    <td>代金券：{$row['pre_money']}<br>
+                                        <font color="#00f" size="1">可抵车款: ¥&nbsp;{$row['true_pre_money']}</font>
+                                    </td>
+                                    <td class="editArea" data-id="{$row['id']}" data-field="integral" data-model="HouseStyle"><i >{$row['integral']}</i></td>
+                                    <td class="editArea" data-id="{$row['id']}" data-field="ticket_discount" data-model="HouseStyle"><i >{$row['ticket_discount']}</i></td>
+                                    <td>{$row['status']==1?'<font color="green">在售</font>':'<font color="red">下架</font>'}</td>
+                                    <td>
+                                        <a href="{:U('HouseStyle/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                            <span class="label label-info">编辑</span></a>&nbsp;
+                                        <a href="{:U('HouseStyle/delete',array('model'=>'HouseStyle','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                            <span class="label label-warning">删除</span></a>&nbsp;
+                                    </td>
+                                </tr>
+                            </volist>
+                            <else />
+                            <tr>
+                                <td colspan="12" style="text-align: center">
+                                    <h3>
+                                        <a class="href" url="{:U('HouseStyle/add',array('house_id'=>$_GET['house_id']))}" target-form="ids">
+                                            <b>{:getName('HouseBuy','house_name',$_GET['house_id'])}暂无户型</b>,去新增 >>>
+                                        </a>&nbsp;
+
+                                    </h3>
+                                </td>
+                            </tr>
+
+                        </notempty>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        //修改字段值开始
+        $('.editArea').dblclick(function(){
+            var input = $('<input type="number" name="HouseStyle_num" value="" style="max-width:80px;" />');
+            var val = $(this).find('i').text();
+            ($(this).find('i')).after(input.val(val));
+            $(this).find('i').remove();
+        })
+        $('input[name="HouseStyle_num"]').live({
+            'blur':function(){
+                var $this = $(this);
+                var model = $(this).parents('td').attr('data-model');
+                var id = $(this).parents('td').attr('data-id');
+                var field = $(this).parents('td').attr('data-field');
+                var num = $(this).val();
+                $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                    $this.after('<i>'+num+'</i>');
+                    $this.remove();
+                })
+            }
+        })
+        //修改字段值结束
+        $('.xuan').change(function(){
+            var val = $(this).val();
+            if(val){
+                var field = $(this).attr('data-field');
+                // 调转到对应ID的url地址
+                location="__URL__/index/"+field+"/"+val;
+
+            }
+        })
+    </script>
+</block>

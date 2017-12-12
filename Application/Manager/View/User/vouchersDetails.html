@@ -1,0 +1,93 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+
+                    <h4>代金券明细表  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+                </div>
+                <!--每新开一次团就新增加一个期号,后来根据这个期号来判断参团人数  开团说明已经付款-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>使用金额</th>
+                            <th>操作类型</th>
+                            <th>原因说明</th>
+                            <th>时间</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>
+                                    {$row['money']}</td>
+                                <td>{:vouchersLog($row['act_type'])}</td>
+                                <td>{$row['reason']}</td>
+                                <td>{:date('Y-m-d H:i:s',$row['create_time'])}</td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--热门品牌查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">参团人信息表</h3>
+        </div>
+        <div class="modal-body" style="max-height: 500px;overflow: auto;">
+            <table class="table table-bordered table-striped with-check" >
+                <tr id="user_head">
+                    <th>ID</th>
+                    <th>本次团号</th>
+                    <th>用户</th>
+                    <th>开团者</th>
+                </tr >
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $(".logUser").click(function(){
+                //清楚之前的
+                $('#user_head').nextAll().remove();
+               //获取到团购记录的id
+                var logId = $(this).attr('data-id');
+                if(logId){
+
+                    $.post("__MODULE__/GroupBuy/getLogUsers",{id:logId},function(data){
+                       //将获取到的信息进行处理
+                        $('#user_head').after(data);
+
+                    });
+                }
+            })
+
+        })
+    </script>
+</block>

@@ -1,0 +1,86 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('Contract/add',array('merchant_id'=>$merchant_id))}" target-form="ids">新增</button>&nbsp;-->
+                    <form action="{:U('Contract/index')}" method="post" class="form">
+                        <input type="text" name="agreement_number" value="{$_REQUEST['agreement_number']}" placeholder="协议编号" style="height:auto;">
+                        <input type="text" name="agreement_name" value="{$_REQUEST['agreement_name']}" placeholder="协议名称" style="height:auto;">
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <!--<th>协议ID</th>-->
+                            <th>协议编号</th>
+                            <th>协议名称</th>
+                            <th>所属商家</th>
+                            <th>协议类型</th>
+                            <th>签订时间</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['agreement_number']}</td>
+                                <td>{$row['agreement_name']}</td>
+                                <td>{$row['m_name']}</td>
+                                <td>
+                                    <if condition="$row['type'] == 1">
+                                        新签
+                                        <else/>
+                                        续签
+                                    </if>
+                                </td>
+                                <td>{$row['create_time']|date='Y-m-d',###}</td>
+                                <td>
+                                    <if condition="$row['status'] eq 0">待审核</if>
+                                    <if condition="$row['status'] eq 1">审核通过</if>
+                                    <if condition="$row['status'] eq 2">未通过</if>
+                                </td>
+                                <td>
+                                    <a href="{:U('Contract/update',array('id'=>$row['id'],'merchant_id'=>$row['merchant_id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-success">查看详情</span></a>&nbsp;
+                                    <if condition="!in_Array($row['id'],$p_id)">
+                                        <a href="{:U('Fee/index',array('contract_id'=>$row['id'],'status'=>1))}" title="补充协议" class="tip-bottom">
+                                            <span class="label label-success">补充协议</span></a>&nbsp;
+                                    <a href="{:U('Contract/add',array('merchant_id'=>$row['merchant_id'],'p_id'=>$row['id']))}" title="新增附属协议" class="tip-bottom">
+                                        <span class="label label-success">续签主协议</span></a>&nbsp;
+                                    </if>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,88 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-info href" url="{:U('Region/addStreet',array('id'=>$_GET['id'],'name'=>$_GET['name']))}" target-form="ids">+ 新增 <b>{$_GET['name'] ? $_GET['name'] : "区县"}</b> 街道</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('Region/forbid',array('model'=>'Street','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Region/resume',array('model'=>'Street','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('User/delete',array('model'=>'User','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <!--<form action="{:U('Region/index')}" method="post" class="form">-->
+                        <!--<input type="text" name="region_name" value="{$_REQUEST['region_name']}" placeholder="城市名称">-->
+                        <!--<button class="btn btn-inverse">查询</button>-->
+                    <!--</form>-->
+
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>ID</th>
+                            <th>所属区县</th>
+                            <th><i class="icon-edit"></i> 街道名称 (双击可修改)</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['street_id']}</td>
+                                <td>{$_GET['name']}</td>
+                                <td class="editArea" data-id="{$row['street_id']}" data-field="street_name" data-model="Street"><span >{$row['street_name']}</span></td>
+                                <td>{$row['status']==1?'启用':'禁用'}</td>
+                                <td>
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('Region/resume',array('model'=>'Street','ids'=>$row['street_id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('Region/forbid',array('model'=>'Street','ids'=>$row['street_id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                    <a href="{:U('Region/delStreet',array('model'=>'Street','id'=>$row['street_id']))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+                <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+            </div>
+        </div>
+    </div>
+    <script>
+        //修改字段值开始
+        $('.editArea').dblclick(function(){
+            var input = $('<input type="text" name="CarBuy_num" value="" style="" />');
+            var val = $(this).find('span').text();
+            ($(this).find('span')).after(input.val(val));
+            $(this).find('span').remove();
+        })
+        $('input[name="CarBuy_num"]').live({
+            'blur':function(){
+                var $this = $(this);
+                var model = $(this).parents('td').attr('data-model');
+                var id = $(this).parents('td').attr('data-id');
+                var field = $(this).parents('td').attr('data-field');
+                var num = $(this).val();
+                $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                    $this.after('<span>'+num+'</span>');
+                    $this.remove();
+                })
+            }
+        })
+    </script>
+</block>

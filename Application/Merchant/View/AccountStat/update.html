@@ -1,0 +1,96 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        td.tabhead{
+            font-weight: bold;
+            text-align: center;
+            line-height:55px;
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+
+                    <ul class="nav nav-tabs " id="myTab" >
+                        <li class="{$_GET['theme']==1?'':'active'}"><a href="#home">账户信息</a></li>
+
+                    </ul>
+
+                <form class="form-horizontal" method="post" action="{:U('Goods/actUpdate')}" autocomplete="off">
+                    <input type="hidden" name="model" value="Goods">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <input type="hidden" name="merchant_id" value="{$myinfo['id']}">
+                    <input type="hidden" name="merchant_merchant" value="{$myinfo['merchant_name']}">
+                    <div class="tab-content" style="height:400px;">
+                        <div class="tab-pane active" id="home" style="width: 60%;margin: 0 auto;">
+                            <!--主要信息-->
+                            <table class="table table-bordered table-striped with-check" >
+                                <thead>
+                                <tr>
+                                    <th colspan="4" style="text-align: center"><h4>账户信息</h4></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td style="width: 15%;" class="tabhead" >今日营业额</td>
+                                    <td style="width: 65%;">
+                                         <p>营业额：6000 元</p>
+                                         <p>平台提成：120 元</p>
+                                    </td>
+                                    <td class="tabhead"><a href="{:U('MerchantDetail/index',array('time'=>1))}">查看今日记录</a></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">历史营业额</td>
+                                    <td >
+                                        <p>营业总额：500000 元</p>
+                                        <p>平台总提成：10000 元</p>
+                                    </td>
+                                    <td class="tabhead"><a href="{:U('MerchantDetail/index')}">查看明细</a></td>
+                                </tr>
+
+                                <tr>
+                                    <td class="tabhead">账户余额</td>
+                                    <td style="line-height:55px;">5000 元</td>
+                                    <td class="tabhead"><a href="">去提现</a></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">最近一次提现</td>
+                                    <td  >
+                                        <p>提现金额：4000 元</p>
+                                        <p>提现时间：2017-09-06 15:53:02</p>
+                                    </td>
+                                    <td class="tabhead"><a href="">查看提现记录</a></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+
+                        <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+
+
+
+
+    </script>
+</block>

@@ -1,0 +1,149 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <link rel="stylesheet" href="__PUBLIC__/Static/datetimepicker/css/datetimepicker.css" />
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        .cate-check{
+            background: #ccc;
+            opacity: 0.5;
+        }
+    </style>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <!--<a href="#myModal" data-toggle="modal"><button style="display: block;float: left; margin-left: 10px;" class="btn btn-success integral" target-form="ids">新增</button></a>-->
+                    <h4 style="display:block; float: left; margin-left: 30px;">代金券明细表  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总代金券金额: {$money['money']} 已使用代金券金额: {$money['use_money']} 过期代金券金额: {$money['end_money']}</h4>
+                </div>
+                <!--每新开一次团就新增加一个期号,后来根据这个期号来判断参团人数  开团说明已经付款-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>代金券金额</th>
+                            <th>使用金额</th>
+                            <th>剩余金额</th>
+                            <th>代金券种类</th>
+                            <th>获得时间</th>
+                            <th>过期时间</th>
+                            <th>代金券状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['money']}</td>
+                                <td>{$row['use_money']}</td>
+                                <td>{$row['money'] - $row['use_money']}</td>
+                                <td>
+                                    <if condition="$row['type'] == 1"> 红券
+                                        <elseif condition="$row['type'] ==2"/>黄券
+                                        <else /> 蓝券
+                                    </if>
+                                </td>
+                                <td>{:date('Y-m-d H:i:s',$row['create_time'])}</td>
+                                <td>{:date('Y-m-d H:i:s',$row['end_time'])}</td>
+                                <td>
+                                    <if condition="$row['status'] == 1">
+                                        正常
+                                    <else />
+                                        失效
+                                    </if>
+                                </td>
+                                <td>
+                                    <a href="{:U('User/vouchersDetails',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-- -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">添加代金券</h3>
+        </div>
+        <form class="form1" method="post" action="{:U('User/addVouchers')}" >
+            <input type="hidden" name="user_id" value="{$money['user_id']}">
+            <div class="modal-body" >
+                <div class="control-group">
+                    <label class="control-label">代金券面值</label>
+                    <div class="controls">
+                        <input type="number"  name="money" value="" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">代金券种类</label>
+                    <div class="controls">
+                        <select name="type" style="margin-bottom: 0px; width: 150px;">
+                            <option value="" name="type">--代金券种类--</option>
+                            <option value="1" name="type"> 红券</option>
+                            <option value="2" name="type"> 黄券</option>
+                            <option value="3" name="type"> 蓝券</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">过期时间</label>
+                    <div class="controls">
+                        <input type="text" name="end_time" class="form_datetime input-sm" placeholder="结束时间">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary ajax-post" type="submit" target-form="form1">确认添加</button>
+            </div>
+        </form>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+    </script>
+    <script>
+        $(function(){
+            $(".logUser").click(function(){
+                //清楚之前的
+                $('#user_head').nextAll().remove();
+               //获取到团购记录的id
+                var logId = $(this).attr('data-id');
+                if(logId){
+
+                    $.post("__MODULE__/GroupBuy/getLogUsers",{id:logId},function(data){
+                       //将获取到的信息进行处理
+                        $('#user_head').after(data);
+
+                    });
+                }
+            })
+
+        })
+    </script>
+</block>

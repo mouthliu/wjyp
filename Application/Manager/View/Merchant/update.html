@@ -1,0 +1,326 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li ><a href="#home">基本信息</a></li>
+                    <li><a href="#info">其他信息</a></li>
+                    <li><a href="#contract">协议相关</a></li>
+                </ul>
+                <form class="form-horizontal" method="" action="" autocomplete="off">
+                    <div class="tab-content">
+                        <div class="tab-pane" id="home">
+                            <div class="widget-content nopadding">
+                                <form class="form-horizontal" method="post" action="{:U('Merchant/update')}" id="form">
+                                    <input type="hidden" name="model" value="Merchant">
+                                    <input type="hidden" name="id" value="{$row['id']}">
+                                    <div class="control-group">
+                                        <label class="control-label">店铺名称</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['merchant_name']}" disabled>
+                                            <span class="help-block">90个字符以内</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">店铺logo</label>
+                                        <div class="controls">
+                                            <img src="__ROOT__{$row['logo']}" alt="" width="80">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">真实姓名</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['real_name']}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">联系电话</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['phone']}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">身份证号</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['card_code']}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">营业执照</label>
+                                        <div class="controls">
+                                            <img src="__ROOT__{$row['business_license']}" alt="" width="200">
+                                        </div>
+                                    </div>
+                                    <foreach name="row['other_license']" item="val">
+                                        <div class="control-group">
+                                            <label class="control-label">{$val['license_name']}</label>
+                                            <div class="controls">
+                                                <img src="__ROOT__{$val['license_pic']}" alt="" width="200">
+                                            </div>
+                                        </div>
+                                    </foreach>
+                                    <!--<div class="control-group">-->
+                                        <!--<label class="control-label">审核状态</label>-->
+                                        <!--<div class="controls">-->
+                                            <!--<label class="radio inline">-->
+                                                <!--<input type="radio" name="status" class="no-refuse" value="0" <if condition="$row['status'] eq 0" > checked </if>>-->
+                                                <!--未审核-->
+                                            <!--</label>-->
+                                            <!--<label class="radio inline">-->
+                                                <!--<input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>-->
+                                                <!--通过-->
+                                            <!--</label>-->
+                                            <!--<label class="radio inline">-->
+                                                <!--<input type="radio" name="status" id="refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>-->
+                                                <!--拒绝通过-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+                                        <!--<div class="controls" id="refuse-text" <if condition="$row['status'] neq 2">style="display: none;"</if> >-->
+                                            <!--<textarea name="refuse_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由">{$row['refuse_desc']}</textarea>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="info">
+                            <div class="control-group">
+                                <label class="control-label">经营范围</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$row['range_id']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺类型</label>
+                                <div class="controls">
+                                    <input type="text"  value="{:merType($row['merchant_type'])}" disabled>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">门店地址</label>
+                                <div class="controls">
+                                    <textarea disabled>{:getName('Region','region_name',$row['province_id'])}{:getName('Region','region_name',$row['city_id'])}{:getName('Region','region_name',$row['area_id'])}{$row['address']}</textarea>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">门店电话</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$row['merchant_phone']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">营业时间</label>
+                                <div class="controls">
+                                    <input type="text" name="open_time" value="{$row['open_time']}" disabled>
+                                    <span class="help-block">格式要求:  09:00-20:00</span>
+                                </div>
+                            </div>
+
+
+                            <div class="control-group">
+                                <label class="control-label">店铺描述</label>
+                                <div class="controls">
+                                    <textarea disabled>{$row['merchant_desc']}</textarea>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺分类</label>
+                                <div class="controls">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn checked" data-default="--查看经营分类--"></button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <volist name="cate_list" id="group_row">
+                                                <li  style="background: #ccc;">
+                                                    {:str_repeat('&nbsp;',3)}├&nbsp;<span>{$group_row['name']}</span>
+                                                </li>
+                                                <volist name="group_row['underCate']" id="v0">
+                                                    <li  style="background: #ccc;">
+                                                        {:str_repeat('&nbsp;',7)}└&nbsp;<span>{$v0['name']}</span>
+                                                    </li>
+                                                    <notempty name="v0['underCate']">
+                                                        <volist name="v0['underCate']" id="v1">
+                                                            <if condition="in_Array($v1['id'],explode(',',$row['cates']))">
+                                                                <li data-value="{$v1['id']}" data-title="{$v1['name']}" <if condition="$row['cat_id'] eq $v1['id']">class="selected"</if>>
+                                                                <a href="javascript:void(0)" class="cat">{:str_repeat('&nbsp;',10)}└&nbsp;<span>{$v1['name']}♥</span></a>
+                                                                <else />
+                                                                <li style="color:red">
+                                                                    {:str_repeat('&nbsp;',15)}└&nbsp;<span data="{$v1['id']}">{$v1['name']}</span>
+                                                                </li>
+                                                            </if>
+                                                        </volist>
+                                                    </notempty>
+                                                </volist>
+
+                                            </volist>
+                                        </ul>
+                                    </div>
+
+                                    <input type="hidden" name="cat_id" value="{$row['cat_id']}">
+                                    <input type="hidden" name="cat_name" value="{$row['cat_name']}">
+                                    <span class="help-block">根据所选经营范围锁定分类*</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">经营品牌</label>
+                                <div class="controls" style="max-height:200px;overflow:auto;">
+                                    <blockquote>
+                                    <foreach name="row['brand_list']" item="bra">
+                                            <p>{$bra['brand_name']}</p>
+
+                                    </foreach>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">经营商品来源地</label>
+                                <div class="controls" style="width:600px;max-height:200px;overflow:auto;">
+
+                                    <foreach name="row['country_list']" item="bra">
+                                        <label class="checkbox inline" style="width:160px;">
+                                            {$bra['country_name']}
+                                        </label>
+                                    </foreach>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="contract">
+                            <div class="control-group">
+                                <label class="control-label">协议编号</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['agreement_number']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">乙方名称</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['party_name']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">乙方地址</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['party_address']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">联系人</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['linkman']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">联系方式</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['contact']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">电子邮箱</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['e_mail']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">开始时间</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['start_time']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">结束时间</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['end_time']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">平台使用费</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['use_cost']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">节庆费</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['holidays_cost']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">保证金</label>
+                                <div class="controls">
+                                    <input type="text"  value="{$contract['credit_price']}" disabled>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">合同</label>
+                                <div class="controls">
+
+                                    <foreach name="contract.path" item="v">
+                                        <a href="__ROOT__{$v}"><img src="__ROOT__{$v}" alt="" width="200"></a>
+                                    </foreach>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <div class="form-actions">
+                        <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        <if condition="$row['status'] neq 1">
+                            <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">确认提交</button>
+
+                        </if>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        $(function () {
+            $('#myTab a:first').tab('show');
+        })
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show();
+            }
+        })
+        $('.no-refuse').click(function(){
+            $('#refuse-text').hide();
+        })
+    </script>
+</block>

@@ -1,0 +1,95 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('CheapGroup/add')}" target-form="ids">新增搭配购</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('CheapGroup/forbid',array('model'=>'CheapGroup','status'=>2))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('CheapGroup/resume',array('model'=>'CheapGroup','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('CheapGroup/delete',array('model'=>'CheapGroup','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th width="50">ID</th>
+                            <th>搭配购名称</th>
+                            <th width="100">商品数量</th>
+                            <th width="100">搭配价</th>
+                            <th width="150">创建时间</th>
+                            <th width="100">状态</th>
+                            <th width="230">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['group_name']}</td>
+                                <td>{$row['num']}</td>
+                                <td>{$row['group_price']}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>{$row['status']==1?'启用':'禁用'}</td>
+                                <td>
+                                    <a href="{:U('CheapGroup/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('CheapGroup/editGoods',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">管理商品</span></a>&nbsp;
+                                    <a href="{:U('CheapGroup/singleEdit',array('model'=>'CheapGroup','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+            //修改字段值开始
+            $('.editArea').dblclick(function(){
+                var input = $('<input type="number" name="CarBuy_num" value="" style="max-width:80px;" />');
+                var val = $(this).find('i').text();
+                ($(this).find('i')).after(input.val(val));
+                $(this).find('i').remove();
+            })
+            $('input[name="CarBuy_num"]').live({
+                'blur':function(){
+                    var $this = $(this);
+                    var model = $(this).parents('td').attr('data-model');
+                    var id = $(this).parents('td').attr('data-id');
+                    var field = $(this).parents('td').attr('data-field');
+                    var num = $(this).val();
+                    $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                        $this.after('<i>'+num+'</i>');
+                        $this.remove();
+                    })
+                }
+            })
+            //修改字段值结束
+        })
+    </script>
+</block>

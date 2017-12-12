@@ -1,0 +1,1011 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <link rel="stylesheet" href="__PUBLIC__/Static/datetimepicker/css/datetimepicker.css" />
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li ><a href="#home">基本信息</a></li>
+
+                    <li><a href="#info">个人认证</a></li>
+                    <li><a href="#firm">企业认证</a></li>
+                    <li><a href="#other">推荐信息</a></li>
+                    <notempty name="row['id']">
+                        <li><a href="#pwd">修改密码</a></li>
+                    </notempty>
+                    <li><a href="#wallet">会员钱包</a></li>
+
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('User/update')}" id="form">
+                    <input type="hidden" name="model" value="User">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <!--判断是否是新增-->
+                    <empty name="row['id']">
+                        <input type="hidden" name="password" value="123456">
+                    </empty>
+                    <div class="tab-content">
+                        <div class="tab-pane" id="home">
+                            <div class="widget-content nopadding">
+                                    <div class="control-group">
+                                        <label class="control-label">会员ID</label>
+                                        <div class="controls">
+                                            <input type="text"  name="" value="{$row['id']|default='暂无id'}" disabled>
+                                            <span class="help-block">10个字符以内</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">会员昵称</label>
+                                        <div class="controls">
+                                            <input type="text"  name="nickname" value="{$row['nickname']}" >
+                                            <span class="help-block">10个字符以内</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">会员头像</label>
+                                        <div class="controls">
+                                            {:hook('upload',array('is_first'=>1,'unique_sign'=>'head_pic','field_name'=>'head_pic','field_value'=>$row['head_pic'],'save_path'=>'User'))}
+                                            <span class="help-block">头像大小 50:50</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">会员等级</label>
+                                        <div class="controls">
+                                            <input type="text"  name="" value="{$row['user_level_name']}" disabled >
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">会员类型</label>
+                                        <div class="controls">
+                                            <input type="text"  name="" value="{$row['user_rank_name']}" disabled >
+                                            <span>
+                                                <?php
+                                                if($row['id']){
+                                                   if($row['rank_end_time']){
+                                                        echo date('Y-m-d',$row['rank_end_time']);
+                                                   }else{
+                                                        echo "永久";
+                                                   }
+                                                }
+                                                ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">邮箱</label>
+                                        <div class="controls">
+                                            <input type="text"  name="email" value="{$row['email']}" >
+                                            <span class="help-block">10个字符以内</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">绑定手机号</label>
+                                        <div class="controls">
+                                            <input type="text"  name="phone" value="{$row['phone']}" disabled>
+                                            <span class="help-block">10个字符以内</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                    <label class="control-label">所在地区</label>
+                                    <div class="controls">
+                                        <select name="province_id" class="province">
+                                            <option value="">省份</option>
+                                            <volist name="province" id="vo">
+                                                <option value="{$vo['id']}" <eq name="vo['id']" value="$row['province_id']">selected</eq> >{$vo['region_name']}</option>
+                                            </volist>
+                                        </select>
+
+                                        <select name="city_id" class="city">
+
+                                            <if condition="empty($row['city_id'])">
+                                                <option value="">城市</option>
+                                                <else />
+                                                <volist name="city" id="vo1">
+                                                    <option value="{$vo1['id']}" <eq name="vo1['id']" value="$row['city_id']">selected</eq> >{$vo1['region_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                        <select name="area_id" class="area">
+                                            <if condition="empty($row['area_id'])">
+                                                <option value="">区/县</option>
+                                                <else />
+                                                <volist name="area" id="vo2">
+                                                    <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['area_id']">selected</eq> >{$vo2['region_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">所在街道</label>
+                                    <div class="controls">
+                                        <select name="street_id" class="street">
+                                            <option value="">街道</option>
+                                            <volist name="street" id="vo4">
+                                                <option value="{$vo4['id']}" <eq name="vo4['street_id']" value="$row['street_id']">selected</eq> >{$vo4['street_name']}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">金质勋章</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_gold" value="1" <if condition="$row['is_gold'] eq 1" > checked </if>>
+                                            点亮
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_gold" value="0" <if condition="$row['is_gold'] eq 0" > checked </if>>
+                                            不点亮
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">银质勋章</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_silver" value="1" <if condition="$row['is_silver'] eq 1" > checked </if>>
+                                            点亮
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_silver" value="0" <if condition="$row['is_silver'] eq 0" > checked </if>>
+                                            不点亮
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">铜质勋章</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_copper" value="1" <if condition="$row['is_copper'] eq 1" > checked </if>>
+                                            点亮
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_copper" value="0" <if condition="$row['is_copper'] eq 0" > checked </if>>
+                                            不点亮
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">钢质勋章</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_masonry" value="1" <if condition="$row['is_masonry'] eq 1" > checked </if>>
+                                            点亮
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_masonry" value="0" <if condition="$row['is_masonry'] eq 0" > checked </if>>
+                                            不点亮
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">铁质勋章</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_iron" value="1" <if condition="$row['is_iron'] eq 1" > checked </if>>
+                                            点亮
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="is_iron" value="0" <if condition="$row['is_iron'] eq 0" > checked </if>>
+                                            不点亮
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="info">
+                            <div class="control-group">
+                                <label class="control-label">真实姓名</label>
+                                <div class="controls">
+                                    <notempty name="row['real_name']">
+                                        <input type="text"  name="real_name" value="{$row['real_name']}" disabled>
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">性别</label>
+                                <div class="controls">
+                                    <notempty name="row['sex']">
+                                        <input type="text"  name="sex" <if condition="$row['sex'] == 1">value="男" <else/> value="女"</if>  disabled>
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">身份证号</label>
+                                <div class="controls">
+                                    <notempty name="row['id_card_num']">
+                                        <input type="text"  name="id_card_num" value="{$row['id_card_num']}" disabled >
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">身份证有效期开始时间</label>
+                                <div class="controls">
+                                    <notempty name="row['id_card_start_time']">
+                                        <input type="text"  name="id_card_start_time" value="{:date('Y-m-d',$row['id_card_start_time'])}" disabled>
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">身份证有效期结束时间</label>
+                                <div class="controls">
+                                    <notempty name="row['auth_status']">
+                                        <if condition="empty($row['id_card_end_time'])">
+                                        <input type="text"  name="id_card_end_time" value="永久" disabled>
+                                            <else/>
+                                            <input type="text"  name="id_card_end_time" value="{:date('Y-m-d',$row['id_card_end_time'])}" disabled>
+                                        </if>
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">身份证正面照</label>
+                                <div class="controls">
+                                    <notempty name="row['positive_id_card']">
+                                        <img src="__ROOT__{$row['positive_id_card']}" alt="">
+                                    <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">身份证背面照</label>
+                                <div class="controls">
+                                    <notempty name="row['back_id_card']">
+                                        <img src="__ROOT__{$row['back_id_card']}" alt="">
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">所在地区</label>
+                                <div class="controls">
+                                    <notempty name="row['auth_address']">
+                                        <input type="text"  name="auth_address" value="{$row['auth_address']}" disabled>
+                                        <else/>
+                                        <label class="radio inline">暂无认证信息</label>
+                                    </notempty>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">认证状态</label>
+                                <div class="controls">
+                                    <label class="radio inline">
+                                        <input type="radio" name="auth_status" class="no-refuse" value="0" <if condition="$row['auth_status'] eq 0" > checked </if>>
+                                        未认证
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="auth_status" class="no-refuse" value="1" <if condition="$row['auth_status'] eq 1" > checked </if>>
+                                        认证中
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="auth_status" class="no-refuse" value="2" <if condition="$row['auth_status'] eq 2" > checked</if>>
+                                        已认证
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="auth_status" id="refuse" value="3" <if condition="$row['auth_status'] eq 3" > checked disabled</if>>
+                                        拒绝通过
+                                    </label>
+                                </div>
+                                <!--上面的和下面的disabled 是为了防止重复发消息-->
+                                <div class="controls" id="refuse-text" <if condition="$row['auth_status'] neq 3">style="display: none;"</if> >
+                                <textarea name="auth_desc" id="" cols="5" rows="3"
+                                <if condition="$row['auth_status'] eq 3">disabled</if>
+                                          placeholder="请填写拒绝理由">{$row['refuse_desc']}</textarea>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="tab-pane" id="firm">
+                        <div class="control-group">
+                            <label class="control-label">企业名称</label>
+                            <div class="controls">
+                                <notempty name="row['com_name']">
+                                    <input type="text"  name="com_name" value="{$row['com_name']}" >
+                                    <else/>
+                                    <label class="radio inline">暂无认证信息</label>
+                                </notempty>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">注册号</label>
+                            <div class="controls">
+                                <notempty name="row['comp_reg_num']">
+                                    <input type="text"  name="comp_reg_num" value="{$row['comp_reg_num']}" disabled>
+                                    <else/>
+                                    <label class="radio inline">暂无认证信息</label>
+                                </notempty>
+
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">营业期限开始时间</label>
+                            <div class="controls">
+                                <notempty name="row['comp_start_time']">
+                                    <input type="text"  name="comp_start_time" value="{:date('Y-m-d',$row['comp_start_time'])}" disabled>
+                                    <else/>
+                                    <label class="radio inline">暂无认证信息</label>
+                                </notempty>
+
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">营业期限截止时间</label>
+                            <div class="controls">
+                                <notempty name="row['comp_end_time']">
+                                    <input type="text"  name="comp_end_time" value="{:date('Y-m-d',$row['comp_end_time'])}" disabled>
+                                    <else/>
+                                    <label class="radio inline">暂无认证信息</label>
+                                </notempty>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">所在地区</label>
+                            <div class="controls">
+                                <notempty name="row['comp_address']">
+                                    <input type="text"  name="comp_address" value="{$row['comp_address']}" disabled>
+                                    <else/>
+                                    <label class="radio inline">暂无认证信息</label>
+                                </notempty>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">营业执照</label>
+                            <div class="controls">
+                                <notempty name="row['comp_business_license']">
+                                    <img src="__ROOT__{$row['comp_business_license']}" alt="">
+                                    <else/>
+                                    <label class="radio inline">暂无认证信息</label>
+                                </notempty>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">认证状态</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <input type="radio" name="comp_auth_status" class="no-refuse" value="0" <if condition="$row['comp_auth_status'] eq 0" > checked </if>>
+                                    未认证
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="comp_auth_status" class="no-refuse" value="1" <if condition="$row['comp_auth_status'] eq 1" > checked </if>>
+                                    认证中
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="comp_auth_status" class="no-refuse" value="2" <if condition="$row['comp_auth_status'] eq 2" > checked</if>>
+                                    已认证
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="comp_auth_status" id="comp" value="3" <if condition="$row['comp_auth_status'] eq 3" > checked</if>>
+                                    拒绝通过
+                                </label>
+                            </div>
+                            <!--上面的和下面的disabled 是为了防止重复发消息-->
+                            <div class="controls" id="comp-text" <if condition="$row['comp_auth_status'] neq 3">style="display: none;"</if>>
+                            <textarea name="comp_desc" id="aaa" cols="5" rows="3" <if condition="$row['comp_auth_status'] neq 3"></if>
+                            placeholder="请填写拒绝理由">{$row['comp_desc']}</textarea>
+                            </div>
+                    </div>
+                </div>
+                    <div class="tab-pane" id="other">
+                        <div class="control-group">
+                            <label class="control-label">推荐人手机号</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['parent_name']|default='无推荐人'}" disabled>
+                                <a href="#myModal3" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">隐藏推荐人手机号</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['hidden_parent_name']|default='无隐藏推荐人'}" disabled>
+                                <a href="#myModal4" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">联盟商家名称</label>
+                            <div class="controls">
+                                <input type="text"  name="" value="{$row['parent_alliance_merchant_name']|default='无推荐联盟商家'}" disabled>
+                                <a href="#myModal5" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pwd">
+                        <div class="control-group">
+                            <label class="control-label">修改登录密码</label>
+                            <div class="controls">
+                                <a href="#myModal" data-toggle="modal">
+                                    <span class="label label-info">点我修改登录密码</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">修改支付密码</label>
+                            <div class="controls">
+                                <a href="#myModal2" data-toggle="modal">
+                                    <span class="label label-info">点我修改支付密码</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="wallet">
+                        <div class="control-group">
+                            <label class="control-label">成长值</label>
+                            <div class="controls">
+                                <input type="number"  name="grow_point" value="{$row['grow_point']}" disabled>
+                                <a href="{:U('User/levelLog',array('user_id'=>$row['id']))}">
+                                    <span class="label label-info">查看明细</span>
+                                </a>
+                                <a href="#myModal6" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">会员积分</label>
+                            <div class="controls">
+                                <input type="number"  name="integral" value="{$row['integral']}" disabled>
+                                <a href="{:U('User/integralLog',array('user_id'=>$row['id']))}"  >
+                                    <span class="label label-info">查看明细</span>
+                                </a>
+                                <a href="#myModal7" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">账户余额</label>
+                            <div class="controls">
+                                <input type="number"  name="balance" value="{$row['balance']}" disabled>
+                                <a href="{:U('User/balanceLog',array('user_id'=>$row['id']))}"  >
+                                    <span class="label label-info">查看明细</span>
+                                </a>
+                                <a href="#myModal8" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红色代金券</label>
+                            <div class="controls">
+                                <input type="number"  name="discount" value="{$rows['discount']}" disabled>
+                                <a href="{:U('User/vouchersTotal',array('user_id'=>$row['id']))}">
+                                    <span class="label label-info">查看明细</span>
+                                </a>
+                                <a href="#myModal9" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">黄色代金券</label>
+                            <div class="controls">
+                                <input type="number"  name="yellow_discount" value="{$rows['yellow_discount']}" disabled>
+                                <a href="{:U('User/vouchersTotal',array('user_id'=>$row['id']))}">
+                                    <span class="label label-info">查看明细</span>
+                                </a>
+                                <a href="#myModal10" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">蓝色代金券</label>
+                            <div class="controls">
+                                <input type="number"  name="blue_discount" value="{$rows['blue_discount']}" disabled>
+                                <a href="{:U('User/vouchersTotal',array('user_id'=>$row['id']))}">
+                                    <span class="label label-info">查看明细</span>
+                                </a>
+                                <a href="#myModal11" data-toggle="modal"><button class="btn btn-danger btn-mini integral">修改</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-- -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">修改密码</h3>
+        </div>
+        <form class="form1" method="post" action="{:U('User/setPwd')}" >
+            <input type="hidden" name="id" value="{$row['id']}">
+        <div class="modal-body" >
+            <div class="control-group">
+                <label class="control-label">新密码</label>
+                <div class="controls">
+                    <input type="password"  name="newPassword" value="" >
+                    <span class="help-block">默认密码 （123456）</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            <button class="btn btn-primary ajax-post" type="submit" target-form="form1">确认修改</button>
+        </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改支付密码</h3>
+        </div>
+        <form class="form2" method="post" action="{:U('User/setPayPwd')}" >
+            <input type="hidden" name="id" value="{$row['id']}">
+            <div class="modal-body" >
+                <div class="control-group">
+                    <label class="control-label">新密码</label>
+                    <div class="controls">
+                        <input type="password"  name="newPayPassword" value="" >
+                        <span class="help-block">请填写支付密码</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary ajax-post" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal3" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改推荐人手机号</h3>
+        </div>
+        <form method="post" action="{:U('User/setParent')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">推荐人手机号</label>
+                    <div class="controls">
+                        <input type="text"  name="phone" value="{$row['parent_name']|default='无推荐人'}" >
+                        <span class="help-block">请填推荐人手机号</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal4" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改隐藏推荐人手机号</h3>
+        </div>
+        <form method="post" action="{:U('User/setParents')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">隐藏推荐人手机号</label>
+                    <div class="controls">
+                        <input type="text"  name="phone" value="{$row['hidden_parent_name']|default='无隐藏推荐人'}" >
+                        <span class="help-block">请填隐藏推荐人手机号</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal5" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改商家名称</h3>
+        </div>
+        <form method="post" action="{:U('User/setMerchant')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">联盟商家名称</label>
+                    <div class="controls">
+                        <input type="text"  name="merchant_name" value="{$row['parent_alliance_merchant_name']|default='无推荐联盟商家'}" >
+                        <span class="help-block">请填联盟商家名称</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal6" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改成长值</h3>
+        </div>
+        <form method="post" action="{:U('User/setLeve')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <input type="hidden" name="grow_point" value="{$row['grow_point']}">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">成长值</label>
+                    <div class="controls">
+                        <input type="number" min="0"  name="get_point" value="0" >
+                        <span class="help-block">请填成长值</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">增加/减少</label>
+                    <div class="controls">
+                        <select name="type" class="select-c">
+                            <option value="1" selected>增加</option>
+                            <option value="2">减少</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">修改原因</label>
+                    <div class="controls">
+                        <input type="text"  name="reason" value="{$row['reason']}" >
+                        <span class="help-block">请填修改原因</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal8" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改账户余额</h3>
+        </div>
+        <form method="post" action="{:U('User/setBalance')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <input type="hidden" name="balance" value="{$row['balance']}">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">修改余额</label>
+                    <div class="controls">
+                        <input type="number" name="balance_log" value="0" >
+                        <span class="help-block">请填写余额</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">增加/减少</label>
+                    <div class="controls">
+                        <select name="type" class="select-c">
+                            <option value="1" selected>增加</option>
+                            <option value="2">减少</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">修改原因</label>
+                    <div class="controls">
+                        <input type="text"  name="reason" value="{$row['reason']}">
+                        <span class="help-block">请填修改原因</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal7" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改会员积分</h3>
+        </div>
+        <form method="post" action="{:U('User/setIntegra')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <input type="hidden" name="integral" value="{$row['integral']}">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">会员积分</label>
+                    <div class="controls">
+                        <input type="number"  name="use_integral" value="0" >
+                        <span class="help-block">请填会员积分</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">增加/减少</label>
+                    <div class="controls">
+                        <select name="type" class="select-c">
+                            <option value="1" selected>增加</option>
+                            <option value="2">减少</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">修改原因</label>
+                    <div class="controls">
+                        <input type="text"  name="reason" value="{$row['reason']}" >
+                        <span class="help-block">请填修改原因</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal9" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改代金券</h3>
+        </div>
+        <form method="post" action="{:U('User/setDiscount')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <input type="hidden" name="discount_type" value="1">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">红色代金券</label>
+                    <div class="controls">
+                        <input name="money" type="number" min="0" step="0.01" value="0" >
+                        <span class="help-block">请填代金券金额</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">增加/减少</label>
+                    <div class="controls">
+                        <select class="ddd" name="type" class="select-c">
+                            <option value="1" selected>增加</option>
+                            <option value="2">减少</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group fff">
+                    <label class="control-label">过期时间</label>
+                    <div class="controls">
+                        <input type="text" name="end_time" class="form_datetime" placeholder="过期时间">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">修改原因</label>
+                    <div class="controls">
+                        <input type="text"  name="reason" value="{$row['reason']}">
+                        <span class="help-block">请填修改原因</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal10" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改代金券</h3>
+        </div>
+        <form method="post" action="{:U('User/setDiscount')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <input type="hidden" name="discount_type" value="2">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">黄色代金券</label>
+                    <div class="controls">
+                        <input name="money" type="number" min="0" step="0.01" value="0" >
+                        <span class="help-block">请填代金券金额</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">增加/减少</label>
+                    <div class="controls">
+                        <select class="ddd" name="type" class="select-c">
+                            <option value="1" selected>增加</option>
+                            <option value="2">减少</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group fff">
+                    <label class="control-label">过期时间</label>
+                    <div class="controls">
+                        <input type="text" name="end_time" class="form_datetime" placeholder="过期时间">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">修改原因</label>
+                    <div class="controls">
+                        <input type="text"  name="reason" value="{$row['reason']}">
+                        <span class="help-block">请填修改原因</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <!-- 模态框---->
+    <div id="myModal11" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 >修改代金券</h3>
+        </div>
+        <form method="post" action="{:U('User/setDiscount')}">
+            <input type="hidden" name="id" value="{$row['id']}">
+            <input type="hidden" name="discount_type" value="3">
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label">蓝色代金券</label>
+                    <div class="controls">
+                        <input type="number" name="money" min="0" step="0.01" value="0" >
+                        <span class="help-block">请填代金券金额</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">增加/减少</label>
+                    <div class="controls">
+                        <select class="ddd" name="type" class="select-c">
+                            <option value="1" selected>增加</option>
+                            <option value="2">减少</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group fff">
+                    <label class="control-label">过期时间</label>
+                    <div class="controls">
+                        <input type="text" name="end_time" class="form_datetime" placeholder="过期时间">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">修改原因</label>
+                    <div class="controls">
+                        <input type="text"  name="reason" value="{$row['reason']}">
+                        <span class="help-block">请填修改原因</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" type="submit" target-form="form2">确认修改</button>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+
+        $('.ddd').change(function(){
+            var status = $(this).val();
+            if(status == 1){
+                $('.fff').show();
+            }else {
+                $('.fff').hide();
+            }
+        })
+    </script>
+    <script>
+
+        $("input[name='comp_auth_status']").change(function(){
+            var comp_auth_status = $(this).val();
+            if(comp_auth_status == 3){
+                $('#comp-text').show();
+            }else{
+                $('#comp-text').hide();
+            }
+        })
+        $(function (){
+            $('#myTab a:first').tab('show');
+        })
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //城市级联
+        $(function(){
+            $('.province').change(function(){
+                var province = $(this).val();
+                $('input[name="province"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('User/ajaxGetRegion')}",
+                    type:'post',
+                    data:{id:province},
+                    success:function(data){
+                        var html ='<option value="">城市</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.city').html(html);
+                        $('.area').html('<option value="">区/县</option>');
+                        $('.street').html('<option value="">请选择街道</option>');
+                    }
+                })
+            });
+
+            $('.city').change(function(){
+                var city = $(this).val();
+                $('input[name="city"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('User/ajaxGetRegion')}",
+                    type:'post',
+                    data:{id:city},
+                    success:function(data){
+                        var html = '<option value="">区/县</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.area').html(html);
+                        $('.street').html('<option value="">请选择街道</option>');
+                    }
+                })
+            });
+            $('.area').change(function(){
+                var area = $(this).val();
+                $('input[name="area"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('User/ajaxGetStreet')}",
+                    type:'post',
+                    data:{id:area},
+                    success:function(data){
+                        var html = '<option value="">请选择街道</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].street_id+'">'+data[i].street_name+'</option>';
+                        }
+                        $('.street').html(html);
+                    }
+                })
+            })
+
+        })
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show();
+            }
+        })
+        $('.no-refuse').click(function(){
+                $('#refuse-text').hide();
+        })
+    </script>
+    <script>
+//        $(function () {
+//            //修改成长值
+//            $('.grow_point').click(function(){
+//                alert('修改成长值弹框');
+//                return false;
+//            });
+//            //修改成长值
+//            $('.integral').click(function(){
+//                alert('修改会员积分弹框');
+//                return false;
+//            });
+//            //修改成长值
+//            $('.balance').click(function(){
+//                alert('修改账户余额弹框');
+//                return false;
+//            });
+//        })
+    </script>
+</block>

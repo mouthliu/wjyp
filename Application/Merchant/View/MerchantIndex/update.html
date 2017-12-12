@@ -1,0 +1,85 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('MerchantIndex/update')}" id="form">
+                        <input type="hidden" name="model" value="MerchantIndex">
+                        <input type="hidden" name="merchant_id" value="{$_SESSION['wjyp_merchant']['merchant_admin']['a_id']}">
+                        <input type="hidden" name="id" value="{$row['id']}">
+
+                        <div class="control-group">
+                            <label class="control-label">选择图片</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'picture','field_name'=>'ads_pic','field_value'=>$row['ads_pic'],'save_path'=>'MerchantIndex'))}
+                                <span class="help-block">请注意 ：此位置上传图长宽比为 <font color="red" id="w">0</font>px : <font color="red" id="h">0</font>px</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">描述</label>
+                            <div class="controls">
+                                <input type="text" name="desc" value="{$row['desc']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">链接</label>
+                            <div class="controls">
+                                <input type="text" name="url" value="{$row['url']|default='http://'}">
+                                <span class="help-block">请以 http:// 或者 https:// 开头</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">是否显示</label>
+                            <div class="controls">
+                                <label class="radio">
+                                    <if condition="empty($row['status'])">
+                                        <input type="radio" name="status" value="0" checked/>不显示
+                                    <else/>
+                                        <input type="radio" name="status" value="0"/>不显示
+                                    </if>
+                                </label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label class="radio">
+                                    <if condition="$row['status'] eq 1">
+                                        <input type="radio" name="status" value="1" checked/>显示
+                                    <else/>
+                                        <input type="radio" name="status" value="1"/>显示
+                                    </if>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort']|default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $('[name=position]').change(function(){
+                var w = $(this).find('option[value='+$(this).val()+']').attr('data-width');
+                var h = $(this).find('option[value='+$(this).val()+']').attr('data-height');
+                $('#w').text(w);
+                $('#h').text(h);
+            })
+        })
+    </script>
+</block>

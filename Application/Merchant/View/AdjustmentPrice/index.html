@@ -1,0 +1,66 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid" >
+
+    </div>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('AdjustmentPrice/add',array('goods_id'=>$_GET['goods_id']))}" target-form="ids">新增</button>&nbsp;
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>ID</th>
+                            <th>调价单编号</th>
+                            <th>市场价</th>
+                            <th>该店售价</th>
+                            <th>结算价格</th>
+                            <th>申请时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['adjustment_sn']}</td>
+                                <td>{$row['market_price']}&nbsp;&nbsp;(旧价格：{$row['old_market_price']})</td>
+                                <td>{$row['shop_price']}&nbsp;&nbsp;(旧价格：{$row['old_shop_price']})</td>
+                                <td>{$row['settlement_price']}&nbsp;&nbsp;(旧价格：{$row['old_settlement_price']})</td>
+                                <td>{$row['create_time']|date="Y-m-d H:i",###}</td>
+                                <td>
+                                    <eq name="row['status']" value="0">待审核</eq>
+                                    <eq name="row['status']" value="1">审核通过</eq>
+                                    <eq name="row['status']" value="2">审核不通过</eq>
+                                    <eq name="row['status']" value="3">取消调价</eq>
+                                </td>
+                                <td>
+                                    <a href="{:U('AdjustmentPrice/detail',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('AdjustmentPrice/delete',array('model'=>'AdjustmentPrice','ids'=>$row['id'],'status'=>3))}" title="取消调价" class="tip-bottom confirm ajax-get">
+                                            <span class="label label-important">取消调价</span></a>
+                                    </eq>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>

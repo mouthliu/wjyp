@@ -1,0 +1,114 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Attribute/update')}" id="form">
+                        <input type="hidden" name="model" value="Attribute">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">属性名称</label>
+                            <div class="controls">
+                                <input type="text"  name="attr_name" value="{$row['attr_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">所属商品类型</label>
+                            <div class="controls">
+                                <select name="type_id" class="select-c">
+                                <volist name="type_list" id="v">
+
+                                    <if condition="($v['id'] eq $row['type_id']) or ($Think.get.typeid eq $v['id'])">
+
+                                        <option value="{$v['id']}" selected>{$v['type_name']}</option>
+                                        <else />
+                                        <option value="{$v['id']}" >{$v['type_name']}</option>
+                                    </if>
+
+                                </volist>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">属性是否可定义</label>
+                            <div class="controls">
+                                <label class="radio">
+                                    <input type="radio" name="attr_type" id="weiYi" value="2" <if condition="$row['attr_type'] eq 2">checked</if> >
+                                    唯一属性
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="attr_type" id="danXuan" value="1" <if condition="$row['attr_type'] eq 1">checked</if> >
+                                   单选属性
+                                </label>
+
+                                <span class="help-block">选择"唯一属性"时，商品的该属性值只能设置一个值，用户只能查看该值。<br>选择"单选属性"时，可以对商品该属性设置多个值，同时还能对不同属性值指定不同的价格加价，用户购买商品时需要选定具体的属性值。</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">录入方式</label>
+                            <div class="controls">
+                            <label class="radio">
+                                <input type="radio" name="attr_input_type" id="handSet" value="1" <if condition="$row['attr_input_type'] eq 1">checked</if>>
+                               手工录入
+                            </label>
+                            <label class="radio" >
+                                <input type="radio" name="attr_input_type" id="sysSet" value="2" <if condition="$row['attr_input_type'] eq 2">checked</if>>
+                                系统预设
+                            </label>
+                            </div>
+                        </div>
+                        <div class="control-group" <if condition="$row['attr_type'] neq 1">style="display: none;"</if> id="imgs">
+                            <label class="control-label">是否启用属性相册</label>
+                            <div class="controls">
+                                <select name="is_attr_gallery" class="select-c">
+                                    <option value="1" <if condition="$row['is_attr_gallery'] eq 1" > selected </if>>启用</option>
+                                    <option value="0" <if condition="$row['is_attr_gallery'] eq 0" > selected </if>>不启用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group" id="sysVal" <if condition="$row['attr_input_type'] neq 2">style="display: none;"</if>>
+                            <label class="control-label">填写预选值</label>
+                            <div class="controls">
+                                <textarea name="attr_values" id="" cols="10" rows="5" style="width: 500px;">{$row['attr_values']}</textarea>
+                                <span class="help-block">多个值用逗号 "+" 隔开</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort']}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //决定是否相册
+        $('#danXuan').click(function(){
+            $('#imgs').show().find('select').attr('disabled',false);
+        })
+        $('#weiYi').click(function(){
+            $('#imgs').hide().find('select').attr('disabled',true);
+        })
+        //决定是否预选
+        $('#sysSet').click(function(){
+            $('#sysVal').show().find('textarea').attr('disabled',false);
+        })
+        $('#handSet').click(function(){
+            $('#sysVal').hide().find('textarea').attr('disabled',true);
+        })
+    </script>
+</block>

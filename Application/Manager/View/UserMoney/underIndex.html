@@ -1,0 +1,84 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('UserMoney/index')}" target-form="ids">线上充值管理</button>&nbsp;
+                    <button class="btn btn-info href" url="{:U('UserMoney/underMoney')}" target-form="ids">线下充值管理</button>&nbsp;
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('UserMoney/forbid',array('model'=>'UserMoney','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('UserMoney/resume',array('model'=>'UserMoney','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('UserMoney/delete',array('model'=>'UserMoney','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('UserMoney/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('UserMoney/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        {$select}
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>会员名称</th>
+                            <th>申请日期</th>
+                            <th>银行卡号</th>
+                            <th>汇款金额</th>
+                            <th>汇款人</th>
+                            <th>状态</th>
+                            <th>操作者</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{:getName('User','nickname',$row['user_id'])}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>{$row['bank_card_code']}</td>
+                                <td>¥&nbsp;{$row['money']}</td>
+                                <td>{$row['name']}</td>
+                                <td>{$row['status']==0?'未确认':($row['status']==1?'已确认':'已取消')}</td>
+                                <td>{$row['action_person']}</td>
+                                <td>
+                                    <a href="{:U('UserMoney/underUpdate',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

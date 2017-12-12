@@ -1,0 +1,158 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success new_type">+ 新增分类</button>&nbsp;
+                </div>
+                <!--// search start-->
+                <div class="search-main" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('GoodsCategory/update')}" id="form">
+                        <div class="search-frame-main">
+                            <input type="hidden" name="model" value="GoodsCategory">
+                            {$select}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input class="search-frame"  id="row_type_name" style="width:300px;" type="text" name="name" value="" placeholder="请输入分类名称">
+                            <input class="search-frame"  id="row_short_name" style="width:200px;" type="text" name="short_name" value="" placeholder="请输入分类简称,用于首页显示">
+                            <input class="search-frame"  id="row_type_short_name" style="width:200px;" type="number" name="min_rate" value="" placeholder="请输入分成比例 0-1 如：0.50">
+                            <input class="search-frame"  id="row_sort" style="width:50px;" type="text" name="sort" value="" placeholder="排序">
+                            <button class="btn btn-inverse ajax-post " type="submit" id="submit" target-form="form-horizontal" style="margin:4px 10px;">保存</button>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>分类简称</th>
+                            <th>分类名称</th>
+                            <th>分类路径</th>
+                            <th>子分类数量</th>
+                            <th>平台分成比例</th>
+                            <!--<th>添加时间</th>-->
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['short_name']}</td>
+                                <td>{$row['name']}</td>
+                                <td>{$row['parent_name']}</td>
+                                <td>{$row['child_num']}</td>
+                                <td>{$row['min_rate']}</td>
+                                <td>{$row['status']==1?'<font color="green">启用</font>':'<font color="red">禁用</font>'}</td>
+                                <td>
+                                    <a href="{:U('GoodsCategory/update',array('parent_id'=>$row['parent_id'],'id'=>$row['id']))}" title='编辑' class='tip-bottom'>
+                                        <span class='label label-success'>编辑</span></a>&nbsp
+                                    <if condition="$row['is_three'] neq 1">
+                                        <a href="{:U('GoodsCategory/index',array('parent_id'=>$row['id']))}" title='查看子类' class='tip-bottom'>
+                                            <span class='label label-info'>查看子类</span></a>&nbsp
+                                        <a href="{:U('GoodsCategory/add',array('id'=>$row['id']))}" title='添加子分类' class='tip-bottom'>
+                                            <span class='label label-warning'>+子分类</span></a>&nbsp
+                                    </if>
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('GoodsCategory/resume',array('model'=>'GoodsCategory','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('GoodsCategory/forbid',array('model'=>'GoodsCategory','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                    <a href="{:U('GoodsCategory/delete/',array('model'=>'GoodsCategory','ids'=>$row['id'],'status'=>9))}" title='删除' class='tip-bottom confirm ajax-get'>
+                                        <span class='label label-important'>删除</span></a>
+                                    <if condition="$row['hotBrand'] eq 1">
+                                        <a href="#myModal" role="button"  data-toggle="modal" data-catid="{$row['id']}" title='热门品牌' class='tip-bottom hotBrand' data-value="{$row['hot_brand']}">
+                                        <span class='label label-info'>旗下热门品牌</span></a>&nbsp;
+                                    </if>
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--热门品牌查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">旗下热门品牌</h3>
+        </div>
+        <div class="modal-body" >
+
+            <div class="row-fluid show-grid" >
+
+            </div>
+            <!--</div>-->
+            <!--<div style="display: inline-block">-->
+            <!--<img src="asd" alt="" width="50">-->
+            <!--<p>ass</p>-->
+            <!--</div>-->
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            <button class="btn btn-primary" id="updateBrand" data-cat="" data-act="">去修改</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $('.new_type').click(function(){
+            $('.search-main').toggle();
+        });
+        //当点击的时候出现
+        $('.hotBrand').click(function(){
+            //将id加到
+            $('#updateBrand').attr("data-cat",$(this).attr("data-catid"));
+            //先清除莫泰框里面的东西
+            $("#myModal div.show-grid").find('div').remove();
+            //获取到品牌ID
+            var ids = $(this).attr('data-value');
+            //操作状态参数
+            if(ids != 0){
+                $('#updateBrand').attr("data-act","update");
+                //传到后台获取品牌
+                $.post('__MODULE__/GoodsCategory/getBrands',{ids:ids},function(data){
+                    if(data){
+                        $("#myModal div.show-grid").append(data);
+                    }else{
+                        $("#myModal div.show-grid").append($('<div><h3>暂无数据</h3></div>'));
+                    }
+                });
+            }else{
+                $('#updateBrand').attr("data-act","add");
+                $("#myModal div.show-grid").append($('<div><h3>暂无数据</h3></div>'));
+            }
+        })
+        $('#updateBrand').click(function(){
+            var catid = $(this).attr('data-cat');
+            var act = $(this).attr('data-act');
+            if(catid){
+                //获取到当前
+                location = "__MODULE__/GoodsCategory/changeHotBrand/id/"+catid+"/act/"+act;
+            }else{
+                alert('参数错误');
+            }
+
+        })
+    </script>
+</block>

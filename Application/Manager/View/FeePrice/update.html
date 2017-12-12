@@ -1,0 +1,83 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+</block>
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('FeePrice/update')}" id="form">
+                        <input type="hidden" name="model" value="FeePrice">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="fee_id" value="{$fee['fee_id']}">
+                        <div class="control-group">
+                            <label class="control-label">平台服务费</label>
+                            <div class="controls">
+                                <select name="serve_id">
+                                    <option value="" selected> --选择二级分类-- </option>
+                                    <foreach name="cate_list" item="vo">
+                                        <option <if condition="$row['serve_id'] == $vo['id']">selected </if> value="{$vo.id}"> {$vo.name} </option>
+                                    </foreach>
+                                </select>
+                                <input type="number" min="0" step="0.01" name="serve_cost" value="{$row['serve_cost']}" placeholder="请添加平台服务费"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">平台使用费</label>
+                            <div class="controls">
+                                <select name="use_id">
+                                    <option value="" selected> --选择二级分类-- </option>
+                                    <foreach name="cate_list" item="vo">
+                                        <option <if condition="$row['use_id'] == $vo['id']">selected </if> value="{$vo.id}"> {$vo.name} </option>
+                                    </foreach>
+                                </select>
+                                <input type="number" min="0" step="0.01" name="use_cost" value="{$row['use_cost']}" placeholder="请添加平台使用费"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">节庆费</label>
+                            <div class="controls">
+                                <select name="festival_id">
+                                    <option value="" selected> --选择二级分类-- </option>
+                                    <foreach name="cate_list" item="vo">
+                                        <option <if condition="$row['festival_id'] == $vo['id']">selected </if> value="{$vo.id}"> {$vo.name} </option>
+                                    </foreach>
+                                </select>
+                                <input type="number" min="0" step="0.01" name="festival_cost" value="{$row['festival_cost']}" placeholder="请添加节庆费"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">保证金</label>
+                            <div class="controls">
+                                <select name="credit_id">
+                                    <option value="" selected> --选择二级分类-- </option>
+                                    <foreach name="cate_list" item="vo">
+                                        <option <if condition="$row['credit_id'] == $vo['id']">selected </if> value="{$vo.id}"> {$vo.name} </option>
+                                    </foreach>
+                                </select>
+                                <input type="number" min="0" step="0.01" name="credit_price" value="{$row['credit_price']}" placeholder="请添加保证金"/>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+    </script>
+</block>

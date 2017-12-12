@@ -1,0 +1,154 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        #allmap {
+            width: 915px;
+            height: 300px;
+            overflow: hidden;
+            font-family:"微软雅黑";
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <form class="form-horizontal" method="post" action="{:U('HouseLabel/update')}" autocomplete="off">
+                    <input type="hidden" name="model" value="HouseLabel">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                <div class="tab-content">
+                    <div class="tab-pane {$_GET['theme']==1?'':'active'}" id="home">
+                        <!--主要信息-->
+                        <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label">标签名称</label>
+                                    <div class="controls">
+                                        <input type="text" name="house_label" value="{$row['house_label']}">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否启用</label>
+                            <div class="controls">
+                                <select name="status" class="select-c">
+                                    <if condition="$row['id']">
+                                        <option value="1" <if condition="$row['status'] eq 1" > selected </if>>启用</option>
+                                        <option value="9" <if condition="$row['status'] eq 9" > selected </if>>禁用</option>
+                                        <else/>
+                                        <option value="1" selected>启用</option>
+                                        <option value="9">禁用</option>
+                                    </if>
+                                </select>
+                            </div>
+                        </div>
+                     </div>
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ae1DLg4ISYE34wv2HuLtsA7hekQEA2yI"></script>
+    <!--加载鼠标绘制工具-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+    <!--加载检索信息窗口-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css" />
+    <script>
+    $(function () {
+        // 百度地图API功能
+        var map = new BMap.Map("allmap");
+        map.enableScrollWheelZoom(true);
+        var lng = $("#lng").val();
+        var lat = $("#lat").val();
+        if(lng>1){
+            var poi = new BMap.Point(lng,lat);
+            map.centerAndZoom(poi, 15);
+            var point = new BMap.Point(lng,lat);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+        }else {
+            map.centerAndZoom('天津市',15);
+        }
+
+        // 创建点坐标以及点击返回坐标
+        function showInfo(e){
+            map.clearOverlays();
+            $("#lng").val(e.point.lng);
+            $("#lat").val(e.point.lat);
+            var point = new BMap.Point(e.point.lng,e.point.lat);    // 创建点坐标
+            var marker = new BMap.Marker(point);        // 创建标注
+            map.addOverlay(marker);                     // 将标注添加到地图中
+        }
+        map.addEventListener("click", showInfo);
+        //        $('#myTab a').tab('show');
+//        $('#myTab a[href="#home"]').tab('show');
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //        $('#myTab a').tab('show');
+//        $('#myTab a[href="#home"]').tab('show');
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+
+        //下拉选择图片动态显示 开始
+        $('.dropdown-menu li a.brand').click(function(){
+                //获取到当前的品牌名称
+            var brand_name = $(this).find('span').text();
+            //获取到图片
+            $(this).parents('div.btn-group').nextAll('div.btn-group').find("img").attr("src",$(this).attr('data-src')) ;
+        })
+        //下拉选择图片动态显示 结束
+//城市级联
+
+            $('.province').change(function(){
+                var province = $(this).val();
+                $('input[name="province"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('User/ajaxGetRegion')}",
+                    type:'get',
+                    data:{id:province},
+                    success:function(data){
+                        var html ='<option value="">城市</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.city').html(html);
+                    }
+                })
+            });
+
+            $('.city').change(function(){
+                var city = $(this).val();
+                $('input[name="city"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('User/ajaxGetRegion')}",
+                    type:'get',
+                    data:{id:city},
+                    success:function(data){
+                        var html = '<option value="">区/县</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.area').html(html);
+                    }
+                })
+            });
+            $('.area').change(function(){
+                $('input[name="area"]').val($(this).find('option:selected').text());
+            })
+    })
+
+    </script>
+</block>

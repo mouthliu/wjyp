@@ -1,0 +1,462 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li ><a href="#home">基本信息</a></li>
+                    <li><a href="#info">图文详情</a></li>
+                    <li><a href="#attr">属性信息</a></li>
+                    <li><a href="#pic">商品相册</a></li>
+                    <li><a href="#server">其他信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('Goods/setStatus')}" autocomplete="off">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                <div class="tab-content">
+                    <div class="tab-pane" id="home">
+                        <!--主要信息-->
+                        <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label">所属店铺</label>
+                                    <div class="controls">
+                                        <input type="text"  value="{$row['merchant_name']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品名称</label>
+                                    <div class="controls">
+                                        <input type="text"  value="{$row['goods_name']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">所属分类</label>
+                                    <div class="controls">
+                                        <input type="text"  value="{$row['cat_name']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品品牌</label>
+                                    <div class="controls">
+                                        <input type="text"  value="{$row['brand_name']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">市场价格</label>
+                                    <div class="controls">
+                                        <input type="text"  value="¥&nbsp;{$row['market_price']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">该店售价</label>
+                                    <div class="controls">
+                                        <input type="text"  value="¥&nbsp;{$row['shop_price']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">结算价格</label>
+                                    <div class="controls">
+                                        <input type="text"  value="¥&nbsp;{$row['settlement_price']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">会员价格</label>
+
+                                    <div class="controls">
+                                        <input type="text"  value="无忧会员：¥&nbsp;{$row['wy_price']}" disabled>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text"  value="优享会员：¥&nbsp;{$row['yx_price']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品略缩图</label>
+                                    <div class="controls">
+                                        <img src="__ROOT__{$row['goods_img']}" alt="" width="150" height="100">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">关键词</label>
+                                    <div class="controls">
+                                        <input type="text" name="account" value="{$row['keyword']}" disabled>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品描述</label>
+                                    <div class="controls">
+                                        <textarea name="" disabled>{$row['goods_brief']}</textarea>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品库存</label>
+                                    <div class="controls">
+                                        <input type="text" name="account" value="{$row['goods_num']}" disabled>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">库存警告量</label>
+                                    <div class="controls">
+                                        <input type="text" name="account" value="{$row['warning_num']}" disabled>
+                                        <span class="help-block">库存低于这个数量将会提示告急</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品条码</label>
+                                    <div class="controls">
+                                        <input type="text" name="goods_code" disabled value="{$row['goods_code']}" placeholder="商品条码">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <php>$min_rate = getName('GoodsCategory','min_rate',$row['cat_id'])</php>
+                                <php>$integral = $row['integral'] ? $row['integral'] : getIntegral($row['shop_price'],$min_rate)</php>
+                                <div class="control-group">
+                                    <label class="control-label">该商品赠送积分</label>
+                                    <div class="controls">
+                                        <input type="number" name="integral" value="{$row['integral']}" disabled onchange="changeDiscount(this.value,{$row['shop_price']})">
+                                        <a href="javascript:;"  class="tip-bottom edit_integral">
+                                        <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                        <span class="help-block">系统计算理论所得积分 ： <font color="red">{:getIntegral($row['shop_price'],$min_rate)}</font></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">可使用代金券(红)比例</label>
+                                    <div class="controls">
+                                        <input type="number" name="discount" value="{$row['discount']}" disabled>
+                                        <a href="javascript:;"  class="tip-bottom edit_num">
+                                            <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                        <php>$dis = 0.9-$min_rate;</php>
+                                        <span class="help-block">系统计算理论可使用比例 ： <font color="red">{:intval(90-($min_rate*100))}%</font></span>
+                                        <span class="help-block">系统计算理论可使用额度 ： <font color="red">¥&nbsp;{$row['shop_price']*$dis}</font></span>
+                                    </div>
+                                </div>
+                                <php>$y = sprintf('%.2f',$integral/$row['shop_price']*100)</php>
+                                <div class="control-group">
+                                    <label class="control-label">可使用代金券(黄)比例</label>
+                                    <div class="controls">
+                                        <input type="number" name="yellow_discount" value="{$row['yellow_discount']}" max="{$y}" disabled>
+                                        <a href="javascript:;"  class="tip-bottom edit_num">
+                                            <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                        <span class="help-block">系统计算(最大)可使用比例 ： <font color="red" ><span class="cre_dis">{$y}</span>%</font></span>
+                                        <span class="help-block">系统计算(最大)可使用额度 ： <font color="red" >¥&nbsp;<span class="cre_limit">{$integral}</span></font></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">可使用代金券(蓝)比例</label>
+                                    <div class="controls">
+                                        <input type="number" name="blue_discount" value="{$row['blue_discount']}" max="{$y}" disabled>
+                                        <a href="javascript:;"  class="tip-bottom edit_num">
+                                            <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                        <span class="help-block">系统计算(最大)可使用比例 ： <font color="red" ><span class="cre_dis">{$y}</span>%</font></span>
+                                        <span class="help-block">系统计算(最大)可使用额度 ： <font color="red" >¥&nbsp;<span class="cre_limit">{$integral}</span></font></span>
+                                    </div>
+                                </div>
+                                <!--<div class="control-group">-->
+                                    <!--<label class="control-label">商品平台分成比例</label>-->
+                                    <!--<div class="controls">-->
+
+                                        <!--<input type="number" name="price_rate"    value="{$row['price_rate']}"    min="{$min_rate}" disabled \>-->
+                                        <!--<a href="javascript:;"  class="tip-bottom edit_num">-->
+                                            <!--<span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;-->
+                                        <!--<span class="help-block">不可低于分类限定分成比例 <font color="red" id="rate">{$min_rate}</font></span>-->
+                                        <!--<input type="hidden" name="min-rate" value="{$min_rate}">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <div class="control-group">
+                                    <label class="control-label">商品状态</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                                            未审核
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="status" class="no-refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                                            同意通过
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="status" id="refuse" value="3" <if condition="$row['status'] eq 3" > checked </if>>
+                                            拒绝通过
+                                        </label>
+                                    </div>
+                                    <div class="controls" id="refuse-text" <if condition="$row['status'] neq 3">style="display: none;"</if> >
+                                        <textarea name="refuse_desc" cols="5" rows="3" placeholder="请填写拒绝理由" >{$row['refuse_desc']}</textarea>
+                                        <!--<select name="refuse_desc" id="refuse_desc">-->
+                                            <!--<option value="">请选择拒绝理由</option>-->
+                                            <!--<option value="价格虚高" <if condition="$row['refuse_desc'] eq '价格虚高'" > selected </if>>价格虚高</option>-->
+                                            <!--<option value="图文不符" <if condition="$row['refuse_desc'] eq '图文不符'" > selected </if>>图文不符</option>-->
+                                            <!--<option value="假冒伪劣" <if condition="$row['refuse_desc'] eq '假冒伪劣'" > selected </if>>假冒伪劣</option>-->
+                                            <!--<option value="999"  selected >填写其他理由</option>-->
+                                        <!--</select>-->
+                                        <!--<p></p>-->
+                                        <!--<textarea name="refuse_desc" cols="5" rows="3" placeholder="请填写拒绝理由" <if condition="$row['status'] neq 3">style="display: none;"</if>>{$row['refuse_desc']}</textarea>-->
+                                    </div>
+                               </div>
+                            </div>
+                    </div>
+                    <div class="tab-pane" id="info">
+                        <!--商品图文详情-->
+                        <div class="widget-content nopadding">
+                            <div class="control-group">
+                                <div class="controls">
+                                    {$row['goods_desc']|default='暂无图文详情'}
+                                    <!--&lt;!&ndash;钩子参数:is_first->表示防止重复加载样式-->
+                                                 <!--name->字段名-->
+                                                 <!--value->表示的是存到表中的内容-->
+                                                 <!--width->文本的宽-->
+                                     <!--&ndash;&gt;-->
+                                    <!--{:hook('adminArticleEdit', array('is_first'=>1,'name'=>'goods_desc','value'=>$row['goods_desc'],'width'=>'800'))}-->
+                                    <!--<span class="help-block"></span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="attr" style="min-height:400px">
+                        <!--属性信息-->
+                        <div class="control-group">
+                            <label class="control-label">商品类型</label>
+                            <div class="controls">
+                                <div class="btn-group">
+                                    <input type="text" value="{$row['type_name']}" disabled>
+
+                                </div>
+                                <input type="hidden" name="goods_typeid" value="{$row['goods_typeid']}">
+                                <span class="help-block">必选项*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--判断是否属性那里有自定义属性
+                        根据商品id 和自定义属性ID 查
+                        select picture from goods_gallery where goods_id= and goods_attr_id =
+                    -->
+                    <div class="tab-pane" id="pic">
+                        <!--商品相册-->
+                        <div class="accordion" id="accordion2">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                        <i class="icon-align-justify"></i> 普通照片
+                                    </a>
+                                </div>
+                                <div id="collapseOne" class="accordion-body collapse" style="height: auto;">
+                                    <div class="accordion-inner">
+                                        <foreach name="attr_pic[0]['pic']" item="pic0">
+                                            <img src="__ROOT__{$pic0['path']}" alt="" width="200"> &nbsp;&nbsp;
+                                        </foreach>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--需要判断是否有没有属性相册-->
+                            <notempty name="attr_img">
+                                <volist name="attr_img" id="v">
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{$v['aid']}">
+                                                <i class="icon-align-justify"></i> {$v['attr_value']}
+                                            </a>
+                                        </div>
+                                        <input type="hidden" name="goods_attr_name[]" value="{$v['attr_value']}" />
+                                        <!--<eq name="attr_pic['goods_attr_id']" value="$v['aid']">-->
+                                        <!--<assign name="pic" value="$attr_pic['']" />-->
+                                        <!--</eq>-->
+                                        <div id="collapse{$v['aid']}" class="accordion-body collapse" style="height: 0px;">
+                                            <div class="accordion-inner">
+                                                <php>$attr_pic_val = $attr_pic[$v['aid']]['pic']</php>
+                                                <foreach name="attr_pic_val" item="pic1">
+                                                    <img src="__ROOT__{$pic1['path']}" alt="" width="200"> &nbsp;&nbsp;
+                                                </foreach>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </volist>
+                            </notempty>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="server">
+                        <div class="control-group">
+                            <label class="control-label">是否临期</label>
+                            <div class="controls">
+                                <notempty name="row['end_date']">
+
+                                    <input type="text" name="end_date" value="过期时间 : {:date('Y-m-d',$row['end_date'])}" class="text-width-10" placeholder="请填写过期时间" disabled>
+                                    <else />
+                                    <input type="text" disabled value="非临期产品">
+                                </notempty>
+                            </div>
+
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label"><b>服务信息</b></label>
+                            <foreach name="server_list" item="val">
+                                <div class="controls">
+                                    <label class="checkbox inline">
+                                        <input type="checkbox" name="server[]" disabled value="{$val['id']}" <if condition="in_Array($val['id'],explode(',',$row['server']))">checked</if> >
+                                        <img src="__ROOT__{:getPath($val['icon'])}" alt="" width="18">
+                                        {$val['server_name']}
+                                    </label>
+                                    <span class="help-block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tip：  {$val['desc']}</span>
+                                </div>
+                            </foreach>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否包邮</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio" id="">
+                                        <if condition="$row['send_fee'] neq 0">
+                                            <span class="checked"><input type="radio" name="is_fee" id="is-fee" value="0" style="opacity: 0;"  checked ></span>
+                                        <else/>
+                                            <span class="checked"><input type="radio" name="is_fee" id="no-fee" value="1" style="opacity: 0;" checked ></span>
+                                        </if>
+
+                                    </div>
+                                    否
+                                </label>
+                            </div>
+                            <div class="controls" id="fee" <if condition="$row['send_fee'] eq 0">style="display:none;"</if>>
+                            <if condition="$row['send_fee'] neq 0">
+                                <input type="text" name="send_fee" value="{$row['send_fee']}"  placeholder="请填写运费" disabled>
+                                <else/>
+                                <input type="text" name="send_fee" value="0"  placeholder="请填写运费" disabled>
+                            </if>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="dapei">
+                        <!--主要信息-->
+
+                    </div>
+            </div>
+                </div>
+                <input type="hidden" name="id" value="{$row['id']}">
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+
+                    <button class="btn btn-info ajax-post"  type="submit" id="submit" target-form="form-horizontal">确认修改</button>
+                        &nbsp;&nbsp;&nbsp;
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('#myTab a:first').tab('show');
+        })
+        //        $('#myTab a').tab('show');
+        //        $('#myTab a[href="#home"]').tab('show');
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //首先刚开始进行获取数据
+        $(function(){
+            var typeid = $('input[name=goods_typeid]').val();
+            var goodsid = $('input[name=id]').val();
+            //从后台获取数据
+            $.post("__MODULE__/Goods/getGoodsAttr",{typeid:typeid,goodsid:goodsid},function(data){
+                if(data){
+                    //   获取到类型元素
+                    $('#attr').append(data);
+                }else{
+                    return false;
+                }
+            })
+        })
+//        $("#pass").click(function(){
+//            //获取到ID
+//            var goodsid = $("input[name=id]").val();
+//            //获取到平台比例分成
+//            var price_rate = $("input[name=price_rate]").val();
+//            var rate = $("input[name=min-rate]").val();
+//            if(rate > price_rate){
+//                $("input[name=price_rate]").css({'border':'1px solid red'}).blur(function(){
+//                    $(this).css({'border':'1px solid #ccc'});
+//                });
+//                return false;
+//            }
+//            //获取到审核意见
+//                var message = $('textarea[name=message]').text();
+//                if(goodsid){
+//                    $.post('__MODULE__/Goods/setStatus',{ids:goodsid,status:2,price_rate:price_rate,message:message},function(data){
+//                        if($data){
+//                            alert('操作成功');
+//                        }
+//                    })
+//            }
+//        })
+//        $("#refuse").click(function(){
+//            //获取到ID
+//            var goodsid = $("input[name=id]").val();
+//            //获取到审核意见
+//            var message = $('textarea[name=message]').text();
+//            if(goodsid){
+//                $.post('__MODULE__/Goods/setStatus',{ids:goodsid,status:3,message:message},function(data){
+//                    if($data){
+//                        alert('操作成功');
+//
+//                    }
+//                })
+//            }
+//            $("#xiajia").click(function(){
+//                //获取到ID
+//                var goodsid = $("input[name=id]").val();
+//
+//                if(goodsid){
+//                    $.post('__MODULE__/Goods/setBuy',{id:goodsid,is_buy:0},function(data){
+//                        if($data){
+//                            alert('操作成功');
+//                        }
+//                    })
+//                }
+//            })
+//        })
+        //点击修改积分
+        $('.edit_integral').click(function(){
+            $is = confirm("修改积分将会影响代金券比例，确定修改么?");
+            if($is){
+                $input = $(this).prev('input');
+                $input.attr('disabled',false);
+            }
+        })
+        $('.edit_num').click(function(){
+
+                $input = $(this).prev('input');
+                $input.attr('disabled',false);
+        })
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show().find('textarea').html('');
+            }
+        })
+        $('.no-refuse').click(function(){
+            $('#refuse-text').hide();
+        })
+        $('#refuse_desc').change(function(){
+            var val = $(this).val();
+            if( val == '999'){
+                $('textarea[name=refuse_desc]').show();
+            }else{
+                $('textarea[name=refuse_desc]').html(val).hide();
+            }
+        })
+        //修改代金券比例函数
+        function changeDiscount(integral,shop_price){
+            //计算当前积分所对用的比例
+            var dis = Math.floor(integral/shop_price*10000)/100;
+            var cre_limit = $('.cre_limit');
+            var cre_dis = $('.cre_dis');
+            cre_limit.html(integral);
+            cre_dis.html(dis);
+        }
+
+    </script>
+</block>

@@ -1,0 +1,87 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Shipping/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('Shipping/forbid',array('model'=>'MerchantShipping','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Shipping/resume',array('model'=>'MerchantShipping','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('Shipping/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('Shipping/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        {$select}
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+
+                            <th>编号</th>
+                            <th>配送方式名称</th>
+                            <th>配送方式描述</th>
+                            <th>是否支持货到付款</th>
+                            <th>是否设为默认</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['gid']}" class="ids"/></td>
+                                <td>{$row['gid']}</td>
+                                <td style="color:<if condition="$row['is_default'] eq 1">red</if>">{$row['shipping_name']}</td>
+                                <td>{$row['shipping_desc']}</td>
+                                <td>{$row['is_home']==1?'是':'否'}</td>
+                                <td>{$row['is_default']==1?'是':'否'}</td>
+                                <td>{$row['g_status']==1?'启用':'禁用'}</td>
+                                <td>
+                                    <if condition="$row['is_default'] neq 1">
+                                        <a href="{:U('Shipping/setDefault',array('model'=>'MerchantShipping','sid'=>$row['id']))}" title="设为默认" class="tip-bottom">
+                                            <span class="label label-info">设为默认</span></a>&nbsp;
+                                    </if>
+
+                                    <a href="{:U('Shipping/delete',array('id'=>$row['gid']))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

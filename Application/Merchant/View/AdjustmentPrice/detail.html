@@ -1,0 +1,61 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5>调价单详情</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="#" id="form">
+                        <div class="control-group">
+                            <label class="control-label">调价单编号</label>
+                            <div class="controls">
+                                <input type="text" value="{$row['adjustment_sn']}" disabled>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">调价单</label>
+                            <div class="controls">
+                                <volist name="row['adjustment_picture']" id="vo">
+                                    <img src="{$vo['path']}"/><br/><br/>
+                                </volist>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">市场价</label>
+                            <div class="controls">
+                                <input type="text"  value="{$row['market_price']}---原价：{$row['old_market_price']}" disabled>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">该店售价</label>
+                            <div class="controls">
+                                <input type="text"  value="{$row['shop_price']}---原价：{$row['old_shop_price']}" disabled>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">结算价</label>
+                            <div class="controls">
+                                <input type="text" value="{$row['settlement_price']}---原价：{$row['old_settlement_price']}" disabled>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

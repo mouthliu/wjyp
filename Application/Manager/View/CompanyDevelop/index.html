@@ -1,0 +1,118 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('CompanyDevelop/add')}" target-form="ids">新增</button>&nbsp;
+
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('CompanyDevelop/delete',array('model'=>'CompanyDevelop','status'=>9))}" target-form="ids">删除</button>&nbsp;
+
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                    <form action="{:U('CompanyDevelop/index')}" method="post" class="form-search">
+                        <b>搜索：</b>
+                        &nbsp;
+                        <input type="text" class="input-medium search-query" name="car_name" value="{$_REQUEST['car_name']}" placeholder="输入汽车名称查询" style="height:auto" name="">
+                        <button type="submit" class="btn">查询</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>店铺名称</th>
+                            <th>封面图片</th>
+                            <th>申请时间</th>
+                            <th><i class="icon-edit"></i> 排序</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{:getName('Merchant','merchant_name',$row['merchant_id'])}</td>
+                                <td><img src="__ROOT__{:getPath($row['face_img'])}" alt="" style="width:60px;height:30px;"></td>
+                                <td>{:date('Y-m-d',$row['create_time'])}</td>
+
+                                <td class="editArea" data-id="{$row['id']}" data-field="sort" data-model="CompanyDevelop"><i >{$row['sort']}</i></td>
+
+                                <td>{$row['t_status']}</td>
+                                <td>
+                                    <a href="{:U('CompanyDevelop/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <switch name="row['status']">
+                                        <case value="1">
+                                            <a href="{:U('CompanyDevelop/singleEdit',array('model'=>'CompanyDevelop','id'=>$row['id'],'field'=>'status','value'=>2))}" title="同意" class="tip-bottom ajax-get ">
+                                                <span class="label label-success">同意</span></a>&nbsp;
+                                            <a href="{:U('CompanyDevelop/singleEdit',array('model'=>'CompanyDevelop','id'=>$row['id'],'field'=>'status','value'=>3))}" title="拒绝" class="tip-bottom ajax-get ">
+                                                <span class="label label-warning">拒绝</span></a>&nbsp;
+                                        </case>
+                                        <case value="3">
+                                            <a href="{:U('CompanyDevelop/singleEdit',array('model'=>'CompanyDevelop','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                                <span class="label label-warning">删除</span></a>&nbsp;
+                                        </case>
+
+                                    </switch>
+
+
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        //修改字段值开始
+        $('.editArea').dblclick(function(){
+            var input = $('<input type="number" name="CompanyDevelop_num" value="" style="max-width:80px;" />');
+            var val = $(this).find('i').text();
+            ($(this).find('i')).after(input.val(val));
+            $(this).find('i').remove();
+        })
+        $('input[name="CompanyDevelop_num"]').live({
+            'blur':function(){
+                var $this = $(this);
+                var model = $(this).parents('td').attr('data-model');
+                var id = $(this).parents('td').attr('data-id');
+                var field = $(this).parents('td').attr('data-field');
+                var num = $(this).val();
+                $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                    $this.after('<i>'+num+'</i>');
+                    $this.remove();
+                })
+            }
+        })
+        //修改字段值结束
+        $('.xuan').change(function(){
+            var val = $(this).val();
+            if(val){
+                var field = $(this).attr('data-field');
+                // 调转到对应ID的url地址
+                location="__URL__/index/"+field+"/"+val;
+
+            }
+        })
+    </script>
+</block>

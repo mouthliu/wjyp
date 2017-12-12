@@ -1,0 +1,113 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('MerchantReport/update')}" id="form">
+                        <input type="hidden" name="model" value="MerchantReport">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">举报人</label>
+                            <div class="controls">
+                                <input type="text"  value="{:getName('User','nickname',$row['user_id'])}" disabled>
+                                <input type="hidden" name="user_id" value="{$row['user_id']}" >
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">举报类型</label>
+                            <div class="controls">
+                                <input type="text" value="{:getName('ReportType','title',$row['report_type_id'])}" disabled>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">被举报商家</label>
+                            <div class="controls">
+                                <input type="text"  value="{:getName('Merchant','merchant_name',$row['merchant_id'])}" disabled>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">举报理由</label>
+                            <div class="controls">
+                                <textarea name="report_content" id="" cols="30" rows="10" disabled>{$row['report_content']}</textarea>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">审核状态</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse no-pass" value="0" <if condition="$row['status'] eq 0" > checked </if>>
+                                    未审核
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" id="pass" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                                    通过
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-pass" id="refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                                    拒绝
+                                </label>
+                            </div>
+                            <div class="controls" id="refuse-text" <if condition="$row['status'] neq 2">style="display: none;"</if> >
+                            <textarea name="refuse_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由">{$row['refuse_desc']}</textarea>
+                            </div>
+                            <div class="controls" id="pass-text" <if condition="$row['status'] neq 1">style="display: none;"</if>>
+                                <select name="type" id="">
+                                    <option value="0">请选择奖励类型</option>
+                                    <option value="1" <if condition="$row['type'] eq 1">selected </if> >红包奖励</option>
+                                    <option value="2" <if condition="$row['type'] eq 2">selected </if>>积分奖励</option>
+                                    <option value="3" <if condition="$row['type'] eq 3">selected </if>>代金券-红券</option>
+                                    <option value="4" <if condition="$row['type'] eq 4">selected </if>>代金券-黄券</option>
+                                    <option value="5" <if condition="$row['type'] eq 5">selected </if>>代金券-蓝券</option>
+                                </select>
+                                 <span id="tip">奖励内容</span>:<input type="number" name="bonus_val" placeholder="" value="{$row['bonus_val']}">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <if condition="$row['status'] eq 0">
+                                <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+
+                            </if>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show();
+            }
+        })
+        $('.no-refuse').click(function(){
+            $('#refuse-text').hide();
+        })
+        //填写红包
+        $('#pass').click(function(){
+            if($(this).attr('checked')){
+                $('#pass-text').show();
+            }
+        })
+        $('.no-pass').click(function(){
+            $('#pass-text').hide();
+        })
+        $('select[name=type]').change(function(){
+            switch($(this).val()){
+                case '1':$('#tip').html('请输入红包金额');break;
+                case '2':$('#tip').html('请输入奖励积分');break;
+                case '3':$('#tip').html('请输入红券面额');break;
+                case '4':$('#tip').html('请输入黄券面额');break;
+                case '5':$('#tip').html('请输入蓝券面额');break;
+            }
+        })
+    </script>
+</block>

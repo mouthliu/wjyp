@@ -1,0 +1,125 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title text-center">
+                    <h4 class="text-center">商品信息 : {$ginfo['goods_name']} &nbsp; {$ginfo['goods_brief']}</h4>&nbsp;
+
+                </div>
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success new_type">新增</button>&nbsp;
+
+                </div>
+
+                <!--// search start-->
+                <div class="search-main" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('Goods/setPruduct')}" id="form">
+
+                        <div class="search-frame-main">
+                            <input type="hidden" name="model" value="Goods">
+                            <input type="hidden" name="id" value="{$ginfo['id']}">
+
+                            <volist name="newAttr" id="v">
+                                    <notempty name="v[0]['id']">
+                                        <if condition="empty($v[0]['attr_value']) neq true">
+                                            <select name="attr[{$v[0]['id']}]" id="" class="search-frame">
+                                                <option value="">--请选择{$v[0]['attr_name']}--</option>
+                                                <foreach name="v" item="val">
+                                                    <option value="{$val['aid']}">{$val['attr_value']}</option>
+                                                </foreach>
+                                            </select>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </if>
+
+
+                                    </notempty>
+
+                            </volist>
+                            <input class="search-frame"  id="row_sort" style="width:200px;height: auto;" type="text" name="product_sn" value="<php> echo $ginfo['goods_sn'];</php>" placeholder="填写货号">
+
+                            <input class="search-frame"  id="row_sort" style="width:100px;height: auto;" type="number" name="product_num" value="" placeholder="填写库存">
+                            <button class="btn btn-inverse ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal" style="margin:4px 10px;">保存</button>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <foreach name="newAttr" item="v1">
+                                <if condition="empty($v1[0]['attr_value']) neq true">
+                                    <th>
+                                        {$v1[0]['attr_name']}
+                                    </th>
+                                </if>
+                            </foreach>
+                            <th>货号</th>
+                            <th>库存</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="value">
+                            <tr>
+                                <php>$goods_attr = explode('|',$value['goods_attr']);</php></assign>
+                                <volist name="newAttr" id="v1">
+                                    <td>
+                                        {$attr_arr[$goods_attr[$i-1]]}
+                                    </td>
+                                </volist>
+                                <td >{$value['product_sn']}</td>
+
+                                <td   ><input type="number" value="{$value['product_number']}" data-field="product_number" style="width:100px;height: auto;"></td>
+                                <td>
+
+                                    <a href="javascript:;" title="保存" class="tip-bottom save" data-num="{$value['product_number']}" data-id="{$value['id']}">
+                                        <span class="label label-success" >保存</span></a>
+                                    &nbsp;&nbsp;
+                                    <a href="__MODULE__/Goods/delProduct/id/{$value['id']}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+
+
+                                </td>
+
+                            </tr>
+
+                        </volist>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.new_type').click(function(){
+            $('.search-main').toggle();
+        });
+        $('input[data-field="product_number"]').change(function(){
+            $(this).parents('td').nextAll('td').find("a.save").attr("data-num",$(this).val());
+
+        })
+        $("a.save").click(function(){
+            var id = $(this).attr('data-id');
+            var num = $(this).attr('data-num');
+            $.post("__MODULE__/Goods/setProductNum",{id:id,product_number:num},function(data){
+                if(data.info=='修改成功'){
+                    alert('修改成功');
+                }else{
+                    alert('修改失败');
+                }
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,120 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Bonus/add',array('bonus_face_id'=>$_GET['bonus_face_id']))}" target-form="ids">新增广告</button>&nbsp;
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Bonus/forbid',array('model'=>'Bonus','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Bonus/resume',array('model'=>'Bonus','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Bonus/delete',array('model'=>'Bonus','status'=>9))}" target-form="ids">删除</button>&nbsp;
+
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>ID</th>
+                            <th>红包标题</th>
+                            <th>红包类型</th>
+                            <th>红包展示内容</th>
+                            <th><i class="icon-edit"></i> 排序</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['bonus_title']}</td>
+                                <td>{$row['type']==1?'视频':'图片'}</td>
+                                <td>
+                                    <if condition="$row['type'] eq 1">
+                                        <video controls width="100" height="100">
+                                            <source src="__ROOT__{$row['bonus_ads']}" type="video/mp4" >
+                                            您的浏览器不支持 video 标签。
+                                        </video>
+                                        <else/>
+                                        <img src="__ROOT__{$row['bonus_ads']}" alt="" width="100">
+                                    </if>
+
+                                </td>
+                                <td class="editArea" data-id="{$row['id']}" data-field="sort" data-model="Bonus"><i >{$row['sort']}</i></td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+
+                                <td>
+                                    <a href="{:U('Bonus/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+
+                                    <switch name="row['status']">
+                                        <case value="0|3">
+                                            <a href="{:U('Bonus/singleEdit',array('model'=>'Bonus','id'=>$row['id'],'field'=>'status','value'=>1))}" title="申请" class="tip-bottom ajax-get fresh">
+                                                <span class="label label-success">申请发布</span></a>&nbsp;
+                                            <a href="{:U('Bonus/singleEdit',array('model'=>'Bonus','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                                <span class="label label-warning">删除</span></a>&nbsp;
+                                        </case>
+                                        <case value="1"><font color="red">
+                                            <a href="{:U('Bonus/singleEdit',array('model'=>'Bonus','id'=>$row['id'],'field'=>'status','value'=>0))}" title="取消申请" class="tip-bottom ajax-get">
+                                                <span class="label label-danger">取消申请</span></a>&nbsp;
+                                        </case>
+                                        <case value="2">
+
+                                        </case>
+                                    </switch>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+            //修改字段值开始
+            $('.editArea').dblclick(function(){
+                var input = $('<input type="number" name="CarBuy_num" value="" style="max-width:80px;" />');
+                var val = $(this).find('i').text();
+                ($(this).find('i')).after(input.val(val));
+                $(this).find('i').remove();
+            })
+            $('input[name="CarBuy_num"]').live({
+                'blur':function(){
+                    var $this = $(this);
+                    var model = $(this).parents('td').attr('data-model');
+                    var id = $(this).parents('td').attr('data-id');
+                    var field = $(this).parents('td').attr('data-field');
+                    var num = $(this).val();
+                    $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                        $this.after('<i>'+num+'</i>');
+                        $this.remove();
+                    })
+                }
+            })
+            //修改字段值结束
+        })
+    </script>
+</block>

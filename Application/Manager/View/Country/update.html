@@ -1,0 +1,82 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Country/update')}" id="form">
+                        <input type="hidden" name="model" value="Country">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">国家名称</label>
+                            <div class="controls">
+                                <input type="text"  name="country_name" value="{$row['country_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">国家简称</label>
+                            <div class="controls">
+                                <input type="text"  name="code" value="{$row['code']}" >
+                                <span class="help-block">5个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">所属洲</label>
+                            <div class="controls">
+                                <select name="continent">
+                                    <option value="0">--所属州--</option>
+                                    <option <if condition="$row['continent'] == 1"> selected = "selected"</if> value="1">亚洲</option>
+                                    <option <if condition="$row['continent'] == 2"> selected = "selected"</if> value="2">欧洲</option>
+                                    <option <if condition="$row['continent'] == 3"> selected = "selected"</if> value="3">北美洲</option>
+                                    <option <if condition="$row['continent'] == 4"> selected = "selected"</if> value="4">南美洲</option>
+                                    <option <if condition="$row['continent'] == 5"> selected = "selected"</if> value="5">非洲</option>
+                                    <option <if condition="$row['continent'] == 6"> selected = "selected"</if> value="6">澳洲</option>
+                                    <option <if condition="$row['continent'] == 7"> selected = "selected"</if> value="7">南极洲</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">国家Logo图</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'country_logo','field_name'=>'country_logo','field_value'=>$row['country_logo'],'save_path'=>'Country'))}
+                                <span class="help-block">图片比例：109*68</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">国家场馆图</label>
+                            <div class="controls">
+                                {:hook('upload',array('unique_sign'=>'house_img','field_name'=>'house_img','field_value'=>$row['house_img'],'save_path'=>'Country'))}
+                                <span class="help-block">图片比例：250*250</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否启用</label>
+                            <div class="controls">
+                                <select name="status" class="select-c">
+                                    <option value="1" <if condition="$row['status'] eq 1" > selected </if>>启用</option>
+                                    <option value="2" <if condition="$row['status'] eq 2" > selected </if>>不启用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort'] | default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

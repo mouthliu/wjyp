@@ -1,0 +1,97 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--开始结束时间-->
+                    <!--<div class="control-group">-->
+                        <!--<div class="controls">-->
+                            <!--<div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">-->
+                                <!--<input type="text" name="start_time" value="" class="text-width-10 form_datetime" placeholder="开始时间">-->
+                                <!--——-->
+                                <!--<input type="text" name="end_time" value="" class="text-width-10 form_datetime" placeholder="结束时间">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <button class="btn btn-inverse href" url="{:U('MerchantDetail/index',array('time'=>'1'))}" >今天</button>&nbsp;
+                    <button class="btn btn-info href" url="{:U('MerchantDetail/index',array('time'=>'2'))}" >昨天</button>&nbsp;
+                    <button class="btn btn-info href" url="{:U('MerchantDetail/index',array('time'=>'3'))}" >最近七天</button>&nbsp;
+                    <button class="btn btn-info href" url="{:U('MerchantDetail/index',array('time'=>'4'))}" >最近一个月</button>&nbsp;
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search ">
+                    <form action="{:U('MerchantDetail/index')}" method="post" class="form-search">
+                        &nbsp;
+                        <input type="text" class="input-medium search-query" name="order_sn" value="{$_REQUEST['order_sn']}" placeholder="输入订单号查询" style="height:auto">
+                        <select name="pay_type" id="">
+                            <option value="">支付方式</option>
+                            <option value="1"> 支付宝</option>
+                            <option value="2"> 微信</option>
+                            <option value="3"> 银联</option>
+                            <option value="4"> 余额</option>
+                        </select>
+                        <button type="submit" class="btn">查询</button>
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding" >
+                    <table class="table table-bordered table-striped with-check" >
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>订单号</th>
+                            <th>订单类型</th>
+                            <th>订单金额</th>
+                            <th>平台扣除佣金</th>
+                            <th>商家实际收入金额</th>
+                            <th>支付方式</th>
+                            <th>交易时间</th>
+                            <th>备注</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['order_sn']}</td>
+                                <td>{:merOrderType($row['order_type'])}</td>
+                                <td>¥&nbsp;{$row['all_money']}</td>
+                                <td>¥&nbsp;{$row['rebate_money']}</td>
+                                <td>¥&nbsp;{$row['result_money']}</td>
+                                <td>{$row['pay_name']}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>{$row['texts']}</td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

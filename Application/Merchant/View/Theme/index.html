@@ -1,0 +1,131 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+    </style>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success  ajax-post" url="{:U('Goods/setBuy',array('is_buy'=>1))}" target-form="ids">批量上架</button>&nbsp;-->
+                    <!--<button class="btn btn-danger  ajax-post" url="{:U('Goods/setBuy',array('is_buy'=>0))}" target-form="ids">批量下架</button>&nbsp;-->
+                   <h4>主题街商品列表</h4>
+
+                </div>
+
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                    <form action="{:U('Goods/index')}" method="post" class="form-search">
+                        &nbsp;
+                        <input type="text" class="input-medium search-query" placeholder="输入货号精准查询" style="height:auto">
+                        <input type="text" class="input-medium search-query" placeholder="按商品查询" style="height:auto">
+                        <button type="submit" class="btn">查询</button>
+
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>货号</th>
+                            <th>所属主题</th>
+                            <th>商品名称</th>
+                            <th>所属分类</th>
+
+                            <th>售价</th>
+                            <th>是否上架</th>
+                            <th>库存</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <if condition="$row['status'] neq 3">
+                                <tr>
+                                    <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                    <td>{$row['goods_sn']}</td>
+                                    <td >
+                                        <a href="#myModal" role="button" data-toggle="modal" class="theme" data-time="{$row['theme_start_time']} 至 {$row['theme_end_time']}" data-name="{$row['theme_name']}" data-desc="{$row['theme_desc']}" data-img="__ROOT__{$row['theme_img']}">
+                                            {$row['theme_name']}
+                                        </a>
+                                    </td>
+                                    <td><a href="{:U('Goods/update',array('id'=>$row['id'],'theme'=>1))}">{$row['goods_name']}</a></td>
+                                    <td>{$row['cat_name']}</td>
+                                    <td>￥{$row['shop_price']}</td>
+                                    <td>{$row['is_buy']?'<i class="icon-ok"></i>':'<i class="icon-remove"></i>'}</td>
+                                    <td style="color:{$row['goods_num']>$row['warning_num']?'green':'red'}">{$row['goods_num']}</td>
+                                    <td>
+                                        <if condition="$row['is_apply'] eq 0">
+                                            正常
+                                            <else/>
+                                            移出申请中
+                                        </if>
+                                    </td>
+                                    <td>
+                                        <if condition="$row['is_apply'] eq 0">
+                                            <a href="{:U('Theme/apply',array('goods_id'=>$row['id']))}" title="查看详情" class="tip-bottom ajax-get">
+                                                <span class="label label-info">申请移出主题街</span></a>&nbsp;
+                                            <else/>
+
+                                            <a href="{:U('Theme/removeApply',array('goods_id'=>$row['id']))}" title="查看详情" class="tip-bottom ajax-get">
+                                                <span class="label label-warning">取消申请移出</span></a>&nbsp;
+                                        </if>
+
+                                    </td>
+                                </tr>
+                            </if>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--拒绝原因查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 700px;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">审核记录--拒绝原因</h3>
+        </div>
+        <div class="modal-body" >
+            <p>主题名称：<span id="theme-name"></span></p>
+            <p>活动时间：<span id="theme-time"></span></p>
+            <p>主题图片：<span >
+                <img src="" alt="" id="theme-img">
+            </span></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__MODULE__/Theme/index/theme_id/"+shenhe;
+
+                }
+            })
+            $('.theme').click(function(){
+                $('#theme-name').html($(this).attr('data-name'));
+                $('#theme-time').html($(this).attr('data-time'));
+                $('#theme-img').attr('src',$(this).attr('data-img'));
+            })
+        })
+
+
+    </script>
+</block>

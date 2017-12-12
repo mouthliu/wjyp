@@ -1,0 +1,66 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5></h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Merchant/rePass')}" autocomplete="off">
+                        <input type="hidden" name="id" value="{:getMerchantId()}">
+                        <div class="control-group">
+                            <label class="control-label">原密码</label>
+                            <div class="controls">
+                                <input type="password" name="oldpassword" value="">
+                                <span class="help-block">请输入原密码</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">新密码</label>
+                            <div class="controls">
+                                <input type="password" name="newpassword" value="">
+                                <span class="help-block">新密码长度6--18位</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">确认新密码</label>
+                            <div class="controls">
+                                <input type="password" name="repassword" value="">
+                                <span class="help-block">必须和新密码一致</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post" id="tijiao" target-form="form-horizontal" type="submit">确认修改</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $('input[name="repassword"]').blur(function(){
+                var newpwd = $('input[name="newpassword"]').val();
+                if($(this).val()){
+                    if(newpwd != $(this).val()){
+                        $(this).css({'border':'1px solid red'});
+                        $(this).next('span.help-block').text("两次密码不一致").css({'color':'red'});
+                        $('#tijiao').hide();
+                    }else{
+                        $(this).css({'border':'1px solid #ccc'});
+                        $(this).next('span.help-block').text("输入正确").css({'color':'green'});
+                        $('#tijiao').show();
+                    }
+                }
+            })
+        })
+    </script>
+</block>

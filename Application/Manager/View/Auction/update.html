@@ -1,0 +1,376 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Auction/update')}" id="form">
+                        <input type="hidden" name="model" value="Auction">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">拍卖活动名称</label>
+                            <div class="controls">
+                                <input type="text"  name="auct_name" value="{$row['auct_name']}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">拍卖活动描述</label>
+                            <div class="controls">
+                                <textarea name="auct_desc" id="" cols="5" rows="3" placeholder="30字以内即可" disabled>{$row['auct_desc']}</textarea>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">参加活动商品</label>
+
+                            <div class="controls">
+                                <div class="input-append">
+                                    <input type="text"  id="goods_info" name="goods_name" value="{$row['goods_name']}" placeholder="请输入商品名称或者ID查找" disabled>
+                                    <!--<button class="btn" type="button" id="gid">搜ID</button>-->
+                                    <!--<button class="btn" type="button" id="gname">搜名称</button>-->
+                                    <input type="hidden" name="goods_id" value="{$row['goods_id']}">
+                                    <input type="hidden" name="merchant_id" value="{$row['merchant_id']}">
+                                </div>
+                                <span id="attr" style="text-decoration:underline ">所选属性：{$row['attr']|default='无'}</span>
+                            </div>
+                        </div>
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">拍卖活动商品</label>-->
+
+                            <!--<div class="controls">-->
+                                <!--<div class="input-append">-->
+                                    <!--<input type="text"  id="goods_info" name="goods_name" value="{$row['goods_name']}" placeholder="请输入商品名称或者ID查找">-->
+                                    <!--&lt;!&ndash;<button class="btn" type="button" id="gid">搜ID</button>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button class="btn" type="button" id="gname">搜名称</button>&ndash;&gt;-->
+                                    <!--<input type="hidden" name="goods_id" value="{$row['goods_id']}">-->
+                                    <!--<input type="hidden" name="merchant_id" value="{$row['merchant_id']}">-->
+                                    <!--<input type="hidden" name="product_id" value="{$row['product_id']}">-->
+
+                                <!--</div>-->
+                                    <!--<span id="attr" style="text-decoration:underline ">所选属性：{$row['attr']|default='无'}</span>-->
+                            <!--</div>-->
+                            <!--<div class="controls" style="width: 550px;max-height: 300px;overflow:auto;display: none;" id="glist">-->
+                                <!--<table class="table table-bordered" >-->
+                                    <!--<tr id="goods_list">-->
+                                        <!--<th>ID</th>-->
+                                        <!--<th width="300">名称</th>-->
+                                        <!--<th>货品选择</th>-->
+                                        <!--<th>选项</th>-->
+                                    <!--</tr>-->
+
+                                <!--</table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--开始结束时间-->
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">拍卖日期</label>-->
+                            <!--<div class="controls">-->
+                                <!--<div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">-->
+                                    <!--<notempty name="row['id']">-->
+                                        <!--<input type="text" name="start_time" value="{$row['start_time']|date='Y-m-d',###}" class="text-width-10 form_datetime" placeholder="拍卖日期">-->
+                                        <!--<else/>-->
+                                        <!--<input type="text" name="start_time" value="" class="text-width-10 form_datetime" placeholder="开始时间">-->
+                                    <!--</notempty>-->
+                                <!--</div>-->
+                                <!--<span class="help-block">拍卖日期 : 当日全天 0:00:00-23:59:59</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--开始结束时间-->
+                        <div class="control-group">
+                            <label class="control-label">拍卖开始时间</label>
+                            <div class="controls">
+                                <div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">
+                                    <notempty name="row['id']">
+                                        <input type="text" name="start_time" value="{$row['start_time']|date='Y-m-d',###}" {$disabled} class="text-width-10 form_date_picker" placeholder="开始时间" disabled>
+                                        <else/>
+                                        <input type="text" name="start_time" value="" class="text-width-10 form_date_picker" {$disabled} placeholder="开始时间">
+                                    </notempty>
+                                </div>
+                                <span class="help-block">拍卖开始时间 : 当日0:00:00</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">拍卖结束时间</label>
+                            <div class="controls">
+                                <div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">
+                                    <notempty name="row['id']">
+                                        <input type="text" name="end_time" value="{$row['start_time']|date='Y-m-d',###}" {$disabled} class="text-width-10 form_date_picker" placeholder="结束时间" disabled>
+                                        <else/>
+                                        <input type="text" name="end_time" value="{$row['end_time']}" class="text-width-10 form_date_picker" {$disabled} placeholder="结束时间">
+                                    </notempty>
+                                </div>
+                                <span class="help-block">拍卖结束时间 : 当日23:59:59</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">起拍价</label>
+                            <div class="controls">
+                                <input type="number"  name="start_price" value="{$row['start_price']|default='0.00'}" min="0"disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">一口价</label>
+                            <div class="controls">
+                                <input type="number"  name="one_price" value="{$row['one_price']|default='0.00'}" min="0"disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">保留价</label>
+                            <div class="controls">
+                                <input type="number"  name="leave_price" value="{$row['leave_price']|default='0.00'}" min="0"disabled>
+                                <span class="help-block">默认为无</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">加价幅度</label>
+                            <div class="controls">
+                                <input type="number"  name="add_price" value="{$row['add_price']|default='0'}" min="0"disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">保证金</label>
+                            <div class="controls">
+                                <input type="number"  name="base_money" value="{$row['base_money']|default=0}" min="0"disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">自动延时周期</label>
+                            <div class="controls">
+                                <input type="number"  name="delay_time" value="{$row['delay_time']|default=0}" min="0">
+                                <span class="help-block">自动延时周期 分钟为单位 例如:2</span>
+                            </div>
+                        </div>
+                        <switch name="row['is_running']">
+                        <case value="1">
+                            <div class="control-group">
+                                <label class="control-label">实际结束时间</label>
+                                <div class="controls">
+                                    <input type="text"  name="end_true_time" value="{:date('Y-m-d H:i:s',$row['end_true_time'])}" >
+                                    <span class="help-block">10个字符以内</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">出价最高者</label>
+                                <div class="controls">
+                                    <input type="text"  name="winner_id" value="{$row['winer_id']}" >
+                                    <input type="text"  name="" value="{$row['now_price']}" placeholder="出价金额">
+                                    <span class="help-block">10个字符以内</span>
+                                </div>
+                            </div>
+                        </case>
+                        </switch>
+                        <div class="control-group">
+                            <label class="control-label">可使用代金券(红)比例</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" max="{$y}" name="discount" value="{$row['discount']}" disabled>
+                                <a href="javascript:;"  class="tip-bottom edit_num">
+                                    <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                <php>$dis = 0.9-$min_rate;</php>
+                                <!--<span class="help-block">原商品可使用额度 ： <font color="red">¥&nbsp;{$row['shop_price']*$dis}</font></span>-->
+                                <span class="help-block">原商品可使用比例 ： <font color="red">{$row['goods_discount']}%</font></span>
+                            </div>
+                        </div>
+                        <!--<php>$y = sprintf('%.2f',$integral/$row['shop_price']*100)</php>-->
+                        <div class="control-group">
+                            <label class="control-label">可使用代金券(黄)比例</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" name="yellow_discount" value="{$row['yellow_discount']}" max="{$y}" disabled>
+                                <a href="javascript:;"  class="tip-bottom edit_num">
+                                    <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                <!--<span class="help-block">原商品(最大)可使用额度 ： <font color="red" >¥&nbsp;<span class="cre_limit">{$integral}</span></font></span>-->
+                                <span class="help-block">原商品(最大)可使用比例 ： <font color="red" ><span class="cre_dis">{$row['goods_yellow_discount']}</span>%</font></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">可使用代金券(蓝)比例</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" name="blue_discount" value="{$row['blue_discount']}" max="{$y}" disabled>
+                                <a href="javascript:;"  class="tip-bottom edit_num">
+                                    <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                <!--<span class="help-block">原商品(最大)可使用额度 ： <font color="red" >¥&nbsp;<span class="cre_limit">{$integral}</span></font></span>-->
+                                <span class="help-block">原商品(最大)可使用比例 ： <font color="red" ><span class="cre_dis">{$row['goods_blue_discount']}</span>%</font></span>
+                            </div>
+                        </div>
+                        <div class="control-group" >
+                            <label class="control-label">是否使用积分</label>
+                            <div class="controls">
+                                <label class="radio inline" style="float: left;">
+                                    <div class="radio" id="">
+                                        <span class="checked">
+                                        <if condition="$row['id']">
+                                            <input type="radio" name="is_integral" id="is_integral" value="1" style="opacity: 0;" <if condition="$row['is_integral'] eq 1">checked</if> >
+                                            <else/>
+                                            <input type="radio" name="is_integral" id="is_integral" value="1" style="opacity: 0;" checked>
+                                        </if>
+                                        </span>
+                                    </div>
+                                    使用
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio" id=""><span class="">
+                                        <if condition="$row['id']">
+                                            <input type="radio" name="is_integral" id="no_integral" value="0" style="opacity: 0;" <if condition="$row['is_integral'] neq 1">checked</if> ></span>
+                                        <else/>
+                                            <input type="radio" name="is_integral" id="no_integral" value="0" style="opacity: 0;"></span>
+                                        </if>
+                                    </div>
+                                    不使用
+                                </label>
+                                <div class="input-daterange is_integral" <if condition="(empty($row['id']) OR ($row['id'] AND $row['is_integral'] eq 0))">style="margin-top: 1px;display:none;"</if> >
+                                    <input type="number"  name="integral_price" value="{$row['integral_price']}" class="text-width-10" min="0" step="0.01" placeholder="请填写积分价格，例如10.99">
+                                    <span class="help-block">请填写积分价格，例如10.99</span>
+                                </div>
+                        </div>
+                        <div <if condition="(empty($row['id']) OR ($row['id'] AND $row['is_integral'] eq 1))">style="margin-top: 1px;display:none;"</if> class="control-group ddd">
+                            <label class="control-label">活动赠送积分</label>
+                            <div class="controls">
+                                <input type="number" name="integral" value="{$row['integral']}" disabled>
+                                <a href="javascript:;"  class="tip-bottom edit_num">
+                                    <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                <span class="help-block">系统计算理论所得积分 ： <font color="red">{:getIntegral($row['start_price'])}</font></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">审核状态</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                                    未审核
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                                    通过
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" id="refuse" value="3" <if condition="$row['status'] eq 3" > checked </if>>
+                                    拒绝通过
+                                </label>
+                            </div>
+                            <div class="controls" id="refuse-text" <if condition="$row['status'] neq 3">style="display: none;"</if> >
+                                <textarea name="refuse_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由">
+                                    {$row['refuse_desc']}
+                                </textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                                <button class="btn btn-info ajax-post" type="submit" id="submit" target-form="form-horizontal">保 存</button>&nbsp;&nbsp;
+                                <if condition="$row['is_running'] eq 0">
+                                    <switch name="row['status']">
+                                        <case value="2">
+                                            <a href="{:U('Auction/singleEdit',array('model'=>'Auction','id'=>$row['id'],'field'=>'is_running','value'=>1))}" title="提前结束" class="btn btn-warning ajax-get">提前结束</a>&nbsp;
+                                        </case>
+                                    </switch>
+                                </if>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $('#is_integral').click(function(){
+            $('.text-width-10').attr('disabled',false);
+            $('.is_integral').show();
+            $('.ddd').hide();
+        })
+        $('#no_integral').click(function(){
+            $('.ddd').show();
+            $('.text-width-10').attr('disabled',true);
+            $('.is_integral').hide();
+        })
+        $(function(){
+
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/Auction/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/Auction/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var product_id = $(this).parents('td').siblings('td').find('select[name=product_id]').val();
+                    //获取到值
+                    var product_value = $(this).parents('td').siblings('td').find('select[name=product_id] option[value='+product_id+']').text();
+                    $('#attr').text('属性组合 ：'+product_value);
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=product_id]').val(product_id);
+                }
+            })
+            //拒绝填写理由
+            $('#refuse').click(function(){
+                if($(this).attr('checked')){
+                    $('#refuse-text').show().find('textarea').html('');
+                }
+            })
+            $('.no-refuse').click(function(){
+                $('#refuse-text').hide();
+            })
+            //点击修改积分
+            $('.edit_num').click(function(){
+                $input = $(this).prev('input');
+                $input.attr('disabled',false);
+            })
+        })
+    </script>
+</block>

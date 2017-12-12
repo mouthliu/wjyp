@@ -1,0 +1,52 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('AdjustmentPrice/update')}" id="form">
+                        <input type="hidden" name="model" value="AdjustmentPrice">
+                        <input type="hidden" name="id" value="{$_GET['id']}">
+                        <input type="hidden" name="goods_id" value="{$_GET['goods_id']}">
+
+                        <div class="control-group">
+                            <label class="control-label">调价单</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'adjustment_picture','queue_limit'=>100,'field_name'=>'adjustment_picture','field_value'=>$row['adjustment_picture'],'save_path'=>'Goods'))}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">市场价</label>
+                            <div class="controls">
+                                <input type="number" name="market_price" value="{$goods_info['market_price']}">
+                                <span class="help-block">注：如不调整，请输入{$goods_info['market_price']}</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">该店售价</label>
+                            <div class="controls">
+                                <input type="number" name="shop_price" value="{$goods_info['shop_price']}">
+                                <span class="help-block">注：如不调整，请输入{$goods_info['shop_price']}</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">结算价</label>
+                            <div class="controls">
+                                <input type="number" name="settlement_price" value="{$goods_info['settlement_price']}">
+                                <span class="help-block">注：如不调整，请输入{$goods_info['settlement_price']}</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

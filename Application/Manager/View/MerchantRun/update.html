@@ -1,0 +1,150 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <form class="form-horizontal" method="post" action="{:U('MerchantRun/update')}" autocomplete="off">
+                    <div class="tab-content">
+                            <div class="widget-content nopadding">
+                                    <input type="hidden" name="model" value="MerchantRefer">
+                                    <input type="hidden" name="id" value="{$row['id']}">
+                                    <div class="control-group">
+                                        <label class="control-label">推荐人</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{:getName('User','nickname',$row['user_id'])}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">商户名称</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['name']}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">经营范围</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{:getName('GoodsCategory','short_name',$row['range_id'])}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label">联系人</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['link_man']}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">职位</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['job']}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">联系电话</label>
+                                        <div class="controls">
+                                            <input type="text"  value="{$row['link_phone']}" disabled>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">天猫网店链接</label>
+                                        <div class="controls">
+                                            <p style="margin-top: 5px;"><a href="{$row['tmail_url']}">{$row['tmail_url']}</a></p>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">京东网店链接</label>
+                                        <div class="controls">
+                                            <p style="margin-top: 5px;"><a href="{$row['jd_url']}">{$row['jd_url']}</a></p>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">其他网店链接</label>
+                                        <div class="controls">
+                                            <p style="margin-top: 5px;"><a href="{$row['other_url']}">{$row['other_url']}</a></p>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">产品描述</label>
+                                        <div class="controls">
+                                            <textarea disabled>{$row['product_desc']}</textarea>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">产品照片</label>
+                                        <div class="controls">
+                                            <foreach name="row['product']" item="val">
+                                                <img src="__ROOT__{$val}" alt="" width="200">&nbsp;
+                                            </foreach>
+
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">营业执照</label>
+                                        <div class="controls">
+                                            <img src="__ROOT__{$row['business_license']}" alt="" width="200">
+
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">其他证件照</label>
+                                        <div class="controls">
+                                            <foreach name="row['other']" item="val">
+                                                <img src="__ROOT__{$val}" alt="" width="200">&nbsp;
+                                            </foreach>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">申请状态</label>
+                                        <div class="controls">
+                                            <label class="radio inline">
+                                                <input type="radio" name="is_status" class="no-refuse" value="0" <if condition="$row['is_status'] eq 0" > checked </if>>
+                                                未确认
+                                            </label>
+                                            <label class="radio inline">
+                                                <input type="radio" name="is_status" class="no-refuse" value="1" <if condition="$row['is_status'] eq 1" > checked </if>>
+                                                已通过
+                                            </label>
+                                            <label class="radio inline">
+                                                <input type="radio" name="is_status" id="refuse" value="2" <if condition="$row['is_status'] eq 2" > checked </if>>
+                                                拒绝通过
+                                            </label>
+                                        </div>
+                                        <div class="controls" id="refuse-text" <if condition="$row['is_status'] neq 2">style="display: none;"</if> >
+                                        <textarea name="is_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由">{$row['is_desc']}</textarea>
+                                    </div>
+                            </div>
+                    </div>
+
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <div class="form-actions">
+                        <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        <button class="btn btn-info ajax-post " id="submit" type="submit" target-form="form-horizontal">保 存</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        //拒绝填写理由
+        $('#refuse').click(function(){
+            if($(this).attr('checked')){
+                $('#refuse-text').show();
+            }
+        })
+        $('.no-refuse').click(function(){
+            $('#refuse-text').hide();
+        })
+    </script>
+</block>

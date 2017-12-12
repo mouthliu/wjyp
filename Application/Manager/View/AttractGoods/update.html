@@ -1,0 +1,288 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="{$_GET['theme']==1?'':'active'}"><a href="#home">基本信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('AttractGoods/add')}" autocomplete="off">
+                    <input type="hidden" name="model" value="AttractGoods">
+                    <input type="hidden" name="a_id" value="{$a_id}">
+                    <div class="tab-content">
+                        <div class="tab-pane {$_GET['theme']==1?'':'active'}" id="home">
+                            <!--主要信息-->
+                            <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label">商品名称</label>
+                                    <div class="controls">
+                                        <input type="text" name="goods_name" value="{$row['goods_name']}">
+                                        <span class="help-block">15个字符以内 英文字母</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">所属商家</label>
+                                    <div class="controls">
+                                        <select name="merchant_id" style="margin-bottom: 0px; width: 110px;">
+                                            <option value="">所属商家</option>
+                                            <foreach name="merchant" item="v">
+                                                <option <if condition="$row['merchant_id'] == $v['merchant_id']"> selected="selected"</if> value="{$v.merchant_id}">{$v['merchant_name']}</option>
+                                            </foreach>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品条码</label>
+                                    <div class="controls">
+                                        <input type="number" name="goods_code" value="{$row['goods_code']}">
+                                        <span class="help-block">商品条码(格式为数字 例如:1000000)</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">产品规格</label>
+                                    <div class="controls">
+                                        <input type="text" name="goods_specification" value="{$row['goods_specification']}">
+                                        <span class="help-block">商品规格</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">销售价格</label>
+                                    <div class="controls">
+                                        <input type="number" name="shop_price" value="{$row['shop_price']}">
+                                        <span class="help-block">销售价格</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">结算价格</label>
+                                    <div class="controls">
+                                        <input type="number" name="settlement_price" value="{$row['settlement_price']}">
+                                        <span class="help-block">平台给供应商结算金额</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">市场价</label>
+                                    <div class="controls">
+                                        <input type="number" name="market_price" value="{$row['market_price']}">
+                                        <span class="help-block">市场价</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">产品照片</label>
+                                    <div class="controls">
+                                        {:hook('upload',array('is_first'=>1,'unique_sign'=>'Goods_img','queue_limit'=>10,'field_name'=>'goods_img','field_value'=>$row['goods_img'],'save_path'=>'Goods'))}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品入驻意见</label>
+                                    <div class="controls">
+                                        <textarea name="goods_opinion">{$row['goods_opinion']}</textarea>
+                                        <!--<input type="text" name="goods_opinion" value="{$row['goods_opinion']}">-->
+                                        <span class="help-block">商品入驻意见</span>
+                                    </div>
+                                </div>
+                                <!--<div class="control-group">-->
+                                    <!--<label class="control-label">审核</label>-->
+                                    <!--<div class="controls">-->
+                                        <!--<input type="text" name="lead_opinion" value="{$row['lead_opinion']}">-->
+                                        <!--<span class="help-block">领导审核，填写意见</span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                            </div>
+
+                        </div>
+
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">保 存</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            todayBtn:  1,
+            autoclose: 1,
+            startView: 2,
+            minView: 3,
+            forceParse: 0
+        });
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //首先刚开始进行获取数据
+        $(function(){
+            var typeid = $('input[name=goods_typeid]').val();
+            var goodsid = $('input[name=id]').val();
+            //从后台获取数据
+            $.post("__MODULE__/Goods/getGoodsAttr",{typeid:typeid,goodsid:goodsid},function(data){
+                if(data){
+                    //   获取到类型元素
+                    $('#attr').append(data);
+                }else{
+                    return false;
+                }
+            })
+        })
+        //当选择选择分类的时候后获取类型
+        $('#category_list li').each(function(){
+            $(this).click(function(){
+                //清楚原有的类型
+                $('#type_list li').remove();
+                $(this).parents('#attr').find('.attr-list').remove();
+                $('#type_list').siblings('.checked').html($('#type_list').siblings('.checked').attr('data-default'));
+                var cate_id = $(this).attr('data-value');
+                //从后台获取类型数据
+                $.post("__MODULE__/Goods/getGoodsType",{cate_id:cate_id},function(data){
+                    if(data){
+//                        获取到类型列表
+                        $('#type_list').append(data);
+                    }else{
+                        return false;
+                    }
+                })
+            })
+        })
+        $('#type_list li').live({
+            'click':function(){
+                //首先清除所有的
+                $('#type_list').parents('#attr').find('.attr-list').remove();
+                //获取到类型id
+                var typeid = $(this).attr('data-value');
+                var goodsid = $('input[name=id]').val();
+                $('#type_list').siblings('.checked').html($(this).find('a').html());
+                //赋值给隐藏域
+                $('input[name=goods_typeid]').val(typeid);
+                //从后台获取数据
+                $.post("__MODULE__/Goods/getGoodsAttr",{typeid:typeid,goodsid:goodsid},function(data){
+                    if(data){
+//                        获取到类型元素
+                        $('#attr').append(data);
+                    }else{
+                        return false;
+                    }
+                })
+            }
+        });
+
+        //当点击加号的时候出现新的节点
+        $('a.add').live({
+            'click':function(){
+                var count = $(this).attr('data-total');
+                //判断当前属性值个数和下拉框个数
+                var length = $(this).parents('#attr').find('.controls select[data-total='+count+']').length;
+                console.log(count,length);
+                if(length >= count){
+                    alert("属性值重复,请注意检查");
+                    return false;
+                }
+                //获取到当前父级div
+                var oldDiv = $(this).parents('div.control-group');
+                //克隆节点
+                var newDiv = oldDiv.clone();
+                //同时把goods_attr_id_list 赋值未0
+                newDiv.find('input[name="goods_attr_id_list[]"]').val("");
+                //替换其中的图标
+                $('<a href="javascript:void(0);" class="desc"><i class="icon-minus" ></i></a>').replaceAll(newDiv.find('a'));
+                //添加到之后
+                oldDiv.after(newDiv);
+            }
+        })
+        $('a.desc').live({
+            'click':function(){
+                //获取到当前父级div删除
+                var oldDiv = $(this).parents('div.control-group').remove();
+
+            }
+        })
+
+        //       $('.dropdown-menu li a.cat').click(function(){
+        //           //获取到当前的分类名称
+        //           var cat_name = $(this).find('span').text();
+        //           //获取到父级的div
+        //           $(this).parents("div").nextAll('input[name=cat_name]').val(cat_name);
+        //
+        //       })
+
+        $('.dropdown-menu li a.brand').click(function(){
+            //获取到当前的品牌名称
+            var brand_name = $(this).find('span').text();
+            //获取到父级的div
+
+            $(this).parents("div").nextAll('input[name=brand_name]').val(brand_name);
+            //获取到图片
+            console.log($(this).parents('div.btn-group'));
+            $(this).parents('div.btn-group').nextAll('div.btn-group').find("img").attr("src",$(this).attr('data-src')) ;
+        })
+        //当选择外国的时候让国家要补充的信息显示
+        $('.dropdown-menu li a.country').click(function(){
+            //获取到当前的品牌名称
+            var country_id = $(this).parents('li').attr("data-value");
+            //获取到父级的div
+            if(country_id != 0){
+                $("#country_info").show();
+            }else{
+                $("#country_info").hide();
+            }
+        })
+        //主题活动显示按钮
+        //        $("#themeRadio").click(function(){
+        //            if($(this).attr("checked")){
+        //                $("#theme").show();
+        //            }else{
+        //                $("#theme").hide();
+        //                $("input[name=theme_id]").val('0');
+        //            }
+        //        })
+        //        $("#themeRadio2").click(function(){
+        //            $("#theme").hide();
+        //            $("input[name=theme_id]").val('0');
+        //        })
+        //临期填写
+        $('#is-end').click(function(){
+            if($(this).attr('checked')){
+                $('.is-end').show();
+            }
+        });
+        $('#no-end').click(function(){
+            $('.is-end').hide();
+        });
+        //商品几成新
+        $('#is_new_goods').click(function(){
+            if($(this).attr('checked')){
+                $('.is_new_goods').hide();
+            }
+        });
+        $('#no_new_goods').click(function(){
+            $('.is_new_goods').show();
+        });
+
+        //运费
+        $('#is-fee').click(function(){
+            if($(this).attr('checked')){
+                $('#fee').show();
+            }
+        })
+        $('#no-fee').click(function(){
+            $('#fee').hide();
+        })
+    </script>
+</block>

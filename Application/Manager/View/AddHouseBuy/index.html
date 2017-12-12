@@ -1,0 +1,123 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('HouseBuy/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('HouseBuy/forbid',array('model'=>'HouseBuy','status'=>0))}" target-form="ids">下架</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('HouseBuy/resume',array('model'=>'HouseBuy','status'=>1))}" target-form="ids">在售</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('HouseBuy/delete',array('model'=>'HouseBuy','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                    <form action="{:U('HouseBuy/index')}" method="post" class="form-search">
+                        <b>搜索：</b>
+
+                        &nbsp;
+                        <input type="text" class="input-medium search-query" name="house_name" value="{$_REQUEST['house_name']}" placeholder="输入楼盘名称查询" style="height:auto" name="">
+                        <button type="submit" class="btn">查询</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+                        <!--<select name="theme" class="select-c xuan" data-field="brand_id">-->
+                            <!--<option value="" >按品牌筛选</option>-->
+                            <!--<foreach name="brand_list" item="v">-->
+                                <!--<option value="{$v['id']}" <if condition="$_REQUEST['brand_id'] eq $v['id']">selected</if> >-->
+                                <!--{$v['brand_name']}-->
+                                <!--</option>-->
+                            <!--</foreach>-->
+                        <!--</select>-->
+                        <!--<select name="theme" class="select-c xuan" data-field="car_style_id">-->
+                            <!--<option value="" >按车型筛选</option>-->
+                            <!--<foreach name="style_list" item="v">-->
+                                <!--<option value="{$v['id']}" <if condition="$_REQUEST['car_style_id'] eq $v['id']">selected</if> >{$v['style_name']}</option>-->
+                            <!--</foreach>-->
+                        <!--</select>-->
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>楼盘名称</th>
+                            <th>略缩图</th>
+                            <th>开发商</th>
+                            <th>房价区间</th>
+                            <th>在售房源</th>
+                            <th>联系电话</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['house_name']}</td>
+                                <td><img src="__ROOT__{:getPath($row['house_img'])}" alt="" style="width:60px;height:30px;"></td>
+                                <td>{$row['developer']}</td>
+                                <td>{$row['min_price']}-{$row['max_price']} /平
+                                </td>
+                                <td>{$row['now_num']}套</td>
+                                <td>{$row['link_phone']}</td>
+                                <td>{$row['status']==1?'<font color="green">在售</font>':'<font color="red">下架</font>'}</td>
+                                <td>
+                                    <a href="{:U('HouseBuy/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('HouseStyle/index',array('house_id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">查看户型</span></a>&nbsp;
+                                    <a href="{:U('HouseBuy/delete',array('model'=>'HouseBuy','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        //修改字段值开始
+        $('.editArea').dblclick(function(){
+            var input = $('<input type="number" name="HouseBuy_num" value="" style="max-width:80px;" />');
+            var val = $(this).find('i').text();
+            ($(this).find('i')).after(input.val(val));
+            $(this).find('i').remove();
+        })
+        $('input[name="HouseBuy_num"]').live({
+            'blur':function(){
+                var $this = $(this);
+                var model = $(this).parents('td').attr('data-model');
+                var id = $(this).parents('td').attr('data-id');
+                var field = $(this).parents('td').attr('data-field');
+                var num = $(this).val();
+                $.post("__URL__/setField",{model:model,field:field,value:num,id:id},function(data){
+                    $this.after('<i>'+num+'</i>');
+                    $this.remove();
+                })
+            }
+        })
+        //修改字段值结束
+        $('.xuan').change(function(){
+            var val = $(this).val();
+            if(val){
+                var field = $(this).attr('data-field');
+                // 调转到对应ID的url地址
+                location="__URL__/index/"+field+"/"+val;
+
+            }
+        })
+    </script>
+</block>

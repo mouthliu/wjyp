@@ -1,0 +1,232 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        td.tabhead{
+            font-weight: bold;
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs " id="myTab" >
+                    <li class="{$_GET['theme']==1?'':'active'}"><a href="#home">基本信息</a></li>
+                    <li><a href="#pic">商品信息</a></li>
+                    <li><a href="#attr">收货人信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('CarOrder/actUpdate')}" autocomplete="off">
+                    <input type="hidden" name="model" value="CarOrder">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="home" style="width: 50%;margin: 0 auto;">
+                            <!--主要信息-->
+                            <table class="table table-bordered table-striped with-check" >
+                                <thead>
+                                <tr >
+                                    <th colspan="4" style="text-align: center"><h4>基本信息</h4></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td style="width: 15%;" class="tabhead">订单号</td>
+                                    <td style="width: 35%;">{$row['order_sn']}</td>
+                                    <td style="width: 15%;" class="tabhead">订单类型</td>
+                                    <td style="width: 35%;">汽车购</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">订单状态</td>
+                                    <td>
+                                        <eq name="row['status']" value="0">待付款</eq>
+                                        <eq name="row['status']" value="1">办手续中</eq>
+                                        <eq name="row['status']" value="2">待评价</eq>
+                                        <eq name="row['status']" value="3">待定</eq>
+                                        <eq name="row['status']" value="4">已完成</eq>
+                                        <eq name="row['status']" value="5">已取消</eq>
+                                    </td>
+                                    <td class="tabhead">购买用户</td>
+                                    <td>{:getName("User","real_name",$row['user_id'])}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">下单时间</td>
+                                    <td>{:date('Y-m-d H:i:s',$row['create_time'])}</td>
+                                    <td class="tabhead">支付方式</td>
+                                    <td>
+                                        <eq name="row['pay_type']" value="0">待支付</eq>
+                                        <eq name="row['pay_type']" value="1">支付宝支付</eq>
+                                        <eq name="row['pay_type']" value="2">微信支付</eq>
+                                        <eq name="row['pay_type']" value="3">余额支付</eq>
+                                        <eq name="row['pay_type']" value="4">积分支付</eq>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">定金</td>
+                                    <td>￥{$row['pre_money']}</td>
+                                    <td class="tabhead">定金抵现金额</td>
+                                    <td>￥{$row['true_pre_money']}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead" >使用红色代金券的比例</td>
+                                    <td>{$row['discount']}</td>
+                                    <td class="tabhead" >使用黄色代金券的比例</td>
+                                    <td>{$row['yellow_discount']}</td>
+
+                                </tr>
+                                <tr>
+                                    <td class="tabhead" >使用蓝色代金券的比例</td>
+                                    <td>{$row['blue_discount']}</td>
+                                    <td class="tabhead">使用积分数</td>
+                                    <td>{$row['integral']}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead" >订单总金额</td>
+                                    <td>￥{$row['order_price']}</td>
+                                    <td class="tabhead" >商品总金额</td>
+                                    <td>￥{$row['goods_price']}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead" >购买数量</td>
+                                    <td>{$row['num']}</td>
+                                    <td class="tabhead"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead" >店铺名称</td>
+                                    <td>{$row['shop_name']}</td>
+                                    <td class="tabhead" >店铺联系电话</td>
+                                    <td>{$row['shop_mobile']}</td>
+
+                                </tr>
+                                <tr>
+                                    <td class="tabhead" >店铺地址</td>
+                                    <td>{$row['address']}</td>
+                                    <td class="tabhead"></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane " id="attr" style="width: 50%;margin: 0 auto;">
+                            <!--收货人信息-->
+                            <table class="table table-bordered table-striped with-check" >
+                                <thead>
+                                <tr >
+                                    <th colspan="4" style="text-align: center"><h4>收货人信息</h4></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td style="width: 15%;" class="tabhead">收货人</td>
+                                    <td style="width: 65%;">{$row['receiver']}</td>
+
+                                </tr>
+                                <tr>
+                                    <td style="width: 15%;" class="tabhead">地址</td>
+                                    <td style="width: 65%;">{$row['address']}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">手机</td>
+                                    <td>{$row['phone']}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">邮编</td>
+                                    <td>{$row['post_code']|default='000001'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabhead">备注信息</td>
+                                    <td colspan="3">暂无备注</td>
+
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--判断是否属性那里有自定义属性
+                            根据商品id 和自定义属性ID 查
+                            select picture from goods_gallery where goods_id= and goods_attr_id =
+                        -->
+                        <div class="tab-pane" id="pic" style="width: 50%;margin: 0 auto;">
+
+                            <!--商品信息-->
+                            <volist name="row['goods_info']" id="v">
+                                <table class="table table-bordered table-striped with-check" >
+                                    <thead>
+                                    <tr >
+                                        <th colspan="4" style="text-align: center"><h4>商品{$key+1}信息</h4></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td style="width: 15%;" class="tabhead">商品名称</td>
+                                        <td  colspan="3">{$v['goods_name']}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 15%;" class="tabhead">货号</td>
+                                        <td style="width: 35%;" >{$v['goods_sn']|default='无'}</td>
+                                        <td style="width: 15%;" class="tabhead">货品号</td>
+                                        <td >
+                                            <empty name="v['product_id']">
+                                                暂无货品
+                                                <else/>
+                                                {:getName('Products','product_sn',$v['product_id'])}
+                                            </empty>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td class="tabhead">属性</td>
+                                        <td>{$v['goods_attr']|default='普通'}</td>
+                                        <td class="tabhead">数量</td>
+                                        <td>{$v['goods_num']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabhead">价格</td>
+                                        <td>¥ {$v['shop_price']}</td>
+                                        <td class="tabhead">优惠</td>
+                                        <td>¥ 0</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td class="tabhead">小计</td>
+                                        <td colspan="3">¥ {$v['shop_price']*$v['goods_num']}</td>
+
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </volist>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+
+                        <div class="bs-docs-example " style="width: 550px;margin:auto;text-align: right;">
+                            <p class="muted">商品总金额：¥{$row['goods_amount']} - 折扣：¥{$row['discount']|default="0.00"} + 配送费用：¥{$row['shipping_fee']} + 支付费用：¥0.00 </p>
+                            <p class="text-warning">= 订单总金额：¥{$row['goods_amount']-$row['discount']-$row['shipping_fee']}</p>
+                            <p class="text-error">- 已付款金额：¥{$row['money_paid']} - 使用余额： ¥{$row['use_balance']} - 使用购物券： ¥{$row['integral_money']} </p>
+                            <p class="text-info text-right">= 应付款金额：¥44.75</p>
+                        </div>
+                        <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+
+
+
+
+    </script>
+</block>

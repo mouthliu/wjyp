@@ -1,0 +1,99 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+
+                    <button class="btn btn-success href" url="__MODULE__/Attribute/add/typeid/{$Think.get.id}" target-form="ids">新增</button>&nbsp;
+
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Attribute/delete',array('model'=>'Attribute','status'=>9))}" target-form="ids">删除</button>&nbsp;
+
+
+                    <form action="{:U('GoodsType/index')}" method="post" class="form">
+                        <select name="type" class="select-c">
+                            <volist name="type_list" id="v">
+                                <if condition="$Think.get.id eq $v['id']">
+                                    <option value="{$v['id']}" selected>{$v['type_name']}</option>
+                                <else />
+                                    <option value="{$v['id']}" >{$v['type_name']}</option>
+                                </if>
+
+                            </volist>
+
+
+                        </select>
+
+
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>属性名称</th>
+                            <th>所属类型</th>
+                            <th>是否支持自定义</th>
+                            <th>是否启用相册</th>
+                            <th>属性预选值</th>
+                            <th>排序</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['attr_name']}</td>
+                                <td>{$row['type_name']}</td>
+                                <td><b>{$row['attr_type']==1?'支持':'×'}</b></td>
+                                <td>{$row['is_attr_gallery']==1?'启用':'不启用'}</td>
+                                <td>{$row['attr_values']}</td>
+                                <td>{$row['sort']}</td>
+                                <td>
+
+                                    <a href="{:U('Attribute/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('Attribute/delete',array('model'=>'Attribute','ids'=>$row['id'],'status'=>9))}" title="移除" class="tip-bottom">
+                                        <span class="label label-warning">移除</span></a>&nbsp;
+
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('select[name=type]').change(function(){
+                //获取到对应的id
+                var typeid = $(this).val();
+               // 调转到对应ID的url地址
+                if(typeid){
+                    location="__MODULE__/Attribute/index/id/"+typeid;
+                }
+
+
+            })
+        })
+    </script>
+</block>

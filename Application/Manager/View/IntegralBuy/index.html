@@ -1,0 +1,126 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <a class="btn btn-success" href="{:U('IntegralBuy/addIntegralBuyGoods')}">新增可兑换商品</a>&nbsp;
+                </div>
+
+                <!--// search start-->
+                <div class="search-main" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('IntegralBuy/update')}" id="form">
+                        <div class="search-frame-main">
+                            <input type="hidden" name="model" value="IntegralBuy">
+                            <input type="hidden" name="id" id="row_id" value="">
+                            商品名称：
+                            <input class="search-frame"  id="row_type_name" style="width:300px;" type="text" name="goods_name" value="" readonly>
+                            所需积分:
+                            <input class="search-frame"  id="row_sort" style="width:150px;" type="number" name="use_integral" value="" >
+                            <select name="is_recommend" id="" style="width: 80px;">
+                                <option value="1">推荐</option>
+                                <option value="0">不推荐</option>
+                            </select>
+                            <button class="btn btn-inverse ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal" style="margin:4px 10px;">保存</button>
+                            <a class="btn clearInput"  style="margin:4px 10px;">取消</a>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>ID</th>
+                            <th>商品名称</th>
+                            <th>所属店铺</th>
+                            <th>所需积分</th>
+                            <th>是否推荐</th>
+                            <th>库存</th>
+                            <th>兑换数量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><a href="__MODULE__/Goods/update/id/{$row['goods_id']}">{$row['goods_name']}</a></td>
+                                <td>{$row['merchant_name']}</td>
+                                <td>{$row['use_integral']}</td>
+                                <td class="recommend" data-rec="{$row['is_recommend']}" data-gid="{$row['id']}" data-model="IntegralBuy" style="cursor: pointer;">
+                                    {$row['is_recommend']?'<span class="label label-success">✔</span>':'<span class="label label-important">✘</span>'}
+                                </td>
+                                <td>
+                                    {$row['goods_num']}
+                                </td>
+                                <td>
+                                    {$row['exchange_num']}
+                                </td>
+                                <td>
+                                    <a  title="编辑" class="tip-bottom row-edit" data-id="{$row['id']}" data-value="{$row['goods_name']}" data-sort="{$row['use_integral']}" style="cursor: pointer;">
+                                        <span class="label label-success">编辑</span></a>&nbsp;
+                                    <a href="{:U('IntegralBuy/remove',array('model'=>'IntegralBuy','ids'=>$row['id']))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-warning">移出</span></a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $('.clearInput').click(function(){
+            $('.search-main').hide();
+        });
+        $('.row-edit').click(function () {
+            var id = $(this).attr('data-id');
+            var type_name =$(this).attr('data-value');
+            var sort =$(this).attr('data-sort');
+            $('#row_id').val(id);
+            $('#row_type_name').val(type_name);
+            $('#row_sort').val(sort);
+            $('.search-main').show();
+        });
+        //设置推荐
+        $('.recommend').click(function(){
+            $this = $(this);
+            var gid = $(this).attr('data-gid');
+            var model = $(this).attr('data-model');
+            //获取到是否是推荐
+            var is = $(this).attr('data-rec');
+            if( is != '0'){
+                $.post('__URL__/setRecommend',{model:model,id:gid,is_recommend:0},function(data){
+                    if(data=='1'){
+                        $this.html('<span class="label label-important">✘</span>');
+                        $this.attr('data-rec','0');
+                    }
+                })
+            }else{
+                $.post('__URL__/setRecommend',{model:model,id:gid,is_recommend:1},function(data){
+                    if(data=='1'){
+                        $this.html('<span class="label label-success">✔</span>');
+                        $this.attr('data-rec','1');
+                    }
+                })
+
+            }
+        });
+    </script>
+</block>

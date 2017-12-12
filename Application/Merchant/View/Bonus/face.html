@@ -1,0 +1,146 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('Auction/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Auction/forbid',array('model'=>'Auction','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Auction/resume',array('model'=>'Auction','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('Auction/delete',array('model'=>'Auction','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <!--<span style="display: none">-->
+                    <!--<button class="btn btn-primary ajax-post" url="{:U('Auction/move')}" target-form="ids">确定</button>-->
+                    <!--</span>-->
+                    <h4>红包封面</h4>
+
+                </div>
+
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Bonus/doUpdateFace')}" id="form">
+                        <input type="hidden" name="model" value="BonusFace">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="merchant_id" value="{:getMerchantId()}">
+                        <div class="control-group">
+                            <label class="control-label">封面</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'picture','field_name'=>bonus_face,'field_value'=>$row['bonus_face'],'save_path'=>'Bonus'))}
+                                <span class="help-block">上传封面大小 832 X 300</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包总额</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="total_money" value="{$row['total_money']}" id="all">
+                                <span class="help-block">红包总额</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包最小值</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="min_val" value="{$row['min_val']}" id="min">
+                                <span class="help-block">红包上限</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包最大值</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="max_val" value="{$row['max_val']}" id="max">
+                                <span class="help-block">红包下限</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">红包大约个数</label>
+                            <div class="controls">
+                                <input type="number" min="0" name="" value="" disabled id="count">
+                                <span class="help-block">仅作为理论推断值，具体个数以实际发放数量为准</span>
+                            </div>
+                        </div>
+                        <if condition="$row['status'] eq 2">
+                            <div class="control-group">
+                                <label class="control-label">红包余额</label>
+                                <div class="controls">
+                                    <input type="number" min="0" name="" value="{$row['total_money']-$row['send_money']}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">已发出数量</label>
+                                <div class="controls">
+                                    <input type="number" min="0" name="" value="{$row['send_num']}">
+                                </div>
+                            </div>
+                        </if>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                            <if condition="$row['status'] neq 2">
+                                <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                            </if>　
+                        </div>
+                    </form>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 模态框--拒绝原因查看 -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 700px;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">审核记录--拒绝原因</h3>
+        </div>
+        <div class="modal-body" >
+            <div class="row-fluid show-grid" id="tips">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th >操作时间</th>
+                        <th >操作者</th>
+                        <th >未通过原因</th>
+                    </tr>
+                    </thead>
+                    <tbody class="tbody" style="width">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+            function getBonusCount(){
+                var all_money = $("#all").val();
+                var min_money = $("#min").val();
+                var max_money = $("#max").val();
+                var count = 0;
+                if(all_money && min_money &&max_money){
+                    count = Math.ceil(all_money/(min_money*0.95+max_money*0.05));
+                }
+                $('#count').val(parseInt(count));
+            }
+            //计算红包大约个数
+            $('#min,#max,#all').blur(function(){
+                getBonusCount();
+            })
+
+        })
+    </script>
+</block>

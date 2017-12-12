@@ -1,0 +1,644 @@
+<extend name="Public/base" />
+
+
+<block name="main">
+    <link rel="stylesheet" href="__PUBLIC__/Static/datetimepicker/css/datetimepicker.css" />
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        .cate-check{
+            background: #ccc;
+            opacity: 0.5;
+        }
+    </style>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a href="#home">基本信息</a></li>
+                    <li><a href="#cate_list">经营分类</a></li>
+                    <li><a href="#info">资质信息</a></li>
+                    <li><a href="#contract">协议相关</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('Merchant/doAdd')}" id="form">
+                    <input type="hidden" name="model" value="Merchant">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <div class="tab-content">
+                        <div class="tab-pane {$_GET['theme']==1?'':'active'}" id="home">
+                            <!--主要信息-->
+                            <div class="widget-content nopadding">
+                                <if condition="$_GET['parent_id'] gt 0">
+                                    <div class="control-group">
+                                        <label class="control-label">推荐人</label>
+                                        <div class="controls">
+                                            <input type="text"  name="nickname" value="{:getName('User','nickname',$_GET['parent_id'])}" readonly>
+                                            <input type="hidden"  name="parent_id" value="{$_GET['parent_id']}" >
+                                        </div>
+                                    </div>
+                                </if>
+                                <div class="control-group">
+                                    <label class="control-label">账户名</label>
+                                    <div class="controls">
+                                        <input type="text"  name="account" value="{$row['account']}" >
+                                        <span class="help-block">用于商家登陆</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">店铺名称</label>
+                                    <div class="controls">
+                                        <input type="text"  name="merchant_name" value="{$row['name']}" >
+                                        <span class="help-block">90个字符以内</span>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">所属招商人员</label>
+                                    <div class="controls">
+                                        <select name="a_id" style="margin-bottom: 0px; width: 200px;">
+                                            <option value="">所属招商人员</option>
+                                            <foreach name="group" item="v">
+                                                <option <if condition="$row['a_id'] == $v['a_id']"> selected</if>
+                                                value="{$v.a_id}">{$v['account']}</option>
+                                            </foreach>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">经营品牌</label>
+                                    <div class="controls" style="width:800px;max-height:200px;overflow:auto;border-top:1px solid #999;">
+                                        <foreach name="brand_list" item="ran">
+
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" name="brands[]"  value="{$ran['id']}" <if condition="in_array($ran['id'],explode(',',$row['brands']))">checked</if> class="ids"> {$ran['brand_name']}
+                                            </label>
+                                        </foreach>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品产地</label>
+                                    <div class="controls" style="width:800px;max-height:200px;overflow:auto;border-top:1px solid #999;">
+
+                                        <foreach name="country_list" item="bra">
+                                            <label class="checkbox inline" style="width:160px;">
+                                                <input type="checkbox" name="countrys[]"  value="{$bra['id']}" <if condition="in_array($bra['id'],explode(',',$row['countrys']))">checked</if>> {$bra['country_name']}
+                                            </label>
+                                        </foreach>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">店铺logo</label>
+                                    <div class="controls">
+                                        {:hook('upload',array('is_first'=>1,'unique_sign'=>'logo','field_name'=>'logo','field_value'=>$row['logo'],'save_path'=>'Merchant'))}
+                                        <span class="help-block">图片比例 3:2</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">店铺描述</label>
+                                    <div class="controls">
+                                        <textarea name="merchant_desc">{$row['merchant_desc']}</textarea>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">门店地址</label>
+                                    <div class="controls">
+                                        <select name="province_id" class="province">
+                                            <option value="">省份</option>
+                                            <volist name="province" id="vo">
+                                                <option value="{$vo['id']}" <eq name="vo['id']" value="$row['province_id']">selected</eq> >{$vo['region_name']}</option>
+                                            </volist>
+                                        </select>
+
+                                        <select name="city_id" class="city">
+
+                                            <if condition="empty($row['city_id'])">
+                                                <option value="">城市</option>
+                                                <else />
+                                                <volist name="city" id="vo1">
+                                                    <option value="{$vo1['id']}" <eq name="vo1['id']" value="$row['city_id']">selected</eq> >{$vo1['region_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                        <select name="area_id" class="area">
+                                            <if condition="empty($row['area_id'])">
+                                                <option value="">地区</option>
+                                                <else />
+                                                <volist name="area" id="vo2">
+                                                    <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['area_id']">selected</eq> >{$vo2['region_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                        <select name="street_id" class="street">
+                                            <if condition="empty($row['street_id'])">
+                                                <option value="">街道</option>
+                                                <else />
+                                                <volist name="street" id="vo2">
+                                                    <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['street_id']">selected</eq> >{$vo2['street_name']}</option>
+                                                </volist>
+                                            </if>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">详细地址</label>
+                                    <div class="controls">
+                                        <textarea name="address">{$row['address']}</textarea>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">门店电话</label>
+                                <div class="controls">
+                                    <input type="text" name="merchant_phone" value="{$row['merchant_phone']}" >
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">营业时间</label>
+                                <div class="controls">
+                                    <input type="text" name="open_time" value="{$row['open_time']}" >
+                                    <span class="help-block">格式要求:  09:00-20:00</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺类型</label>
+                                <div class="controls">
+                                    <!--<label class="radio inline">-->
+                                        <!--<input type="radio" name="merchant_type"  value="0" <if condition="$row['merchant_type'] eq 0" > checked </if>>-->
+                                        <!--普通-->
+                                    <!--</label>-->
+                                    <label class="radio inline">
+                                        <input type="radio" name="level"  value="1" <if condition="$row['level'] eq 1" > checked </if>>
+                                        旗舰店
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="level"  value="2" <if condition="$row['level'] eq 2" > checked </if>>
+                                        专营店
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="level"  value="3" <if condition="$row['level'] eq 3" > checked </if>>
+                                        专卖店
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="cate_list">
+                            <empty name="row['id']">
+                                <div class="control-group" >
+                                     <!--<label class="control-label">经营分类</label>-->
+                                    <!-- <div class="controls " style="width:800px;max-height:500px;overflow:auto;border-top:1px solid #999;"> -->
+                                    <volist name="cate_list" id="bra">
+                                        <div class="cate-area">
+                                            <label class="checkbox inline">
+                                                <h4>{$bra['short_name']}
+                                                    <input type="checkbox" name="range_id[]" value="{$bra['id']}" class="top-cate">
+                                                </h4>
+                                            </label>
+                                            <volist name="bra['under']" id="val2">
+                                                <div style="display: none;" class="new-update clearfix cate-check">
+                                                    <i class="">
+                                                        <div class="checker" >
+                                                            <span>
+                                                                <input type="checkbox" class="check-nexts-all" style="opacity: 0;" disabled>
+                                                            </span>
+                                                        </div>
+                                                    </i>
+                                                    <div class="update-done">
+                                                        <a href="javascript:void(0)" title=""><strong>{$val2['short_name']}</strong></a>
+                                                        <span style="margin-top: 10px;">
+                                                        <volist name="val2['under']" id="val3">
+                                                            <div class="checker spss" style=" height: auto;width: 100%;">
+                                                                <span class="sps" style="float: left;">
+                                                                <input class="bbb" type="checkbox" name="cates[]" value="{$val3['id']}"  style="display: block;float: left;" disabled >
+                                                                </span>
+                                                                <p style="display: block;float: left;height: auto;width: 80px;">{$val3['short_name']}</p>
+                                                                <input style="display: block;float: left; height: auto;width: 300px;margin-left: 20px;" type="text"  name="min_rate[]" value="{$row['min_rate']}" placeholder="平台服务费（百分比，填写 例如:50.55）" class="aaa" value="dsadas" min="0" step="0.01" max="100" disabled>
+                                                            </div>
+                                                        </volist>
+                                                        </span>
+                                                    </div>
+                                                    <!--<div class="update-date"><span class="update-day"></span></div>-->
+                                                </div>
+                                            </volist>
+                                        </div>
+                                    </volist>
+                                    <span class="help-block">请先选择经营范围 然后选择底下分类</span>
+                                    <!-- </div> -->
+                                </div>
+                                <else />
+
+                                <div class="control-group" >
+                                    <!-- <label class="control-label">经营分类</label> -->
+                                    <!-- <div class="controls " style="width:800px;max-height:500px;overflow:auto;border-top:1px solid #999;"> -->
+                                    <volist name="cate_list" id="bra">
+                                        <if condition="in_array($bra['id'],explode(',',$row['range_id']))">
+                                            <div class="cate-area">
+                                                <label class="checkbox inline">
+                                                    <h4>{$bra['short_name']} <input type="checkbox" name="range_id[]" value="{$bra['id']}" <if condition="in_array($bra['id'],explode(',',$row['range_id']))">checked</if>  class="top-cate"></h4>
+                                                </label>
+                                                <volist name="bra['under']" id="val2">
+                                                    <div style="display: none;" class="new-update clearfix cate-check2">
+                                                        <i class="">
+                                                            <div class="checker " >
+                                                                <span >
+                                                                    <input type="checkbox" class="check-nexts-all" style="opacity: 0;" >
+                                                                </span>
+                                                            </div>
+                                                        </i>
+                                                        <div class="update-done">
+                                                            <a href="javascript:void(0)" title=""><strong>{$val2['short_name']}</strong></a>
+                                                        <span style="margin-top: 10px;">
+                                                        <volist name="val2['under']" id="val3">
+                                                            <div class="checker spss" style=" height: auto;width: 100%;">
+                                                                <span class="sps" style="float: left;">
+                                                                <input class="bbb" type="checkbox" name="cates[]" value="{$val3['id']}"  style="display: block;float: left;" disabled >
+                                                                </span>
+                                                                <p style="display: block;float: left;height: auto;width: 80px;">{$val3['short_name']}</p>
+                                                                <input style="display: block;float: left; height: auto;width: 300px;margin-left: 20px;" type="text"  name="min_rate[]" value="{$row['min_rate']}" placeholder="平台服务费（百分比，填写 例如:50.55）" class="aaa" value="dsadas" min="0" max="100" step="0.01"  disabled>
+                                                            </div>
+                                                        </volist>
+                                                        </span>
+                                            </div>
+                                            <!--<div class="update-date"><span class="update-day"></span></div>-->
+                                </div>
+                                </volist>
+                        </div>
+                        <else/>
+                        <div class="cate-area">
+                            <label class="checkbox inline">
+                                <h4>{$bra['short_name']} <input type="checkbox" name="range_id[]" value="{$bra['id']}" class="top-cate"></h4>
+                            </label>
+                            <volist name="bra['under']" id="val2">
+                                <div class="new-update clearfix cate-check">
+                                    <i class=""><div class="checker" ><span>
+                                                        <input type="checkbox" class="check-nexts-all" style="opacity: 0;" disabled>
+                                                    </span></div></i>
+                                    <div class="update-done">
+                                        <a href="javascript:void(0)" title=""><strong>{$val2['short_name']}</strong></a>
+                                                        <span style="margin-top: 10px;">
+                                                        <volist name="val2['under']" id="val3">
+                                                            <div class="checker" ><span class="">
+                                                                <input type="checkbox" name="cates[]" value="{$val3['id']}"  style="opacity: 0;" disabled >
+                                                            </span>
+                                                            </div>{$val3['short_name']}
+                                                        </volist>
+                                                        </span>
+                                    </div>
+                                    <div class="update-date"><span class="update-day"></span></div>
+                                </div>
+                            </volist>
+                        </div>
+                        </if>
+
+                        </volist>
+                        <span class="help-block">请先选择经营范围 然后选择底下分类</span>
+                        <!-- </div> -->
+                    </div>
+                    </empty>
+            </div>
+            <div class="tab-pane" id="info">
+                <!--资质信息-->
+                <div class="widget-content nopadding">
+                    <div class="control-group">
+                        <label class="control-label">企业名称</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_name" value="{$row['enterprise_name']}" >
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">注册号</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_number" value="{$row['enterprise_number']}" >
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">类型</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_type" value="{$row['enterprise_type']}" >
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">住所</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_address" value="{$row['enterprise_address']}" >
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">法定代表人</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_person" value="{$row['enterprise_person']}" >
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">注册资金</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_fund" value="{$row['enterprise_fund']}" >
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">成立日期</label>
+                        <div class="controls">
+                            <input class="form_datetime input-sm" type="text" name="enterprise_establish_time" value="{$row['enterprise_establish_time']}" placeholder="成立日期">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">营业开始时间</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_start_time" value="{$row['enterprise_start_time']}" class="form_datetime input-sm" placeholder="开始时间">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">营业结束时间</label>
+                        <div class="controls">
+                            <input type="text" name="enterprise_end_time" value="{$row['enterprise_end_time']}" class="form_datetime input-sm" placeholder="结束时间">
+                            <div>
+                                <input type="checkbox" class="enterprise_end_time">
+                                <p style="display: block;float:left; margin-top: 2px; margin-left: 20px" class="help-block">永久</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">经营范围</label>
+                        <div class="controls">
+                            <textarea name="enterprise_scope" value="{$row['enterprise_scope']}">{$row['enterprise_scope']}</textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">营业执照</label>
+                        <div class="controls">
+                            {:hook('upload',array('unique_sign'=>'business_license','field_name'=>'business_license','field_value'=>$row['business_license'],'save_path'=>'Merchant'))}
+                            <span class="help-block">图片比例 3:2</span>
+                        </div>
+                    </div>
+                    <empty name="row['id']">
+                        <div class="control-group">
+                            <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>其他资质</label>
+                            <div class="controls">
+                                <input type="text" placeholder="资质名称" name="license_name[]">
+                                <span class="help-block"></span>
+                                {:hook('upload',array('unique_sign'=>'license','field_name'=>'license_pic[]','field_value'=>$row['license_pic'],'save_path'=>'Merchant'))}
+                                <span class="help-block">图片比例 3:2</span>
+                            </div>
+                        </div>
+                        <else />
+                        <foreach name="row['other_license']" item="v">
+                            <div class="control-group">
+                                <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>其他资质</label>
+                                <php>$field  = 'license_pic['.$key.']'</php>
+                                <div class="controls">
+                                    <input type="text" placeholder="资质名称" name="license_name[]" value="{$v['license_name']}">
+                                    <span class="help-block"></span>
+                                    {:hook('upload',array('unique_sign'=>$key,'field_name'=>'license_pic[]','field_value'=>$v['license_pic'],'save_path'=>'Merchant'))}
+                                    <span class="help-block">图片比例 3:2</span>
+                                </div>
+                            </div>
+                        </foreach>
+                    </empty>
+                </div>
+            </div>
+            <div class="tab-pane" id="contract">
+                <div class="control-group">
+                    <label class="control-label">协议编号</label>
+                    <div class="controls">
+                        <input type="text" name="agreement_number" value="{$row['agreement_number']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">协议名称</label>
+                    <div class="controls">
+                        <input type="text" name="agreement_name" value="{$row['agreement_name']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">协议类型</label>
+                    <div class="controls">
+                        <select name="type">
+                            <option value="1" selected disabled>主协议</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方名称</label>
+                    <div class="controls">
+                        <input type="text" name="first_name" value="{$row['first_name']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方公司地址</label>
+                    <div class="controls">
+                        <input type="text" name="first_address" value="{$row['first_address']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方联系人</label>
+                    <div class="controls">
+                        <input type="text" name="first_linkman" value="{$row['first_linkman']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方联系方式</label>
+                    <div class="controls">
+                        <input type="text" name="first_contact" value="{$row['first_contact']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方电子邮箱</label>
+                    <div class="controls">
+                        <input type="text" name="first_e_mail" value="{$row['first_e_mail']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方名称</label>
+                    <div class="controls">
+                        <input type="text" name="party_name" value="{$row['party_name']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方公司地址</label>
+                    <div class="controls">
+                        <input type="text" name="party_address" value="{$row['party_address']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方联系人</label>
+                    <div class="controls">
+                        <input type="text" name="party_linkman" value="{$row['party_linkman']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方联系方式</label>
+                    <div class="controls">
+                        <input type="text" name="party_contact" value="{$row['party_contact']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方电子邮箱</label>
+                    <div class="controls">
+                        <input type="text" name="party_e_mail" value="{$row['party_e_mail']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">开始时间</label>
+                    <div class="controls">
+                        <input type="text" name="start_time" value="{$row['start_time']}" class="form_datetime input-sm" placeholder="开始时间">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">结束时间</label>
+                    <div class="controls">
+                        <input type="text" name="end_time" value="{$row['end_time']}" class="form_datetime input-sm" placeholder="结束时间">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">电子协议</label>
+                    <div class="controls">
+                        {:hook('upload',array('unique_sign'=>'picture','queue_limit'=>4,'field_name'=>'contract','field_value'=>$contract[0]['pic'],'save_path'=>'Merchant'))}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+        </div>
+        </form>
+        <div class="control-group" style="display: none;" id="pics">
+            <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>其他资质</label>
+            <div class="controls">
+                <input type="text" placeholder="资质名称" name="license_name[]">
+                <span class="help-block"></span>
+                {:hook('upload',array('unique_sign'=>'','field_name'=>'license_pic[]','field_value'=>$row['license_pic'],'save_path'=>'Merchant'))}
+                <span class="help-block">图片比例 3:2</span>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+    </script>
+    <script>
+        $('.enterprise_end_time').click(function(){
+            if($(this).is(':checked')){
+                $("input[name='enterprise_end_time']").attr('disabled',true);
+            }else{
+                $("input[name='enterprise_end_time']").attr('disabled',false);
+            }
+        })
+        $(function () {
+
+            $('#myTab a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            })
+            //城市级联
+            $(".province").change(function(){
+                var province = $(this).val();
+                $.post("{:U('User/ajaxGetRegion')}",{id:province},function(data){
+                    var html ='<option value="">城市</option>';
+                    for(var i in data){
+                        html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                    }
+                    $('.city').html(html);
+                });
+            });
+
+
+            $('.city').change(function(){
+                var city = $(this).val();
+                $.post("{:U('User/ajaxGetRegion')}",{id:city},function(data){
+                    var html = '<option value="">区/县</option>';
+                    for(var i in data){
+                        html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                    }
+                    $('.area').html(html);
+                });
+            });
+            $('.area').change(function(){
+                var area = $(this).val();
+                $.post("{:U('User/ajaxGetStreet')}",{id:area},function(data){
+                    var html = '<option value="">街道</option>';
+                    for(var i in data){
+                        html += '<option value="'+data[i].street_id+'">'+data[i].street_name+'</option>';
+                    }
+                    $('.street').html(html);
+                });
+
+            })
+            $('.top-cate').click(function(){
+                if($(this).attr('checked')){
+//                    $('.aaa').attr('disabled',false);
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('disabled',false);
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker').removeClass('disabled');
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').css({background:'#fff',opacity:'1'});
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').show();
+                }else{
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',true);
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('disabled',true);
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',false);
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker').addClass('disabled');
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').find('.checker span').removeClass('checked');
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').hide();
+                    $(this).parents('label').nextAll('div.cate-check,div.cate-check2').css({background:'#ccc',opacity:'0.5'});
+                }
+            })
+            $('.bbb').click(function(){
+                if($(this).attr('checked')){
+                    $(this).parents('.spss').find('.aaa').attr('disabled',false);
+                }else {
+                    $(this).parents('.spss').find('.aaa').attr('disabled',true);
+                }
+            })
+            //全选/全部选
+            $('.check-nexts-all').click(function(){
+                if($(this).attr('checked')){
+                    $(this).parents('.cate-check,div.cate-check2').find('.checker span').addClass('checked');
+                    $(this).parents('.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',true);
+                    $(this).parents('.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',false);
+                }else{
+                    $(this).parents('.cate-check,div.cate-check2').find('.checker span').removeClass('checked');
+                    $(this).parents('.cate-check,div.cate-check2').find('input[type=checkbox]').attr('checked',false);
+                    $(this).parents('.cate-check,div.cate-check2').find('.aaa[type=text]').attr('disabled',true);
+                }
+            })
+            //当点击加号的时候出现新的节点
+            $('a.add').live({
+                'click':function(){
+                    //获取到当前父级div
+                    var oldDiv = $(this).parents('div.control-group');
+                    //克隆节点
+                    var newDiv = $('#pics').clone().attr('id','').show();
+                    //同时把goods_attr_id_list 赋值未0
+                    newDiv.find('input[name="license_name"]').val("");
+                    newDiv.find('div.upload-file-box').children().remove();
+                    //替换其中的图标
+                    $('<a href="javascript:void(0);" class="desc"><i class="icon-minus"></i></a>').replaceAll(newDiv.find('a'));
+                    //添加到之后
+                    oldDiv.after(newDiv);
+                }
+            })
+            $('a.desc').live({
+                'click':function(){
+                    //获取到当前父级div删除
+                    var oldDiv = $(this).parents('div.control-group').remove();
+                }
+            })
+        })
+    </script>
+</block>

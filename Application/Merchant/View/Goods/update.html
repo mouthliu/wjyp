@@ -1,0 +1,730 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="{$_GET['theme']==1?'':'active'}"><a href="#home">基本信息</a></li>
+                    <li><a href="#info">详细信息</a></li>
+                    <li><a href="#attr">分类属性设置</a></li>
+                    <li><a href="#pic">商品相册</a></li>
+                    <li class="{$_GET['theme']==1?'active':''}"><a href="#other" >其他信息</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('Goods/actUpdate')}" autocomplete="off">
+                    <input type="hidden" name="model" value="Goods">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <input type="hidden" name="merchant_id" value="{$myinfo['id']}">
+                    <input type="hidden" name="status" value="0">
+                    <input type="hidden" name="merchant_name" value="{$myinfo['merchant_name']}">
+                <div class="tab-content">
+                    <div class="tab-pane {$_GET['theme']==1?'':'active'}" id="home">
+                        <!--主要信息-->
+                        <div class="widget-content nopadding">
+                                <div class="control-group">
+                                    <label class="control-label">商品名称</label>
+                                    <div class="controls">
+                                        <input type="text" name="goods_name" value="{$row['goods_name']}">
+                                        <span class="help-block">15个字符以内 英文字母</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">所属招商人员</label>
+                                    <div class="controls">
+                                        <input type="text" value="{$group['account']}" disabled>
+                                        <input type="hidden" name="a_id" value="{$group['a_id']}">
+                                    </div>
+                                </div>
+                                <!--<div class="control-group">-->
+                                    <!--<label class="control-label">所属分类</label>-->
+                                    <!--<div class="controls">-->
+                                        <!--<div class="btn-group">-->
+                                            <!--<button type="button" class="btn checked" data-default="&#45;&#45;选择分类&#45;&#45;"></button>-->
+                                            <!--<button class="btn dropdown-toggle" data-toggle="dropdown">-->
+                                                <!--&lt;!&ndash;<span class="checked" data-default="&#45;&#45;选择分组&#45;&#45;"></span>&ndash;&gt;<span class="caret"></span>-->
+                                            <!--</button>-->
+                                            <!--<ul class="dropdown-menu">-->
+                                                <!--<volist name="cate_list" id="group_row">-->
+                                                    <!--<li  style="background: #ccc;">-->
+                                                        <!--{:str_repeat('&nbsp;',3)}├&nbsp;<span>{$group_row['name']}</span>-->
+                                                    <!--</li>-->
+                                                    <!--<volist name="group_row['underCate']" id="v0">-->
+                                                        <!--<li  style="background: #ccc;">-->
+                                                            <!--{:str_repeat('&nbsp;',7)}└&nbsp;<span>{$v0['name']}</span>-->
+                                                        <!--</li>-->
+                                                        <!--<notempty name="v0['underCate']">-->
+                                                            <!--<volist name="v0['underCate']" id="v1">-->
+                                                                <!--<if condition="in_Array($v1['id'],explode(',',$myinfo['cates']))">-->
+                                                                    <!--<li data-value="{$v1['id']}" data-title="{$v1['name']}" <if condition="$row['cat_id'] eq $v1['id']">class="selected"</if>>-->
+                                                                    <!--<a href="javascript:void(0)" class="cat">{:str_repeat('&nbsp;',10)}└&nbsp;<span>{$v1['name']} ✔</span></a>-->
+                                                                    <!--<else />-->
+                                                                    <!--<li style="color:red">-->
+                                                                        <!--{:str_repeat('&nbsp;',15)}└&nbsp;<span data="{$v1['id']}">{$v1['name']}</span>-->
+                                                                    <!--</li>-->
+                                                                <!--</if>-->
+                                                            <!--</volist>-->
+                                                        <!--</notempty>-->
+                                                    <!--</volist>-->
+
+                                                <!--</volist>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
+
+                                        <!--<input type="hidden" name="cat_id" value="{$row['cat_id']}">-->
+                                        <!--<input type="hidden" name="cat_name" value="{$row['cat_name']}">-->
+                                        <!--<span class="help-block">根据所选经营范围锁定分类*</span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <div class="control-group">
+                                    <label class="control-label">商品品牌</label>
+                                    <div class="controls">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn checked" data-default="--选择品牌--" style="width: 175px"></button>
+                                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                                <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="width: 200px">
+
+                                                <volist name="brand_list" id="group_row">
+                                                    <li data-value="{$group_row['id']}"  data-title="{$group_row['brand_name']}" <eq name="group_row['id']" value="$row['brand_id']">class="selected"</eq>>
+                                                    <a href="javascript:void(0)" class="brand" data-src="__ROOT__{$group_row['path']}"><span>{$group_row['brand_name']}</span></a>
+
+                                                    </li>
+
+                                                </volist>
+                                            </ul>
+
+                                        </div>
+                                        <input type="hidden" name="brand_id" value="{$row['brand_id']}">
+                                        <input type="hidden" name="brand_name" value="{$row['brand_name']}">
+                                        <div class="btn-group">
+                                            <img src="__ROOT__{$group_row['path']}" alt="" width="30">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">市场价格</label>
+                                    <div class="controls">
+                                        <input type="number" name="market_price" value="{$row['market_price']}">
+                                        <span class="help-block">价格</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">本店售价</label>
+                                    <div class="controls">
+                                        <input type="number" name="shop_price" value="{$row['shop_price']}">
+                                        <span class="help-block">在无界优品售卖价格</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">结算价格</label>
+                                    <div class="controls">
+                                        <input type="number" name="settlement_price" value="{$row['settlement_price']}">
+                                        <span class="help-block">平台给供应商结算金额</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品略缩图</label>
+                                    <div class="controls">
+                                        {:hook('upload',array('is_first'=>1,'unique_sign'=>'Goods_img','field_name'=>'goods_img','field_value'=>$row['goods_img'],'save_path'=>'Goods'))}
+                                        <span class="help-block">商品略缩图比例 1:1</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">关键词</label>
+                                    <div class="controls">
+                                        <input type="text" name="keyword" value="{$row['keyword']}">
+                                        <span class="help-block">用空格隔开</span>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">商品进口地</label>
+                                    <div class="controls">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn checked" data-default="--选择商品进口地--"></button>
+                                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                                <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li data-value="0" data-title="中国内地" <eq name="row['country_id']" value="0">class="selected"</eq>>
+                                                <a href="javascript:void(0)" class="country"><span>中国内地</span></a>
+                                                </li>
+                                                <volist name="country_list" id="group_row">
+                                                    <li data-value="{$group_row['id']}" data-title="{$group_row['country_name']}" <eq name="group_row['id']" value="$row['country_id']">class="selected"</eq>>
+                                                    <a href="javascript:void(0)" class="country"><span>{$group_row['country_name']}</span></a>
+                                                    </li>
+                                                </volist>
+                                            </ul>
+                                        </div>
+                                        <input type="hidden" name="country_id" value="{$row['country_id']}">
+                                        <p></p>
+                                            <p style="display: <empty name="row['country_id']" > none </empty> " id="country_info">
+                                            发货地:<select name="country_desc" id="">
+                                                <option value="1" <if condition="$row['country_desc'] eq 1">selected</if> >境内发货</option>
+                                                <option value="2" <if condition="$row['country_desc'] eq 2">selected</if>>保税仓发货</option>
+                                                <option value="3" <if condition="$row['country_desc'] eq 3">selected</if>>境外发货</option>
+                                            </select>
+                                            进口税:<input type="number" name="country_tax" value="{$row['country_tax']|default=0}"  >
+                                            <span class="help-block">比如：由境外发货。进口税单位（XX元/件）</span>
+                                            </p>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品描述</label>
+                                    <div class="controls">
+                                        <textarea name="goods_brief">{$row['goods_brief']}</textarea>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品库存</label>
+                                    <div class="controls">
+                                        <input type="text" name="goods_num" value="{$row['goods_num']}">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">库存警告量</label>
+                                    <div class="controls">
+                                        <input type="text" name="warning_num" value="{$row['warning_num']}">
+                                        <span class="help-block">库存低于这个数量将会提示告急</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">商品条码</label>
+                                    <div class="controls">
+                                        <input type="text" name="goods_code" value="{$row['goods_code']}" placeholder="商品条码">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">活动专用</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <div class="radio" id="uniform"><span class="checked">
+                                            <input type="radio" name="is_active" id="" value="0" style="opacity: 0;" <if condition="$row['is_active'] eq 0">checked</if>  ></span>
+                                            </div>
+                                            否
+                                        </label>
+                                        <label class="radio inline">
+                                            <div class="radio" id=""><span class="">
+                                            <input type="radio" name="is_active" id="" value="1" style="opacity: 0;" <if condition="$row['is_active'] eq 1">checked</if> ></span>
+                                            </div>
+                                            是
+                                        </label>
+                                        <span class="help-block">活动商品将不再当做普通商品售卖</span>
+                                    </div>
+                                </div>
+                                <!--<div class="control-group">-->
+                                    <!--<label class="control-label">是否上架</label>-->
+                                    <!--<div class="controls">-->
+                                        <!--<select class="bootstrap-select" name="is_buy">-->
+                                            <!--<notempty name="row['id']">-->
+                                                <!--<option value="1">上架</option>-->
+                                            <!--</notempty>-->
+                                            <!--<option value="0">不上架</option>-->
+                                        <!--</select>-->
+                                        <!--<span class="help-block">这里的设置将会在商品通过审核之后生效</span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="info">
+                        <!--商品图文详情-->
+                        <div class="widget-content nopadding">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <textarea name="goods_desc">{$row['goods_desc']}</textarea>
+                                    <!--钩子参数:is_first->表示防止重复加载样式
+                                                 name->字段名
+                                                 value->表示的是存到表中的内容
+                                                 width->文本的宽
+                                     -->
+                                    {:hook('adminArticleEdit', array('is_first'=>1,'name'=>'goods_desc','value'=>$row['goods_desc'],'width'=>800))}
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">包装清单</label>
+                                <div class="controls">
+                                    <textarea name="package_list">{$row['package_list']}</textarea>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">售后服务</label>
+                                <div class="controls">
+                                    <textarea name="after_sale_service">{$row['after_sale_service']}</textarea>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="attr" style="min-height:400px">
+
+                        <!--根据分类获取属性信息-->
+                        <div class="control-group">
+                            <label class="control-label">所属分类</label>
+                            <div class="controls">
+                                <div class="btn-group">
+                                    <button type="button" class="btn checked" data-default="--选择分类--"></button>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="category_list">
+                                        <volist name="cate_list" id="group_row">
+                                            <li  style="background: #ccc;">
+                                                {:str_repeat('&nbsp;',3)}├&nbsp;<span>{$group_row['name']}</span>
+                                            </li>
+                                            <volist name="group_row['underCate']" id="v0">
+                                                <li  style="background: #ccc;">
+                                                    {:str_repeat('&nbsp;',7)}└&nbsp;<span>{$v0['name']}</span>
+                                                </li>
+                                                <notempty name="v0['underCate']">
+                                                    <volist name="v0['underCate']" id="v1">
+                                                        <if condition="in_array($v1['id'],explode(',',$cates))">
+                                                            <option class="cate_id" value="{$v1['id']}" <if condition="$row['cate_id'] eq $v1['id']">selected</if> >{:str_repeat('&nbsp;',13)}└&nbsp;
+                                                                <span>{$v1['name']}✔</span>
+                                                            </option>
+                                                        </if>
+                                                        <if condition="in_Array($v1['id'],explode(',',$myinfo['cates']))">
+                                                            <li data-value="{$v1['id']}" data-title="{$v1['name']}" <if condition="$row['cat_id'] eq $v1['id']">class="selected"</if>>
+                                                            <a href="javascript:void(0)" class="cat">{:str_repeat('&nbsp;',10)}└&nbsp;
+                                                                <span>{$v1['name']} ✔</span>
+                                                            </a>
+                                                            <else />
+                                                            <!--<li style="color:red">-->
+                                                                <!--{:str_repeat('&nbsp;',15)}└&nbsp;<span data="{$v1['id']}">{$v1['name']}</span>-->
+                                                            <!--</li>-->
+                                                        </if>
+                                                    </volist>
+                                                </notempty>
+                                            </volist>
+
+                                        </volist>
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="cat_id" value="{$row['cat_id']}">
+                                <span class="help-block">根据所选分类选定商品类型*</span>
+                            </div>
+                        </div>
+                        <!--属性信息-->
+                        <div class="control-group">
+                            <label class="control-label">商品类型</label>
+                            <div class="controls">
+                                <div class="btn-group">
+                                    <button type="button" class="btn checked" data-default="--请选择商品类型--"></button>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="type_list">
+                                        <foreach name="row['type_list']" item="v">
+                                            <li data-value="{$v['id']}" data-title="{$v['type_name']}" <if condition="$row['goods_typeid'] eq $v['id']">class='selected'</if> >
+                                                <a href="javascript:void(0)" >{$v['type_name']}</a>
+                                            </li>
+                                        </foreach>
+
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="goods_typeid" value="{$row['goods_typeid']}">
+                                <span class="help-block">必选项*</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--判断是否属性那里有自定义属性
+                        根据商品id 和自定义属性ID 查
+                        select picture from goods_gallery where goods_id= and goods_attr_id =
+                    -->
+                    <div class="tab-pane" id="pic">
+
+                        <!--商品相册-->
+                        <div class="accordion" id="accordion2">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                        <i class="icon-align-justify"></i> 普通照片
+                                    </a>
+                                </div>
+                                <div id="collapseOne" class="accordion-body collapse" style="height: auto;">
+                                    <div class="accordion-inner">
+
+                                        {:hook('upload',array('unique_sign'=>'picture','queue_limit'=>4,'field_name'=>'common_pic','field_value'=>$attr_pic[0]['pic'],'save_path'=>'Goods'))}
+                                        <span class="help-block"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--需要判断是否有没有属性相册-->
+                            <notempty name="attr_img">
+                                <volist name="attr_img" id="v">
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{$v['aid']}">
+                                                <i class="icon-align-justify"></i> {$v['attr_value']}
+                                            </a>
+                                        </div>
+                                        <input type="hidden" name="goods_attr_name[]" value="{$v['aid']}" />
+                                        <!--<eq name="attr_pic['goods_attr_id']" value="$v['aid']">-->
+                                            <!--<assign name="pic" value="$attr_pic['']" />-->
+                                        <!--</eq>-->
+
+                                        <div id="collapse{$v['aid']}" class="accordion-body collapse" style="height: 0px;">
+                                            <div class="accordion-inner">
+                                                {:hook('upload',array('unique_sign'=>$v['aid'],'queue_limit'=>4,'field_name'=>$v['aid'],'field_value'=>$attr_pic[$v['aid']]['pic'],'save_path'=>'Goods'))}
+                                                <span class="help-block">长宽比为390px:190px</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </volist>
+                            </notempty>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane {$_GET['theme']==1?'active':''}" id="other" style="min-height:200px;">
+                        <div class="control-group">
+                            <label class="control-label">封面推荐</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio" id="uniform-theme"><span class="checked">
+                                        <input type="radio" name="is_refer" id="themeRad" value="0" style="opacity: 0;" <if condition="$row['is_refer'] eq 0">checked</if>  ></span>
+                                    </div>
+                                    否
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio" id="uniform-"><span class="">
+                                        <input type="radio" name="is_refer" id="themeRa" value="1" style="opacity: 0;" <if condition="$row['is_refer'] eq 1">checked</if> ></span>
+                                    </div>
+                                    是
+                                </label>
+                                <span class="help-block">在搜索店铺的时候显示在店铺下三个</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否临期</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio"><span class="checked">
+                                        <input type="radio" name="is_end" id="no-end" value="0" style="opacity: 0;" <if condition="$row['is_end'] eq 0">checked</if>  ></span>
+                                    </div>
+                                    否
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio"><span class="">
+                                        <input type="radio" name="is_end" id="is-end" value="1" style="opacity: 0;" <if condition="$row['is_end'] eq 1">checked</if> ></span>
+                                    </div>
+                                    是
+                                </label>
+
+                                <div class="input-daterange is-end" id="datepicker" <if condition="$row['is_end'] eq 0">style="margin-top: 10px;display:none;"</if> >
+                                    <notempty name="row['id']">
+                                        <input type="text" name="end_date" value="{:date('Y-m-d',$row['end_date'])}" class="text-width-10 form_datetime" placeholder="请填写过期时间">
+                                        <else/>
+                                        <input type="text" name="end_date" value="" class="text-width-10 form_datetime" placeholder="请填写过期时间">
+                                    </notempty>
+                                </div>
+                                <span class="help-block">临期商品请填写过期时间</span>
+                            </div>
+                        </div>
+                        <div class="control-group" >
+                            <label class="control-label">新旧</label>
+                            <div class="controls">
+                                <label class="radio inline" style="float: left;">
+                                    <div class="radio" id="">
+                                        <span class="checked">
+                                        <if condition="$row['id']">
+                                            <input type="radio" name="is_new_goods" id="is_new_goods" value="1" style="opacity: 0;" <if condition="$row['is_new_goods'] eq 1">checked</if>>
+                                        <else/>
+                                         <input type="radio" name="is_new_goods" id="is_new_goods" value="1" style="opacity: 0;" checked>
+                                        </if>
+                                        </span>
+                                    </div>
+                                    新货
+                                </label>
+                                <label class="radio inline" style="float: left;">
+                                    <div class="radio" id=""><span class="">
+                                    <if condition="$row['id']">
+                                        <input type="radio" name="is_new_goods" id="no_new_goods" value="0" style="opacity: 0;" <if condition="$row['is_new_goods'] neq 1">checked</if> ></span>
+                                    <else/>
+                                        <input type="radio" name="is_new_goods" id="no_new_goods" value="0" style="opacity: 0;"></span>
+                                    </if>
+                                    </div>
+                                    旧货
+                                </label>
+                                <div  class="input-daterange is_new_goods" <if condition="(empty($row['id']) OR ($row['id'] AND $row['is_new_goods'] eq 1))">style="margin-top: 1px;display:none; float: left;"</if> >
+                                <select name="a_fee_new" style="margin-bottom: 0px; width: 110px;  margin-left: 5px;">
+                                    <option value="" <eq name="_REQUEST['order_type']" value="">selected</eq>>--新旧程度--</option>
+                                    <option value="0.9" <if condition="$row['a_fee_new'] == 0.9">selected</if> >9成新</option>
+                                    <option value="0.8" <if condition="$row['a_fee_new'] == 0.8">selected</if> >8成新</option>
+                                    <option value="0.7" <if condition="$row['a_fee_new'] == 0.7">selected</if> >7成新</option>
+                                    <option value="0.6" <if condition="$row['a_fee_new'] == 0.6">selected</if> >6成新</option>
+                                    <option value="0.5" <if condition="$row['a_fee_new'] == 0.5">selected</if> >5成新</option>
+                                    <option value="0.4" <if condition="$row['a_fee_new'] == 0.4">selected</if> >4成新</option>
+                                    <option value="0.3" <if condition="$row['a_fee_new'] == 0.3">selected</if> >3成新</option>
+                                    <option value="0.2" <if condition="$row['a_fee_new'] == 0.2">selected</if> >2成新</option>
+                                    <option value="0.1" <if condition="$row['a_fee_new'] == 0.1">selected</if> >1成新</option>
+                                </select>
+                                <!--<input type="text" name="a_fee_new" value="{$row['a_fee_new']}" class="text-width-10" placeholder="请填写几成新，例如9成新，输入0.9">-->
+                            </div>
+                            <!--<span class="help-block">商品新旧</span>-->
+                        </div>
+                        <hr>
+                        <div id="ccc" class="control-group">
+                            <label class="control-label"><b>服务信息</b></label>
+                            <foreach name="server_list" item="val">
+                            <div class="controls bbb">
+                                <label id="abc" class="checkbox inline">
+                                    <input type="checkbox" name="server[]"  value="{$val['id']}" <if condition="in_array($val['id'],explode(',',$row['server']))">checked</if> >
+                                    <img src="__ROOT__{:getPath($val['icon'])}" alt="" width="18">{$val['server_name']}
+                                </label>
+                                <span class="help-block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tip：  {$val['desc']}</span>
+                            </div>
+                            </foreach>
+
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否包邮</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <div class="radio" id=""><span class="checked">
+                                            <input type="radio" name="is_fee" id="is-fee" value="0" style="opacity: 0;" <if condition="$row['send_fee'] neq 0">checked</if>  ></span>
+                                    </div>
+                                    否
+                                </label>
+                                <label class="radio inline">
+                                    <div class="radio" id="">
+                                        <span class="">
+                                            <input type="radio" name="is_fee" id="no-fee" value="1" style="opacity: 0;" <if condition="$row['send_fee'] eq 0">checked</if> >
+                                        </span>
+                                    </div>
+                                    是
+                                </label>
+                                <span class="help-block">非包邮商品请填写运费</span>
+                            </div>
+                            <div class="controls" id="fee" <if condition="$row['send_fee'] eq 0">style="display:none;"</if>>
+                                <if condition="$row['send_fee'] neq 0">
+                                    <input type="text" name="send_fee" value="{$row['send_fee']}"  placeholder="请填写运费">
+                                    <else/>
+                                    <input type="text" name="send_fee" value="0" placeholder="请填写运费" >
+                                </if>
+                            </div>
+                        </div>
+                    <div class="control-group">
+                        <label class="control-label">选择运费模板</label>
+                        <div class="controls">
+                            <select class="bootstrap-select" name="merchant_template_id">
+                                <option value="">请选择运费模板</option>
+                                <foreach name="merchant_template" item="v">
+                                    <option value="{$v['id']}">{$v['template_name']}</option>
+                                </foreach>
+                            </select>
+                        <span class="help-block">请选择运费模板</span>
+                    </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.cate_id').each(function(){
+            var self=$(this);
+            if(self['selected']){
+               alert(self.val()); 
+            }
+            
+        })
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            todayBtn:  1,
+            autoclose: 1,
+            startView: 2,
+            minView: 3,
+            forceParse: 0
+        });
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //首先刚开始进行获取数据
+        $(function(){
+            var typeid = $('input[name=goods_typeid]').val();
+            var goodsid = $('input[name=id]').val();
+            //从后台获取数据
+            $.post("__MODULE__/Goods/getGoodsAttr",{typeid:typeid,goodsid:goodsid},function(data){
+                if(data){
+            //   获取到类型元素
+                    $('#attr').append(data);
+                }else{
+                    return false;
+                }
+            })
+        })
+        //当选择选择分类的时候后获取类型
+        $('#category_list li').each(function(){
+            $(this).on("click",function(){
+                //清楚原有的类型
+                $('#type_list li').remove();
+                $('.bbb').remove();
+                $(this).parents('#attr').find('.attr-list').remove();
+                $('#type_list').siblings('.checked').html($('#type_list').siblings('.checked').attr('data-default'));
+                var cate_id = $(this).attr('data-value');
+                //从后台获取类型数据
+                $.post("__MODULE__/Goods/getGoodsType",{cate_id:cate_id},function(data){
+                    if(data){
+//                        获取到类型列表
+                        $('#type_list').append(data.html1);
+                        $('#ccc').append(data.html3);
+                        $('#ccc').append(data.html2);
+                        $('#ccc').append(data.html4);
+                    }else{
+                        return false;
+                    }
+                })
+            })
+        })
+        $('#type_list li').live({
+            'click':function(){
+               //首先清除所有的
+                $('#type_list').parents('#attr').find('.attr-list').remove();
+              //获取到类型id
+              var typeid = $(this).attr('data-value');
+              var goodsid = $('input[name=id]').val();
+                $('#type_list').siblings('.checked').html($(this).find('a').html());
+              //赋值给隐藏域
+                $('input[name=goods_typeid]').val(typeid);
+              //从后台获取数据
+                $.post("__MODULE__/Goods/getGoodsAttr",{typeid:typeid,goodsid:goodsid},function(data){
+                    if(data){
+//                        获取到类型元素
+                        $('#attr').append(data);
+                    }else{
+                        return false;
+                    }
+                })
+            }
+        });
+
+    //当点击加号的时候出现新的节点
+       $('a.add').live({
+               'click':function(){
+                   var count = $(this).attr('data-total');
+                   //判断当前属性值个数和下拉框个数
+                   var length = $(this).parents('#attr').find('.controls select[data-total='+count+']').length;
+                   console.log(count,length);
+                   if(length >= count){
+                       alert("属性值重复,请注意检查");
+                       return false;
+                   }
+                    //获取到当前父级div
+                var oldDiv = $(this).parents('div.control-group');
+                //克隆节点
+                var newDiv = oldDiv.clone();
+                //同时把goods_attr_id_list 赋值未0
+                newDiv.find('input[name="goods_attr_id_list[]"]').val("");
+                //替换其中的图标
+                   $('<a href="javascript:void(0);" class="desc"><i class="icon-minus" ></i></a>').replaceAll(newDiv.find('a'));
+                //添加到之后
+                oldDiv.after(newDiv);
+        }
+       })
+        $('a.desc').live({
+            'click':function(){
+                //获取到当前父级div删除
+                var oldDiv = $(this).parents('div.control-group').remove();
+            }
+        })
+
+//       $('.dropdown-menu li a.cat').click(function(){
+//           //获取到当前的分类名称
+//           var cat_name = $(this).find('span').text();
+//           //获取到父级的div
+//           $(this).parents("div").nextAll('input[name=cat_name]').val(cat_name);
+//
+//       })
+
+        $('.dropdown-menu li a.brand').click(function(){
+                //获取到当前的品牌名称
+            var brand_name = $(this).find('span').text();
+            //获取到父级的div
+
+            $(this).parents("div").nextAll('input[name=brand_name]').val(brand_name);
+            //获取到图片
+            console.log($(this).parents('div.btn-group'));
+            $(this).parents('div.btn-group').nextAll('div.btn-group').find("img").attr("src",$(this).attr('data-src')) ;
+        })
+        //当选择外国的时候让国家要补充的信息显示
+        $('.dropdown-menu li a.country').click(function(){
+            //获取到当前的品牌名称
+            var country_id = $(this).parents('li').attr("data-value");
+            //获取到父级的div
+            if(country_id != 0){
+                $("#country_info").show();
+            }else{
+                $("#country_info").hide();
+            }
+        })
+        //主题活动显示按钮
+//        $("#themeRadio").click(function(){
+//            if($(this).attr("checked")){
+//                $("#theme").show();
+//            }else{
+//                $("#theme").hide();
+//                $("input[name=theme_id]").val('0');
+//            }
+//        })
+//        $("#themeRadio2").click(function(){
+//            $("#theme").hide();
+//            $("input[name=theme_id]").val('0');
+//        })
+        //临期填写
+        $('#is-end').click(function(){
+            if($(this).attr('checked')){
+                $('.is-end').show();
+            }
+        });
+        $('#no-end').click(function(){
+            $('.is-end').hide();
+        });
+        //商品几成新
+        $('#is_new_goods').click(function(){
+            if($(this).attr('checked')){
+                $('.is_new_goods').hide();
+            }
+        });
+        $('#no_new_goods').click(function(){
+            $('.is_new_goods').show();
+        });
+
+        //运费
+        $('#is-fee').click(function(){
+            if($(this).attr('checked')){
+                $('#fee').show();
+            }
+        })
+        $('#no-fee').click(function(){
+            $('#fee').hide();
+        })
+    </script>
+</block>

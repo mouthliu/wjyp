@@ -1,0 +1,78 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('HelpCenter/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('HelpCenter/remove',array('model'=>'HelpCenter'))}" target-form="ids">删 除</button>&nbsp;
+                </div>
+                <!--// search start-->
+                <div class="search-main">
+                    <form action="{:U('HelpCenter/index')}" method="post" class="form">
+                        <div class="search-frame-main">
+                            <input class="search-frame" type="text" name="title" value="{$_REQUEST['title']}" placeholder="标题">
+                            <select name="type" style="margin-top: 4px;margin-bottom: 4px">
+                                <option value="0">请选择类别</option>
+                                <option value="1">商家篇</option>
+                                <option value="2">用户篇</option>
+                                <option value="3">运营中心篇</option>
+                            </select>
+                        </div>
+
+                        <div class="search-btn">
+                            <button class="btn btn-inverse" style="margin:4px 10px;">查询</button>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>ID</th>
+                            <th>类别</th>
+                            <th>标题</th>
+                            <th>排序</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>
+                                    <eq name="row['type']" value="1">商家篇</eq>
+                                    <eq name="row['type']" value="2">用户篇</eq>
+                                    <eq name="row['type']" value="3">运营中心篇</eq>
+                                </td>
+                                <td>{$row['title']}</td>
+                                <td>{$row['sort']}</td>
+                                <td>{$row['create_time']|date="Y-m-d H:i",###}</td>
+                                <td>
+                                    <a href="{:U('HelpCenter/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-success">编辑 </span></a>&nbsp;
+                                    <a href="{:U('HelpCenter/remove',array('model'=>'HelpCenter','ids'=>$row['id']))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>

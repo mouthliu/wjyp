@@ -1,0 +1,71 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        .cate-check{
+            background: #ccc;
+            opacity: 0.5;
+        }
+    </style>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <form class="form-horizontal" method="post" action="{:U('Region/doAddStreet')}" id="form">
+                    <input type="hidden" name="model" value="Region">
+                    <input type="hidden" name="parent_id" value="{$_GET['id']}">
+
+                        <div class="" id="pics">
+                            <!--资质信息-->
+                            <div class="control-group">
+                                <label class="control-label"><a href="javascript:void(0);" class="add"><i class="icon-plus"></i></a>街道名称</label>
+                                <div class="controls">
+                                    <input type="text" placeholder="街道名称" name="street_name[]">
+                                    <span class="help-block">街道名称</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="form-actions">
+                        <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        <button class="btn btn-info ajax-post" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+
+            //当点击加号的时候出现新的节点
+            $('a.add').live({
+                'click':function(){
+                    //获取到当前父级div
+                    var oldDiv = $(this).parents('div.control-group');
+                    //克隆节点
+                    var newDiv = oldDiv.clone();
+                    //同时把goods_attr_id_list 赋值未0
+                    newDiv.find('input[name="street_name[]"]').val("");
+                    //替换其中的图标
+                    $('<a href="javascript:void(0);" class="desc"><i class="icon-minus" ></i></a>').replaceAll(newDiv.find('a'));
+                    //添加到之后
+                    oldDiv.after(newDiv);
+                }
+            })
+            $('a.desc').live({
+                'click':function(){
+                    //获取到当前父级div删除
+                    var oldDiv = $(this).parents('div.control-group').remove();
+
+                }
+            })
+
+        })
+
+    </script>
+</block>

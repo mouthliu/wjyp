@@ -1,0 +1,63 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="info-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5>资质信息</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="" id="form">
+                        <input type="hidden" name="model" value="Merchant">
+                        <input type="hidden" name="id" value="{$info['id']}">
+
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">身份证照片</label>-->
+                            <!--<div class="controls">-->
+                                <!--<div style="display: inline-block;width: 200px;">-->
+                                    <!--<p style="text-align: center;background: #bce8f1">正面照</p>-->
+                                    <!--<div>-->
+                                        <!--<img src="__ROOT__{$info['card_before']}" alt="" width="200">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div style="display: inline-block;width: 200px;">-->
+                                    <!--<p style="text-align: center;background: #bce8f1"">反面照</p>-->
+                                    <!--<div>-->
+                                        <!--<img src="__ROOT__{$info['card_after']}" alt="" width="200">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div style="display: inline-block;width: 200px;">-->
+                                    <!--<p style="text-align: center;background: #bce8f1"">手持照</p>-->
+                                    <!--<div>-->
+                                        <!--<img src="__ROOT__{$info['card_img']}" alt="" width="200">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="control-group">
+                            <label class="control-label">营业执照</label>
+                            <div class="controls">
+                                <img src="__ROOT__{$info['business_license']}" alt="" width="200">
+                            </div>
+                        </div>
+                        <foreach name="info['other_license']" item="val">
+                            <div class="control-group">
+                                <label class="control-label">{$val['license_name']}</label>
+                                <div class="controls">
+                                    <img src="__ROOT__{$val['license_pic']}" alt="" width="200">
+                                </div>
+                            </div>
+                        </foreach>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

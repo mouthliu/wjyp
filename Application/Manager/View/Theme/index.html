@@ -1,0 +1,90 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Theme/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('Theme/forbid',array('model'=>'Theme','status'=>2))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Theme/resume',array('model'=>'Theme','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Theme/delete',array('model'=>'Theme','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <button class="btn btn-success href" url="{:U('Theme/apply')}" target-form="ids">查看申请消息</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('Theme/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('Theme/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>主题名称</th>
+                            <th>活动开始时间</th>
+                            <th>活动结束时间</th>
+                            <th>时间状态</th>
+                            <th>是否启用</th>
+                            <th>排序</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['theme_name']}</td>
+
+                                <td>{:date("Y-m-d H:i:s",$row['start_time'])}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['end_time'])}</td>
+                                <td>
+                                        <switch name="row['t_status']">
+                                            <case value="0"><font color="blue">时间未到</font></case>
+                                            <case value="1"><font color="red">时间到</font></case>
+                                            <case value="2"><font color="#ccc">已过期</font></case>
+                                        </switch>
+                                </td>
+                                <td>{$row['status']==1?'启用':'禁用'}</td>
+                                <td>{$row['sort']}</td>
+                                <td>
+                                    <a href="{:U('Theme/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-info">编辑</span></a>&nbsp;
+                                    <a href="{:U('Theme/showGoods',array('id'=>$row['id']))}" title="查看所属商品" class="tip-bottom">
+                                        <span class="label label-info">查看所属商品</span></a>&nbsp;
+                                    <a href="{:U('Theme/showGoods',array('model'=>'Theme','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,97 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid" >
+
+    </div>
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-inverse ajax-post" url="{:U('Member/forbid',array('model'=>'Member','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Member/resume',array('model'=>'Member','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                </div>
+                <!--// search start-->
+                <div class="search-main">
+                    <form action="{:U('Member/index')}" method="post" class="form">
+                        <div class="search-frame-main">
+                            <select class="search-frame" name="type" id="">
+                                <option value="">--注册方式--</option>
+                                <option value="1" <eq name="_REQUEST['type']" value="1">selected</eq> >手机注册</option>
+                                <option value="2" <eq name="_REQUEST['type']" value="2">selected</eq> >微博注册</option>
+                                <option value="3" <eq name="_REQUEST['type']" value="3">selected</eq> >微信注册</option>
+                                <option value="4" <eq name="_REQUEST['type']" value="4">selected</eq> >QQ注册</option>
+                            </select>
+                            <input class="search-frame" type="text" name="account" value="{$_REQUEST['account']}" placeholder="用户帐号">
+                            <input class="search-frame" type="text" name="nickname" value="{$_REQUEST['nickname']}" placeholder="用户昵称">
+                            <input class="search-frame" type="text" name="invite_code" value="{$_REQUEST['invite_code']}" placeholder="用户邀请码">
+                        </div>
+
+                        <div class="search-btn">
+                            <button class="btn btn-inverse" style="margin:4px 10px;">查询</button>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>ID</th>
+                            <th>注册方式</th>
+                            <th>账号</th>
+                            <th>昵称</th>
+                            <th>性别</th>
+                            <th>邀请码</th>
+                            <th>余额</th>
+                            <th>邀请人数</th>
+                            <th>创建时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['type']|registerType}</td>
+                                <td>{$row['account']|default="<span style='color:#ccc;'>三方登录</span>"}</td>
+                                <td>{$row['nickname']}</td>
+                                <td>{$row['sex']|get_sex}</td>
+                                <td>{$row['invite_code']}</td>
+                                <td>{$row['balance']}</td>
+                                <td>
+                                    <eq name="row['invite']" value="0">
+                                        无邀请
+                                        <else/>
+                                        {$row['invite']}
+                                    </eq>
+                                </td>
+                                <td>{$row['create_time']|date="Y-m-d H:i",###}</td>
+                                <td>{$row['status']|get_status_title}</td>
+                                <td>
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('Member/resume',array('model'=>'Member','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('Member/forbid',array('model'=>'Member','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>

@@ -1,0 +1,133 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('User/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <button class="btn btn-inverse ajax-post" url="{:U('User/forbid',array('model'=>'User','status'=>2))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('User/resume',array('model'=>'User','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('User/delete',array('model'=>'User','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('User/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('User/index')}" method="post" class="form">
+                        <select name="auth_status" id="shenhe">
+                            <option value="">-- 根据个人认证状态筛选 --</option>
+                            <option value="2">已认证</option>
+                            <option value="1">等待认证</option>
+                            <option value="0">未认证</option>
+                            <option value="3">未通过认证</option>
+                        </select>
+                        <select name="comp_auth_status" id="">
+                            <option value="">-- 根据企业认证状态筛选 --</option>
+                            <option value="2">已认证</option>
+                            <option value="1">等待认证</option>
+                            <option value="0">未认证</option>
+                            <option value="3">未通过认证</option>
+                        </select>
+                    </form>
+                </div>
+                <!--// search start-->
+                <div class="widget-title widget-title-search">
+                    <form action="{:U('User/index')}" method="post" class="form-search">
+                        &nbsp;
+                        <input type="text" class="input-medium search-query" name="uid" value="{$_REQUEST['uid']}" placeholder="输入会员ID查询" style="height:auto">
+                        <input type="text" class="input-medium search-query" name="nickname" value="{$_REQUEST['nickname']}" placeholder="按昵称查询" style="height:auto">
+                        <input type="text" class="input-medium search-query" name="phone" value="{$_REQUEST['phone']}" placeholder="按手机号查询" style="height:auto">
+                        <button type="submit" class="btn">查询</button>
+                        <a href="javascript:;"  id="relink" type="reset" class="btn btn-info">重置查询</a>
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>ID</th>
+                            <th>手机号</th>
+                            <th>环信账号</th>
+                            <th>昵称</th>
+                            <th>会员类型</th>
+                            <th>是否个人认证</th>
+                            <th>是否企业认证</th>
+                            <th>上次登录时间</th>
+                            <th>邀请人</th>
+                            <th style="width: 120px" >已绑定三方</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['phone']}</td>
+                                <td>{$row['easemob_account']}</td>
+                                <td>{$row['nickname']}</td>
+                                <td><img src="__ROOT__{:getPath(getName('UserRank','icon',$row['rank_id']))}" alt="" width="25">
+                                    {:getName('UserRank','rank_name',$row['rank_id'])}</td>
+                                <td >{$row['auth_status']==2?'<i class="icon-ok" ></i>':($row['auth_status']==1?'等待认证':'<i class="icon-remove"></i>')}</td>
+                                <td >{$row['comp_auth_status']==2?'<i class="icon-ok" ></i>':($row['comp_auth_status']==1?'等待认证':'<i class="icon-remove"></i>')}</td>
+                                <td>{:date('Y-m-d H:i',$row['last_login_time'])}</td>
+                                <td>{:getName('User','nickname',$row['parent_id'])}</td>
+                                <td>{$row['other_login']|default='手机注册'}</td>
+                                <td>{$row['status']==1?'正常':'禁用'}</td>
+                                <td>
+                                    <a href="{:U('User/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <a href="{:U('User/delete',array('model'=>'UserType','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom">
+                                        <span class="label label-warning">删除</span></a>&nbsp;
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+        $(function(){
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+
+                    // 调转到对应ID的url地址
+                    location="__MODULE__/User/index/auth_status/"+shenhe;
+
+
+
+                }
+            })
+            $("#relink").click(function(){
+                // 调转到对应ID的url地址
+                location="__MODULE__/User/index";
+
+            })
+        })
+
+    </script>
+</block>

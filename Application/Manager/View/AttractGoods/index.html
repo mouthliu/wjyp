@@ -1,0 +1,157 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('AttractGoods/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('AttractGoods/forbid',array('model'=>'AttractGoods','status'=>2))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('AttractGoods/resume',array('model'=>'AttractGoods','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('AttractGoods/delete',array('model'=>'AttractGoods','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <form action="{:U('User/index')}" method="post" class="form">
+                        <!--<select name="auth_status" id="shenhe">-->
+                            <!--<option value="">&#45;&#45; 根据认证状态筛选 &#45;&#45;</option>-->
+                            <!--<option value="2">已认证</option>-->
+                            <!--<option value="1">等待认证</option>-->
+                            <!--<option value="0">未认证</option>-->
+                            <!--<option value="3">未通过认证</option>-->
+                        <!--</select>-->
+                    </form>
+                </div>
+                <!--// search end-->
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>编号</th>
+                            <th>商品名称</th>
+                            <th>所属招商人员</th>
+                            <th>所属商家</th>
+                            <th>产品条码</th>
+                            <th>产品规格</th>
+                            <th>结算价</th>
+                            <th>销售价</th>
+                            <th>市场价</th>
+                            <th>产品照片</th>
+                            <th>商品入驻意见</th>
+                            <th>审核状态</th>
+                            <th>审核意见</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['goods_name']}</td>
+                                <td>{$row['a_name']}</td>
+                                <td>{$row['merchant_name']}</td>
+                                <td>{$row['goods_code']}</td>
+                                <td>{$row['goods_specification']}</td>
+                                <td>{$row['settlement_price']}</td>
+                                <td>{$row['shop_price']}</td>
+                                <td>{$row['market_price']}</td>
+                                <td>
+                                    <foreach name="row['path']" item="pic1">
+                                        <a href="__ROOT__{$pic1}"><img src="__ROOT__{$pic1}" alt="" width="80"> &nbsp;&nbsp;</a>
+                                    </foreach>
+                                </td>
+                                <td>{$row['goods_opinion']}</td>
+                                <td>
+                                    <switch name="row['lead_status']">
+                                        <case value="1"><font color="orange">待审核</font></case>
+                                        <case value="2"><font color="#228b22">审核已通过</font></case>
+                                        <case value="3"><font color="red">审核未通过</font></case>
+                                    </switch>
+                                </td>
+                                <td>{$row['lead_opinion']}</td>
+                                <td>
+                                    <a href="{:U('AttractGoods/update',array('model'=>'AttractGoods','id'=>$row['id'],'type'=>1))}" title="编辑" class="">
+                                        <span class="label label-success label-success-hover">编辑</span>
+                                    </a>
+                                        <span class="label {$row['status']|show_status_label}">{$row['status']|show_status_name}</span>
+                                     <a href="{:U('AttractGoods/delete',array('model'=>'AttractGoods','status'=>9))}" title="删除" class="confirm ajax-get">
+                                        <span class="label label-important label-important-hover">删除</span>
+                                     </a>
+                                    <a href="{:U('AttractGoods/leadOpinion',array('model'=>'AttractGoods','attract_id'=>$row['id']))}" title="领导审核意见" class="lead">
+                                        <span class="label label-important">领导意见</span>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function(){
+//            $('.lead').click(function () {
+//                alert(123);
+//            });
+
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__MODULE__/Goods/index/shenhe/"+shenhe;
+                }
+            });
+            $('.recommend').click(function(){
+                $this = $(this);
+                var gid = $(this).attr('data-gid');
+                //获取到是否是推荐
+                var is = $(this).attr('data-rec');
+                if( is != '0'){
+                    $.post('__MODULE__/Goods/setRecommend',{goods_id:gid,is_recommend:0},function(data){
+                        if(data=='1'){
+                            $this.html('<span class="label label-important">✘</span>');
+                            $this.attr('data-rec','0');
+                        }
+                    })
+                }else{
+                    $.post('__MODULE__/Goods/setRecommend',{goods_id:gid,is_recommend:1},function(data){
+                        if(data=='1'){
+                            $this.html('<span class="label label-success">✔</span>');
+                            $this.attr('data-rec','1');
+                        }
+                    })
+
+                }
+            });
+            $('.editArea').dblclick(function(){
+
+                var input = $('<input type="number" name="clicknum" value="" style="max-width:80px;" />');
+                var val = $(this).find('i').text();
+                ($(this).find('i')).after(input.val(val));
+                $(this).find('i').remove();
+            })
+            $('input[name="clicknum"]').live({
+                'blur':function(){
+                    var $this = $(this);
+                    var id = $(this).parents('td').attr('data-gid');
+
+                    var num = $(this).val();
+
+                    $.post("__MODULE__/Goods/setField",{model:'Goods',field:'click_num',value:num,id:id},function(data){
+                        $this.after('<i>'+num+'</i>');
+                        $this.remove();
+                    })
+                }
+
+            })
+         });
+    </script>
+</block>

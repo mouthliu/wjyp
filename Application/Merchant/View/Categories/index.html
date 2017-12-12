@@ -1,0 +1,107 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('Categories/add')}" target-form="ids">新增</button>&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('Categories/forbid',array('model'=>'Categories','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Categories/resume',array('model'=>'Categories','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Categories/delete',array('model'=>'Categories','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <form action="{:U('Categories/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="文章标题">
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="icon-resize-vertical"></i>--></th>
+                            <th>分类名称</th>
+                            <th><i class="icon-pencil"></i>排序</th>
+                            <th>创建时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['name']}</td>
+                                <td class="single-edit" data-model="Categories" data-id="{$row['priority']}" data-field="priority">{$row['priority']}</td>
+                                <td>{$row['create_time']|date='Y-m-d H:i',###}</td>
+                                <td>{$row['status']|get_status_title}</td>
+                                <td>
+                                    <a href="{:U('Categories/update',array('id'=>$row['id']))}" title="编辑" class="tip-bottom">
+                                        <span class="label label-success">编辑</span></a>&nbsp;
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('Categories/resume',array('model'=>'Categories','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                        <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    <else/>
+                                        <a href="{:U('Categories/forbid',array('model'=>'Categories','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                        <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                    <a href="{:U('Categories/remove',array('model'=>'Categories','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+                                </td>
+                            </tr>
+                            <notempty name="row['_child']" >
+                                <volist  name="row['_child']" id="row_child">
+                                    <tr>
+                                        <td><input type="checkbox" name="ids[]" value="{$row_child['id']}" class="ids"/></td>
+                                        <td>　　|--{$row_child['name']}</td>
+                                        <td class="single-edit" data-model="Categories" data-id="{$row_child['priority']}" data-field="priority">{$row_child['priority']}</td>
+                                        <td>{$row_child['create_time']|date='Y-m-d H:i',###}</td>
+                                        <td>{$row_child['status']|get_status_title}</td>
+                                        <td>
+                                            <a href="{:U('Categories/update',array('id'=>$row_child['id']))}" title="编辑" class="tip-bottom">
+                                                <span class="label label-success">编辑</span></a>&nbsp;
+
+                                            <eq name="row['status']" value="0">
+                                                <a href="{:U('Categories/resume',array('model'=>'Categories','ids'=>$row_child['id'],'status'=>abs(1-$row['status'])))}" title="{$row_child['status']|show_status_name}" class="tip-bottom ajax-get">
+                                                    <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                                <else/>
+                                                <a href="{:U('Categories/forbid',array('model'=>'Categories','ids'=>$row_child['id'],'status'=>abs(1-$row_child['status'])))}" title="{$row_child['status']|show_status_name}" class="tip-bottom ajax-get">
+                                                    <span class="label label-inverse">{$row_child['status']|show_status_name}</span></a>&nbsp;
+                                            </eq>
+                                            <a href="{:U('Categories/delete',array('model'=>'Categories','ids'=>$row_child['id'],'status'=>9))}" title="删除" class="tip-bottom confirm ajax-get">
+                                                <span class="label label-important">删除</span></a>
+                                            <a href="{:U('ThrMenu/index',array('p_id'=>$row_child['id']))}" title="三级分类管理" class="tip-bottom">
+                                                <span class="label label-info">三级分类管理</span></a>&nbsp;
+                                        </td>
+                                    </tr>
+                                </volist>
+                            </notempty>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

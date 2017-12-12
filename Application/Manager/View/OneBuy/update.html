@@ -1,0 +1,349 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('OneBuy/update')}" id="form">
+                        <input type="hidden" name="model" value="OneBuy">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <notempty  name="row['id']">
+                        <div class="control-group">
+                            <label class="control-label">本次期号</label>
+                            <div class="controls">
+                                <input type="text"  name="time_num" value="{$row['time_num']}" disabled>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        </notempty>
+                        <div class="control-group">
+                            <label class="control-label">参加活动商品</label>
+                            <div class="controls">
+                                <div class="input-append">
+                                    <input type="text"  id="goods_info" name="goods_name" value="{$row['goods_name']}" placeholder="请输入商品名称或者ID查找" disabled>
+                                    <!--<button class="btn" type="button" id="gid">搜ID</button>-->
+                                    <!--<button class="btn" type="button" id="gname">搜名称</button>-->
+                                    <input type="hidden" name="goods_id" value="{$row['goods_id']}">
+                                </div>
+                                <span id="attr" style="text-decoration:underline ">所选属性：{$row['attr']|default='无'}</span>
+                            </div>
+                            <div class="controls" style="width: 500px;max-height: 300px;overflow:auto;display: none;" id="glist">
+                                <table class="table table-bordered" >
+                                    <tr id="goods_list">
+                                        <th>ID</th>
+                                        <th width="300">名称</th>
+                                        <th>选项</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!--开始结束时间-->
+                        <div class="control-group">
+                            <label class="control-label">活动时间</label>
+                            <div class="controls">
+                                <div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">
+                                    <notempty name="row['id']">
+                                        <input type="text" name="start_time" value="{$row['start_time']|date='Y-m-d H:i',###}" class="text-width-10 form_datetime" placeholder="开始时间">
+                                        ——
+                                        <input type="text" name="end_time" value="{$row['end_time']|date='Y-m-d H:i',###}" class="text-width-10 form_datetime" placeholder="结束时间">
+                                        <else/>
+                                        <input type="text" name="start_time" value="" class="text-width-10 form_datetime" placeholder="开始时间">
+                                        ——
+                                        <input type="text" name="end_time" value="" class="text-width-10 form_datetime" placeholder="结束时间">
+                                    </notempty>
+                                </div>
+                                <span class="help-block">活动开始-结束日期</span>
+                            </div>
+                        </div>
+
+                        <notempty name="row['id']">
+                            <div class="control-group">
+                                <label class="control-label">实际结束时间</label>
+                                <div class="controls">
+                                    <switch name="row['status']">
+                                        <case value="0|3">
+                                            <input type="text"  name="end_true_time" value="活动未开始" placeholder="活动未开始" disabled >
+                                        </case>
+                                        <case value="1">
+                                            <input type="text"  name="end_true_time" value="{$row['end_true_time']|date='Y-m-d H:i:s',###}" placeholder="活动正在进行中" disabled >
+                                        </case>
+                                        <case value="2">
+                                            <input type="text"  name="end_true_time" value="{$row['end_true_time']|date='Y-m-d H:i:s',###}"  >
+                                        </case>
+                                    </switch>
+                                    <span class="help-block">由于提前达到结束条件所记录的时间</span>
+                                </div>
+                            </div>
+                        </notempty>
+                        {$uinfo}
+                        <div class="control-group">
+                            <label class="control-label">参加活动总共份数</label>
+                            <div class="controls">
+                                <input type="number"  name="person_num" value="{$row['person_num']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                <p>余额最大份数
+                                    <input type="checkbox" name="range" class="top-cate">
+                                </p>
+                            </label>
+                            <div class="controls">
+                                <input type="number"  name="balance_lot" value="{$row['balance_lot']}" disabled>
+                                <span class="help-block">例如:10</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">多少余额占一份</label>
+                            <div class="controls">
+                                <input type="number" step="0.01" name="balance_num" value="{$row['balance_num']}" disabled>
+                                <span class="help-block">例如:10.99</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                <p>积分最大份数
+                                    <input type="checkbox" name="range" class="top-cate">
+                                </p>
+                            </label>
+                            <div class="controls">
+                                <input type="number"  name="integral_lot" value="{$row['integral_lot']}" disabled>
+                                <span class="help-block">例如:10</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">多少积分占一份</label>
+                            <div class="controls">
+                                <input type="number" step="0.01" name="integral_num" value="{$row['integral_num']}" disabled>
+                                <span class="help-block">例如:10.99</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                <p>红色代金券所占份数
+                                    <input type="checkbox" name="range" class="top-cate">
+                                </p>
+                            </label>
+                            <div class="controls">
+                                <input type="number"  name="red_discount_lot" value="{$row['red_discount_lot']}" disabled>
+                                <span class="help-block">例如:10</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">多少红色代金券占一份</label>
+                            <div class="controls">
+                                <input type="number" step="0.01" name="red_discount_num" value="{$row['red_discount_num']}" disabled>
+                                <span class="help-block">例如:10.00</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                <p>黄色代金券所占份数
+                                    <input type="checkbox" name="range" class="top-cate">
+                                </p>
+                            </label>
+                            <div class="controls">
+                                <input type="number"  name="yellow_discount_lot" value="{$row['yellow_discount_lot']}" disabled>
+                                <span class="help-block">例如:10</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">多少黄色代金券占一份</label>
+                            <div class="controls ">
+                                <input type="number" step="0.01" name="yellow_discount_num" value="{$row['yellow_discount_num']}"disabled >
+                                <span class="help-block">例如:10.00</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                <p>蓝色代金券所占份数
+                                    <input type="checkbox" name="range" class="top-cate">
+                                </p>
+                            </label>
+                            <div class="controls">
+                                <input type="number"  name="blue_discount_lot" value="{$row['blue_discount_lot']}" disabled>
+                                <span class="help-block">例如:10</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">多少蓝色代金券占一份</label>
+                            <div class="controls">
+                                <input type="number" step="0.01" name="blue_discount_num" value="{$row['blue_discount_num']}" disabled>
+                                <span class="help-block">例如:10.00</span>
+                            </div>
+                        </div>
+
+                        <if condition="$row['status'] eq 2">
+                            <div class="control-group">
+                                <label class="control-label">幸运号码</label>
+                                <div class="controls">
+                                    <input type="text"  name="" value="{$row['uinfo']['add_code']}">
+                                    <span class="help-block">10个字符以内</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">获得者手机</label>
+                                <div class="controls">
+                                    <input type="text"  name="" value="{$row['uinfo']['phone']}" >
+                                    <span class="help-block">10个字符以内</span>
+                                </div>
+                            </div>
+                        </if>
+                        <div class="control-group">
+                            <label class="control-label">活动赠送积分</label>
+                            <div class="controls">
+                                <input type="number" name="integral" value="{$row['integral']}" disabled>
+                                <a href="javascript:;"  class="tip-bottom edit_num">
+                                    <span class="label label-info"><i class="icon-edit "></i> 修改</span></a>&nbsp;
+                                <span class="help-block">系统计算理论所得积分 ： <font color="red">{$row['integral']}</font></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">审核状态</label>
+                            <div class="controls">
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                                    未审核
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" class="no-refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                                    通过
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="status" id="refuse" value="3" <if condition="$row['status'] eq 3" > checked </if>>
+                                    拒绝通过
+                                </label>
+                            </div>
+                            <div class="controls" id="refuse-text" <if condition="$row['status'] neq 3">style="display: none;"</if> >
+                            <textarea name="refuse_desc" id="" cols="5" rows="3" placeholder="请填写拒绝理由">{$row['refuse_desc']}</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post " type="submit" id="submit" target-form="form-horizontal">保 存</button>&nbsp;&nbsp;
+                            <switch name="row['status']">
+                                <case value="2">
+                                    <a href="{:U('OneBuy/singleEdit',array('model'=>'OneBuy','id'=>$row['id'],'field'=>'is_running','value'=>2))}" title="提前结束" class="btn btn-info ajax-get">
+                                        提前结束</a>&nbsp;
+                                </case>
+                            </switch>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $(function(){
+            $('input[name="range"]').click(function(){
+                if($(this).attr('checked')){
+                    $(this).parents('label').nextAll('div.control-group,div.controls').find('input[type=number]').attr('disabled',false);
+                    $(this).parents('div.control-group').next('div.control-group,div.controls').find('input[type=number]').attr('disabled',false);
+                }else {
+                    $(this).parents('label').nextAll('div.control-group,div.controls').find('input[type=number]').attr('disabled',true);
+                    $(this).parents('div.control-group').next('div.control-group,div.controls').find('input[type=number]').attr('disabled',true);
+                }
+            })
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/OneBuy/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/OneBuy/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                }
+            })
+            //拒绝填写理由
+            $('#refuse').click(function(){
+                if($(this).attr('checked')){
+                    $('#refuse-text').show().find('textarea').html('');
+                }
+            })
+            $('.no-refuse').click(function(){
+                $('#refuse-text').hide();
+            })
+            //点击修改积分
+            $('.edit_num').click(function(){
+                $input = $(this).prev('input');
+                $input.attr('disabled',false);
+            })
+            //占比
+//            $("input[name='person_num']").change(function(){
+//                $("input[name='integral_num']").val(parseInt($(this).val()));
+//                $("input[name='ticket_num']").val('0');
+//            })
+//            $("input[name='integral_num']").blur(function(){
+//                var person_num = parseInt($("input[name='person_num']").val());
+//                var integral_num = parseInt($(this).val());
+//                if(integral_num > person_num){
+//                    integral_num = person_num;
+//                }
+//                var diff = person_num - integral_num;
+//                $("input[name='ticket_num']").val(diff);
+//                $("input[name='integral_num']").val(integral_num);
+//
+//            })
+        })
+    </script>
+</block>

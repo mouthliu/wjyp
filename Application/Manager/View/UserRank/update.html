@@ -1,0 +1,65 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('UserRank/update')}" id="form">
+                        <input type="hidden" name="model" value="UserRank">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="status" value="{$row['status']}">
+                        <div class="control-group">
+                            <label class="control-label">等级名称</label>
+                            <div class="controls">
+                                <input type="text"  name="rank_name" value="{$row['rank_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">等级图标</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'icon','field_name'=>'icon','field_value'=>$row['icon'],'save_path'=>'UserRank'))}
+                                <span class="help-block">比例 3:2</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">好处描述</label>
+                            <div class="controls">
+                                <input type="text"  name="desc" value="{$row['desc']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">消费条件</label>
+                            <div class="controls">
+                                <input type="text"  name="money" value="{$row['money']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">时效</label>
+                            <div class="controls">
+                                <select name="expire_type" class="select-c">
+                                    <option value="0" <if condition="$row['expire_type'] eq 0" > selected </if>>永久</option>
+                                    <option value="1" <if condition="$row['expire_type'] eq 1" > selected </if>>三天</option>
+                                    <option value="2" <if condition="$row['expire_type'] eq 2" > selected </if>>一周</option>
+                                    <option value="3" <if condition="$row['expire_type'] eq 3" > selected </if>>一个月</option>
+                                    <option value="4" <if condition="$row['expire_type'] eq 4" > selected </if>>一年</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

@@ -1,0 +1,456 @@
+<extend name="Public/base" />
+
+<block name="main">
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        #allmap {
+            width: 915px;
+            height: 300px;
+            overflow: hidden;
+            font-family:"微软雅黑";
+        }
+    </style>
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <!--选项卡-->
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a href="#home">基本信息</a></li>
+                    <li><a href="#info">图文详情</a></li>
+                    <li><a href="#pic">汽车相册</a></li>
+                    <li><a href="#car_property">购车属性</a></li>
+                </ul>
+                <form class="form-horizontal" method="post" action="{:U('CarBuy/update')}" autocomplete="off">
+                    <input type="hidden" name="model" value="CarBuy">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                <div class="tab-content">
+                    <div class="tab-pane {$_GET['theme']==1?'':'active'}" id="home">
+                        <!--主要信息-->
+                        <div class="widget-content nopadding">
+                            <div class="control-group">
+                                <label class="control-label">汽车名称</label>
+                                <div class="controls">
+                                    <input type="text" name="car_name" value="{$row['car_name']}">
+                                    <span class="help-block">15个字符以内 英文字母</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">选择车型</label>
+                                <div class="controls">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn checked" data-default="--选择车型--"></button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <volist name="style_list" id="group_row">
+                                                <li data-value="{$group_row['id']}"  data-title="{$group_row['style_name']}" <eq name="group_row['id']" value="$row['car_style_id']">class="selected"</eq>>
+                                                <a href="javascript:void(0)" class="brand" data-src="__ROOT__{$group_row['path']}"><span>{$group_row['style_name']}</span></a>
+                                                </li>
+                                            </volist>
+                                        </ul>
+                                    </div>
+                                    <input type="hidden" name="car_style_id" value="{$row['car_style_id']}">
+                                    <div class="btn-group">
+                                        <img src="__ROOT__{$row['style_path']}" alt="" width="50">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">选择品牌</label>
+                                <div class="controls">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn checked" data-default="--选择品牌--"></button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <!--<span class="checked" data-default="--选择分组--"></span>--><span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+
+                                            <volist name="brand_list" id="group_row">
+                                                <li data-value="{$group_row['id']}"  data-title="{$group_row['brand_name']}" <eq name="group_row['id']" value="$row['brand_id']">class="selected"</eq>>
+                                                <a href="javascript:void(0)" class="brand" data-src="__ROOT__{$group_row['path']}"><span>{$group_row['brand_name']}</span></a>
+
+                                                </li>
+
+                                            </volist>
+                                        </ul>
+
+                                    </div>
+                                    <input type="hidden" name="brand_id" value="{$row['brand_id']}">
+                                    <div class="btn-group">
+                                        <img src="__ROOT__{$row['brand_path']}" alt="" width="50">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">汽车封面图</label>
+                                <div class="controls">
+                                    {:hook('upload',array('is_first'=>1,'unique_sign'=>'car_img','field_name'=>'car_img','field_value'=>$row['car_img'],'save_path'=>'CarBuy'))}
+                                    <span class="help-block">长宽比为600px:600px 用于显示</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">车全价</label>
+                                <div class="controls">
+                                    <input type="number" name="all_price" value="{$row['all_price']}">
+                                    <span class="help-block">价格</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">代金券</label>
+                                <div class="controls">
+                                    <input type="number" name="pre_money" value="{$row['pre_money']}">
+                                    <span class="help-block">可用来抵现,用做一部分车款</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">可抵现金额</label>
+                                <div class="controls">
+                                    <input type="number" name="true_pre_money" value="{$row['true_pre_money']}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺名称</label>
+                                <div class="controls">
+                                    <input type="text" name="shop_name" value="{$row['shop_name']}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺地址</label>
+                                <div class="controls">
+                                    <select name="province_id" class="province">
+                                        <option value="">省份</option>
+                                        <volist name="province" id="vo">
+                                            <option value="{$vo['id']}" <eq name="vo['id']" value="$row['province_id']">selected</eq> >{$vo['region_name']}</option>
+                                        </volist>
+                                    </select>
+
+                                    <select name="city_id" class="city">
+
+                                        <if condition="empty($row['city_id'])">
+                                            <option value="">城市</option>
+                                            <else />
+                                            <volist name="city" id="vo1">
+                                                <option value="{$vo1['id']}" <eq name="vo1['id']" value="$row['city_id']">selected</eq> >{$vo1['region_name']}</option>
+                                            </volist>
+                                        </if>
+                                    </select>
+                                    <select name="area_id" class="area">
+                                        <if condition="empty($row['area_id'])">
+                                            <option value="">地区</option>
+                                            <else />
+                                            <volist name="area" id="vo2">
+                                                <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['area_id']">selected</eq> >{$vo2['region_name']}</option>
+                                            </volist>
+                                        </if>
+                                    </select>
+                                    <select name="street_id" class="street">
+                                        <if condition="empty($row['street_id'])">
+                                            <option value="">街道</option>
+                                            <else />
+                                            <volist name="street" id="vo2">
+                                                <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['street_id']">selected</eq> >{$vo2['street_name']}</option>
+                                            </volist>
+                                        </if>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">详细地址</label>
+                                <div class="controls">
+                                    <textarea name="address">{$row['address']}</textarea>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺定位</label>
+                                <div id="allmap" class="controls">
+                                </div>
+                                <input id="lng" name="lng" type="hidden" value="{$row['lng']}">
+                                <input id="lat" name="lat" type="hidden" value="{$row['lat']}">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">店铺电话</label>
+                                <div class="controls">
+                                    <input type="text" name="shop_mobile" value="{$row['shop_mobile']}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">联系人</label>
+                                <div class="controls">
+                                    <input type="text" name="contact_name" value="{$row['contact_name']}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">联系电话</label>
+                                <div class="controls">
+                                    <input type="text" name="contact_mobile" value="{$row['contact_mobile']}">
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">红色代金券使用比例</label>
+                                <div class="controls">
+                                    <input <if condition="$row['discount'] != 0.00"> checked </if>  type="checkbox" class="discount">
+                                    <input <if condition="$row['discount'] == 0.00">style="display: none;" </if>  type="number" min="0" max="100" step="0.01" name="discount" value="{$row['discount']}" placeholder="请输入百分比 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">黄色代金券使用比例</label>
+                                <div class="controls">
+                                    <input <if condition="$row['yellow_discount'] != 0.00"> checked </if> type="checkbox" class="yellow_discount">
+                                    <input <if condition="$row['yellow_discount'] == 0.00">style="display: none;"</if> type="number" min="0" max="100" step="0.01" name="yellow_discount" value="{$row['yellow_discount']}" placeholder="请输入百分比 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">蓝色代金券使用比例</label>
+                                <div class="controls">
+                                    <input <if condition="$row['blue_discount'] != 0.00"> checked </if> type="checkbox" class="blue_discount">
+                                    <input <if condition="$row['blue_discount'] != 0.00">style="display: black;"<else/>style="display: none;"</if> type="number" min="0" max="100" step="0.01" name="blue_discount" value="{$row['blue_discount']}" placeholder="请输入百分比 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">可使用积分数</label>
+                                <div class="controls">
+                                    <input <if condition="$row['integral'] != 0.00"> checked </if> type="checkbox" class="integral">
+                                    <input <if condition="$row['integral'] == 0.00">style="display: none;" </if> type="number" min="0" max="100" step="0.01" name="integral" value="{$row['integral']}" placeholder="请输入积分 例如:50.55">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="info">
+                        <!--商品图文详情-->
+                        <div class="widget-content nopadding">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <textarea name="content">{$row['content']}</textarea>
+                                    <!--钩子参数:is_first->表示防止重复加载样式
+                                                 name->字段名
+                                                 value->表示的是存到表中的内容
+                                                 width->文本的宽
+                                     -->
+                                    {:hook('adminArticleEdit', array('is_first'=>1,'name'=>'content','value'=>$row['content'],'width'=>800))}
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="pic">
+                        <!--商品相册-->
+                        <div class="accordion" id="accordion2">
+                            <div class="accordion-group">
+                                <div id="collapseOne" class="accordion-body collapse" style="height: auto;">
+                                    <div class="accordion-inner">
+
+                                        {:hook('upload',array('unique_sign'=>'pictures','queue_limit'=>4,'field_name'=>'pictures','field_value'=>$row['pictures'],'save_path'=>'CarBuy'))}
+                                        <span class="help-block">长宽比为600px:600px</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="car_property">
+                        <!--属性-->
+                        <div class="control-group">
+                            <label class="control-label">汽车购车属性:</label>
+                            <div class="controls">
+                                <if condition="!empty($car_property)">
+                                <foreach name="car_property" item="v">
+                                <div class="ddd"><br/>
+                                    <a href="javascript:void(0);" class="asc"><i class="icon-plus" ></i></a>
+                                    <snan> 属性名</snan>
+                                    <input name="attr_name[]" value="{$v['attr_val']}" type="text">
+                                    <snan> 属性值</snan>
+                                    <input name="attr_val[]" value="{$v['attr_name']}" type="text">
+                                </div>
+                                </foreach>
+                                    <else/>
+                                    <div class="ddd">
+                                        <a href="javascript:void(0);" class="asc"><i class="icon-plus" ></i></a>
+                                        <snan> 属性名</snan>
+                                        <input name="attr_name[]" value="{$v['attr_val']}" type="text">
+                                        <snan> 属性值</snan>
+                                        <input name="attr_val[]" value="{$v['attr_name']}" type="text">
+                                    </div>
+                                </if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                    <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ae1DLg4ISYE34wv2HuLtsA7hekQEA2yI"></script>
+    <!--加载鼠标绘制工具-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+    <!--加载检索信息窗口-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css" />
+    <script>
+        $('.asc').click(function(){
+            var newDiv = "<div class='ddd'><br/>"+
+            "<a href='javascript:void(0);' class='desc'><i class='icon-minus'></i></a>"+
+                    "<snan> 属性名</snan>"+
+                    "<input name='attr_name[]' type='text'>"+
+                    "<snan> 属性值</snan>"+
+                    "<input name='attr_val[]' type='text'>"+
+                    "</div>"
+            //获取到当前父级div
+            var oldDiv = $(this).parents('div.ddd').parents('div.controls');
+            oldDiv.append(newDiv);
+        })
+        $('a.desc').live({
+            'click':function(){
+                //获取到当前父级div删除
+                var oldDiv = $(this).parents('div.ddd').remove();
+            }
+        })
+        var integral = $("input[name='integral']");
+        var discount = $("input[name='discount']");
+        var blue_discount = $("input[name='blue_discount']");
+        var yellow_discount = $("input[name='yellow_discount']");
+
+        $('.integral').change(function(){
+            if($(this).is(':checked')){
+                integral.show();
+                $('.is_integral').val('1');
+            }else{
+                integral.hide();
+                integral.val('0');
+                $('.is_integral').val('0');
+            }
+        })
+        $('.discount').change(function(){
+            if($(this).is(':checked')){
+                discount.show();
+                discount.val('0');
+            }else{
+                discount.hide();
+                discount.val('0');
+//                discount.attr("disabled",true);
+            }
+        })
+        $('.blue_discount').change(function(){
+            if($(this).is(':checked')){
+                blue_discount.show();
+//                blue_discount.attr("disabled",false);
+            }else{
+                blue_discount.hide();
+                blue_discount.val('0');
+//                blue_discount.attr("disabled",true);
+            }
+        })
+        $('.yellow_discount').change(function(){
+            if($(this).is(':checked')){
+                yellow_discount.show();
+//                yellow_discount.attr("disabled",false);
+            }else{
+                yellow_discount.hide();
+                blue_discount
+//                yellow_discount.attr("disabled",true);
+            }
+        })
+    $(function () {
+
+        // 百度地图API功能
+        var map = new BMap.Map("allmap");
+        map.enableScrollWheelZoom(true);
+        var lng = $("#lng").val();
+        var lat = $("#lat").val();
+        if(lng>1){
+            var poi = new BMap.Point(lng,lat);
+            map.centerAndZoom(poi, 15);
+            var point = new BMap.Point(lng,lat);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+        }else {
+            map.centerAndZoom('天津市',15);
+        }
+
+        // 创建点坐标以及点击返回坐标
+        function showInfo(e){
+            map.clearOverlays();
+            $("#lng").val(e.point.lng);
+            $("#lat").val(e.point.lat);
+            var point = new BMap.Point(e.point.lng,e.point.lat);    // 创建点坐标
+            var marker = new BMap.Marker(point);        // 创建标注
+            map.addOverlay(marker);                     // 将标注添加到地图中
+        }
+        map.addEventListener("click", showInfo);
+        //        $('#myTab a').tab('show');
+//        $('#myTab a[href="#home"]').tab('show');
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+        //        $('#myTab a').tab('show');
+//        $('#myTab a[href="#home"]').tab('show');
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+
+        //下拉选择图片动态显示 开始
+        $('.dropdown-menu li a.brand').click(function(){
+                //获取到当前的品牌名称
+            var brand_name = $(this).find('span').text();
+            //获取到图片
+            $(this).parents('div.btn-group').nextAll('div.btn-group').find("img").attr("src",$(this).attr('data-src')) ;
+        })
+        //下拉选择图片动态显示 结束
+//城市级联
+
+        //城市级联
+        $(".province").change(function(){
+            var province = $(this).val();
+            $.post("{:U('User/ajaxGetRegion')}",{id:province},function(data){
+                var html ='<option value="">城市</option>';
+                for(var i in data){
+                    html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                }
+                $('.city').html(html);
+            });
+        });
+
+
+        $('.city').change(function(){
+            var city = $(this).val();
+            $.post("{:U('User/ajaxGetRegion')}",{id:city},function(data){
+                var html = '<option value="">区/县</option>';
+                for(var i in data){
+                    html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                }
+                $('.area').html(html);
+            });
+        });
+        $('.area').change(function(){
+            var area = $(this).val();
+            $.post("{:U('User/ajaxGetStreet')}",{id:area},function(data){
+                var html = '<option value="">街道</option>';
+                for(var i in data){
+                    html += '<option value="'+data[i].street_id+'">'+data[i].street_name+'</option>';
+                }
+                $('.street').html(html);
+            });
+
+        })
+    })
+
+    </script>
+</block>

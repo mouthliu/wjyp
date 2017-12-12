@@ -1,0 +1,96 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-success href" url="{:U('Comment/add')}" target-form="ids">新增</button>&nbsp;-->
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('Comment/forbid',array('model'=>'Comment','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('Comment/resume',array('model'=>'Comment','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <button class="btn btn-danger confirm ajax-post" url="{:U('Comment/delete',array('model'=>'Comment','status'=>9))}" target-form="ids">删除</button>&nbsp;
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('Comment/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="{:U('Comment/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="类型名称">
+                        {$select}
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>用户昵称</th>
+                            <th>评论商品对像</th>
+                            <th>评论时间</th>
+                            <th>好评度</th>
+                            <th>是否显示(无权更改)</th>
+                            <th>回复状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['nickname']}</td>
+                                <td><a href="__MODULE__/Goods/update/id/{$row['goods_id']}">{$row['goods_name']}【{$row['goods_attr']|default='普通'}】</a></td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td><switch name="row['all_star']">
+                                    <case value="1">
+                                        <font color="red">差评 ↓</font>
+                                    </case>
+                                    <case value="2|3">
+                                        <font color="#ff4500">中评 —</font>
+                                    </case>
+                                    <case value="4|5">
+                                        <font color="green">好评 ↑</font>
+                                    </case>
+                                </switch> {:str_repeat('★',$row['all_star'])}</td>
+                                <td>{$row['status']==1?'<i class="icon-ok"></i>':'<i class="icon-remove"></i>'}</td>
+                                <td>{$row['reply']?'已回复':'暂未回复'}</td>
+                                <td>
+
+                                    <a href="{:U('Comment/update',array('id'=>$row['id']))}" title="查看评价" class="tip-bottom">
+                                        <span class="label label-info">查看评价</span></a>&nbsp;
+                                    <!--<a href="{:U('Comment/delete',array('model'=>'GoodsType','ids'=>$row['id'],'status'=>9))}" title="删除" class="tip-bottom">-->
+                                        <!--<span class="label label-warning">删除</span></a>&nbsp;-->
+
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

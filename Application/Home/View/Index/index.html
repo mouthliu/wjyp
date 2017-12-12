@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>官网</title>
+<link rel="stylesheet" type="text/css" href="__ROOT__/Public/Static/Index/css/style.css">
+<link rel="stylesheet" type="text/css" href="__ROOT__/Public/Static/Index/css/bb.css">
+<script type="text/javascript" src="__ROOT__/Public/Static/Index/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/Static/Index/js/jquery.flexslider-min.js"></script>
+ <style>
+    .logo{height: 70px;margin-top:25px;}
+    .slide-top{width:100%; height:120px; position:absolute;right:0;top:0;line-height: 120px;  background:rgba(255,255,255,.2); font-size:24px;color:#fff}
+    .logo img{height: 100%;width: auto !important}
+    .margin-c{width:80%;margin:0 auto}
+    .phone-num{position:absolute;right:10%; }
+    @media (max-width: 600px) {
+      .logo{height: 40px;margin-top:20px;margin-left: 5%}
+      .phone-num{position:absolute;right:10%; }
+      .margin-c{width:100%;margin:0 auto}
+      .slide-top {
+        display: none;
+        width:100%; height:80px; line-height: 80px;font-size: 16px;
+      }
+    }
+ </style>
+</head>
+
+<body class="item">
+<div class="slider">
+  <div id="home_slider" class="flexslider">
+    <ul class="slides">
+      <li>
+        <div class="slide"><img src="__ROOT__/Public/Static/Index/images/1.png">
+          <div class="slide-top">
+            <div class="margin-c">
+              <div class="logo fl"><img src="__ROOT__/Public/Static/Index/images/logo.png" alt=""></div class="fl">
+              <span class="fr phone-num">服务热线：022-85190033</span>
+            </div> 
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  
+</div>
+<div class="code">
+	<div class="wrapper clearfix">
+        <div class="list">
+        	<div class="ab clearfix">
+            
+            <div class="app_dleft">
+               <a target="_blank" class="app_iphone" href="{:U('Index/downLoad')}"><img src="__ROOT__/Public/Static/Index/images/android_d.png"></a>
+              </div>
+              <div class="app_dright">
+                  <div class="app_iphone_ewm"><img src="__ROOT__/Public/Static/Index/images/android_erwm.png"></div>
+                  <div class="app_ewmspan">安卓手机扫描下载</div>
+              </div>
+            
+            
+            </div>
+        </div>
+        <div class="list"><div class="ab clearfix">
+        
+        	<div class="app_dleft">
+               <a target="_blank" class="app_android" href="{:U('Index/downLoad')}"><img src="__ROOT__/Public/Static/Index/images/iphone_d.png"></a>
+              </div>
+              <div class="app_dright">
+                  <div class="app_android_ewm"><img src="__ROOT__/Public/Static/Index/images/ios_erwm.png"></div>
+                  <div class="app_ewmspan">苹果手机扫描下载</div>
+              </div>
+
+        </div></div>
+    </div>
+</div>
+<div class="footer">
+    <div class="bottom">
+        <div class="clearfix">
+            <div class="left">
+                <p class="a1"><span>联系我们</span></p>
+                <p><em>022-85190033</em>周一至周五8:30-18:00</p>
+                <p>Email：guobencn@163.com</p>
+                <p>Copyright © 2017 国本(天津)信息技术有限公司&nbsp;</p>
+            </div>
+            <!-- <div class="right"> -->
+                <!-- <div class="fl"><img src="/Public/Home/images/wx_erwm.jpg"></div> -->
+                <!-- <div class="fl a1">关注"微信公众号"<br/>了解最新动态</div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+$(function () {
+	$('#home_slider').flexslider(
+	{
+		animation : 'slide',
+		controlNav : true,
+		directionNav : true,
+		animationLoop : true,
+		slideshow : false,
+		useCSS : false
+	});
+	});
+</script> 
+</body>
+</html>

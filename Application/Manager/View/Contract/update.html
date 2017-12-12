@@ -1,0 +1,181 @@
+<extend name="Public/base" />
+
+
+<block name="main">
+    <link rel="stylesheet" href="__PUBLIC__/Static/datetimepicker/css/datetimepicker.css" />
+    <style type="text/css">
+        #edui1_iframeholder{
+            width: 100% !important;
+        }
+        .cate-check{
+            background: #ccc;
+            opacity: 0.5;
+        }
+    </style>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <form class="form-horizontal" method="post" action="{:U('Contract/update')}" id="form">
+                    <input type="hidden" name="model" value="Contract">
+                    <input type="hidden" name="id" value="{$row['id']}">
+                    <if condition="!empty($merchant_id)">
+                        <input type="hidden" name="merchant_id" value="{$merchant_id}">
+                    </if>
+                    <if condition="!empty($p_id)">
+                        <input type="hidden" name="p_id" value="{$p_id}">
+                    </if>
+            <div class="tab-pane" id="contract">
+                <div class="control-group">
+                    <label class="control-label">协议编号</label>
+                    <div class="controls">
+                        <input type="text" name="agreement_number" value="{$row['agreement_number']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">协议名称</label>
+                    <div class="controls">
+                        <input type="text" name="agreement_name" value="{$row['agreement_name']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">协议类型</label>
+                    <div class="controls">
+                        <if condition="$row['type'] == 1">
+                            <input type="text" value="新增" disabled>
+                            <input type="hidden" name="type" value="1">
+                            <else/>
+                            <input type="hidden" name="type" value="2">
+                            <input type="text" value="续签" disabled>
+                        </if>
+                    </div>
+                </div>
+                <if condition="!empty($agreement_name)">
+                <div class="control-group">
+                    <label class="control-label">主协议名称</label>
+                    <div class="controls">
+                        <input type="text" name="" value="{$agreement_name}" disabled>
+                    </div>
+                </div>
+                </if>
+                <div class="control-group">
+                    <label class="control-label">甲方名称</label>
+                    <div class="controls">
+                        <input type="text" name="first_name" value="{$row['first_name']}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方公司地址</label>
+                    <div class="controls">
+                        <input type="text" name="first_address" value="{$row['first_address']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方联系人</label>
+                    <div class="controls">
+                        <input type="text" name="first_linkman" value="{$row['first_linkman']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方联系方式</label>
+                    <div class="controls">
+                        <input type="text" name="first_contact" value="{$row['first_contact']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">甲方电子邮箱</label>
+                    <div class="controls">
+                        <input type="text" name="first_e_mail" value="{$row['first_e_mail']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方名称</label>
+                    <div class="controls">
+                        <input type="text" name="party_name" value="{$row['party_name']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方公司地址</label>
+                    <div class="controls">
+                        <input type="text" name="party_address" value="{$row['party_address']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方联系人</label>
+                    <div class="controls">
+                        <input type="text" name="party_linkman" value="{$row['party_linkman']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方联系方式</label>
+                    <div class="controls">
+                        <input type="text" name="party_contact" value="{$row['party_contact']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">乙方电子邮箱</label>
+                    <div class="controls">
+                        <input type="text" name="party_e_mail" value="{$row['party_e_mail']}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">开始时间</label>
+                    <div class="controls">
+                        <input type="text" name="start_time" <if condition="!empty($row['id'])">value="{$row['start_time']|date='Y-m-d H:i',###}"</if>  class="form_datetime input-sm" placeholder="开始时间">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">结束时间</label>
+                    <div class="controls">
+                        <input type="text" name="end_time" <if condition="!empty($row['id'])">value="{$row['end_time']|date='Y-m-d H:i',###}"</if>  class="form_datetime input-sm" placeholder="结束时间">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">电子协议</label>
+                    <div class="controls">
+                        {:hook('upload',array('is_first'=>1,'unique_sign'=>'Contract_img','queue_limit'=>10,'field_name'=>'contract','field_value'=>$row['contract_img'],'save_path'=>'Merchant'))}
+                    </div>
+                </div>
+                <if condition="!empty($row)">
+                <div class="control-group">
+                    <label class="control-label">协议状态</label>
+                    <div class="controls">
+                        <label class="radio inline">
+                            <input type="radio" name="status" class="no-refuse" value="0" <if condition="$row['status'] eq 0" > checked </if>>
+                            未审核
+                        </label>
+                        <label class="radio inline">
+                            <input type="radio" name="status" class="no-refuse" value="1" <if condition="$row['status'] eq 1" > checked </if>>
+                            同意通过
+                        </label>
+                        <label class="radio inline">
+                            <input type="radio" name="status" id="refuse" value="2" <if condition="$row['status'] eq 2" > checked </if>>
+                            拒绝通过
+                        </label>
+                    </div>
+                    <!--<div class="controls" id="refuse-text" <if condition="$row['status'] neq 3">style="display: none;"</if> >-->
+                    <!--<textarea name="refuse_desc" cols="5" rows="3" placeholder="请填写拒绝理由" >{$row['refuse_desc']}</textarea>-->
+                </div>
+                    </if>
+            </div>
+        <div class="form-actions">
+            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+        </div>
+        </form>
+
+    </div>
+    </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            language:"zh-CN",
+            autoclose:true
+        });
+    </script>
+</block>

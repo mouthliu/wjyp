@@ -1,0 +1,74 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <b>{$_GET['name'] ? $_GET['name'] : "中国"}</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-inverse ajax-post" url="{:U('Region/forbid',array('model'=>'Region','status'=>0))}" target-form="ids">禁用</button>&nbsp;
+                    <button class="btn btn-info ajax-post" url="{:U('Region/resume',array('model'=>'Region','status'=>1))}" target-form="ids">启用</button>&nbsp;
+                    <!--<form action="{:U('Region/index')}" method="post" class="form">-->
+
+                    <!--<input type="text" name="region_name" value="{$_REQUEST['region_name']}" placeholder="城市名称">-->
+                    <!--<button class="btn btn-inverse">查询</button>-->
+                    <!--</form>-->
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['region_name']}</td>
+                                <td>{$row['status']==1?'启用':'禁用'}</td>
+                                <td>
+                                    <switch name="_GET['type']">
+
+                                        <case value="2">
+                                            <a href="{:U('Region/index',array('id'=>$row['id'],'type'=>3,'name'=>$row['region_name']))}" title="查看详情" class="tip-bottom">
+                                                <span class="label label-info">查看其下区县</span></a>&nbsp;
+                                        </case>
+                                        <case value="3">
+                                            <a href="{:U('Region/street',array('id'=>$row['id'],'type'=>4,'name'=>$row['region_name']))}" title="查看详情" class="tip-bottom">
+                                                <span class="label label-info">查看街道 / {$row['street_num']}</span></a>&nbsp;
+                                        </case>
+                                        <default />
+                                            <a href="{:U('Region/index',array('id'=>$row['id'],'type'=>2,'name'=>$row['region_name']))}" title="查看详情" class="tip-bottom">
+                                            <span class="label label-info">查看其下城市</span></a>&nbsp;
+                                    </switch>
+                                    <eq name="row['status']" value="0">
+                                        <a href="{:U('Region/resume',array('model'=>'Region','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-info">{$row['status']|show_status_name}</span></a>&nbsp;
+                                        <else/>
+                                        <a href="{:U('Region/forbid',array('model'=>'Region','ids'=>$row['id'],'status'=>abs(1-$row['status'])))}" title="{$row['status']|show_status_name}" class="tip-bottom ajax-get">
+                                            <span class="label label-inverse">{$row['status']|show_status_name}</span></a>&nbsp;
+                                    </eq>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+                <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+            </div>
+        </div>
+    </div>
+</block>

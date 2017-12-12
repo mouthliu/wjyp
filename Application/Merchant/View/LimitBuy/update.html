@@ -1,0 +1,246 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('LimitBuy/update')}" id="form">
+                        <input type="hidden" name="model" value="LimitBuy">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="merchant_id" value="{:getMerchantId()}">
+                        <php>$disabled = $row['status']==2?'disabled':'';</php>
+
+                        <notempty name="row['id']">
+                            <div class="control-group">
+                                <label class="control-label">活动状态</label>
+                                <div class="controls">
+                                    <switch name="row['t_status']">
+                                        <case value="0">
+                                            <input type="text"  name="" value="" placeholder="活动未开始" disabled >
+                                        </case>
+                                        <case value="1">
+                                            <input type="text"  name="" value="" placeholder="活动正在进行中" disabled >
+                                        </case>
+                                        <case value="2">
+                                            <input type="text"  name="" value="" placeholder="活动已结束" disabled >
+                                        </case>
+                                    </switch>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </notempty>
+                        <div class="control-group">
+                            <label class="control-label">选择分类</label>
+                            <div class="controls">
+                                <select  name="g-cate" id="g-cate" {$disabled}>
+                                    <option value="0">选择分类</option>
+                                    <volist name="cate_list" id="group_info">
+                                        <option disabled value="{group_info['id']}">{:str_repeat('&nbsp;',3)}├&nbsp;<span>{$group_info['name']}</option>
+                                        <volist name="group_info['underCate']" id="v0">
+                                            <option disabled value="{{$v0['id']}}">{:str_repeat('&nbsp;',7)}└&nbsp;<span>{$v0['name']}</option>
+                                            <notempty name="v0['underCate']">
+                                                <volist name="v0['underCate']" id="v1">
+                                                    <if condition="in_array($v1['id'],explode(',',$cates))">
+                                                        <option value="{$v1['id']}" <if condition="$row['cate_id'] eq $v1['id']">selected</if> >{:str_repeat('&nbsp;',13)}└&nbsp;<span>{$v1['name']}✔</span></option>
+                                                    </if>
+                                                </volist>
+                                            </notempty>
+                                        </volist>
+                                    </volist>
+                                </select>
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">选择商品</label>
+                            <div class="controls">
+                                <select  name="goods_id" id="goods_id" {$disabled}>
+                                    <option value="0">请选择</option>
+                                    <if condition="!empty($row['goods_list'])">
+                                        <volist name="row['goods_list']" id="vo">
+                                            <option value="{$vo['id']}" <if condition="$row['goods_id'] eq $vo['id']">selected</if>>{$vo['goods_name']}，¥ {$vo['shop_price']}</option>
+                                        </volist>
+                                    </if>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">选择货品</label>
+                            <div class="controls">
+                                <select  name="product_id" id="product_id">
+                                    <if condition="!empty($row['product_list'])">
+                                        <volist name="row['product_list']" id="vo">
+                                            <option value="{$vo['id']}" <if condition="$row['product_id'] eq $vo['id']">selected</if> {$disabled}>{:getAttrGroupId1($row['goods_id'],$vo['id'])}，库存:{$vo['product_number']}</option>
+                                        </volist>
+                                        <else />
+                                        <option >暂无货品</option>
+                                    </if>
+                                </select>
+                            </div>
+                        </div>
+                        <!--开始结束时间-->
+                        <div class="control-group">
+                            <label class="control-label">活动日期</label>
+                            <div class="controls">
+                                <div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">
+                                    <notempty name="row['id']">
+                                        <input type="text" name="date" value="{$row['date']}" {$disabled} class="text-width-10 form_date_picker" placeholder="活动日期">
+                                        <else/>
+                                        <input type="text" name="date" value="" {$disabled} class="text-width-10 form_date_picker" placeholder="活动日期">
+                                    </notempty>
+                                </div>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">场次选择</label>
+                            <div class="controls">
+                                <select name="begin_stage" id="" {$disabled}>
+                                    <option value="">请选择场次</option>
+                                    <volist name="stage_list" id="val">
+                                        <option value="{$val['id']}" <if condition="$val['id'] eq $row['begin_stage']">selected</if> >{$val['stage_name']}：{$val['start_time']}点 - {$val['end_time']}点</option>
+                                    </volist>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">限购数量</label>
+                            <div class="controls">
+                                <input type="number"min="0" name="limit_num" value="{$row['limit_num']}" {$disabled}>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">限购价格</label>
+                            <div class="controls">
+                                <input type="number" min="0" step="0.01" name="limit_price" value="{$row['limit_price']}" {$disabled}>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">限量购库存</label>
+                            <div class="controls">
+                                <input type="number"  name="limit_store" value="{$row['limit_store']}" min="0" {$disabled}>
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <if condition="$row['status'] neq 2">
+                                <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                            </if>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        //年月日选择时间
+        $('.form_date_picker').datetimepicker({
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            todayBtn:  1,
+            autoclose: 1,
+            startView: 2,
+            minView: 3,
+            forceParse: 0
+        });
+        //年月日 时分秒选择时间
+        $('.form_date_time_picker').datetimepicker({
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd H:i:s',
+            todayBtn:  1,
+            autoclose: 1,
+            startView: 2,
+            minView: 0,
+            forceParse: 0
+        });
+
+        $(function(){
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/LimitBuy/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#glist').show();
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/LimitBuy/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#glist').show();
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+
+                        }
+
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var shop_price = $(this).parents('td').attr('data-price');
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=shop_price]').val(shop_price);
+                }
+            })
+            $("select[name=g-cate]").change(function(){
+                var cate_id = $(this).val();
+                $("select[name=goods_id]").children().remove();
+                $.post("__MODULE__/Auction/getGoodsList",{cate_id:cate_id},function(data){
+                    $("select[name=goods_id]").append(data);
+                })
+            });
+            $("select[name=goods_id]").change(function(){
+                var goods_id = $(this).val();
+                $("select[name=product_id]").children().remove();
+                $.post("__MODULE__/Auction/getProductList",{goods_id:goods_id},function(data){
+                    $("select[name=product_id]").append(data);
+                })
+            })
+        })
+    </script>
+</block>

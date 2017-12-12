@@ -1,0 +1,162 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success href" url="{:U('LimitBuy/timeStage')}" target-form="ids">限量购场次设置</button>&nbsp;
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('LimitBuy/forbid',array('model'=>'LimitBuy','t_status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('LimitBuy/resume',array('model'=>'LimitBuy','t_status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('LimitBuy/delete',array('model'=>'LimitBuy','t_status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('LimitBuy/move')}" target-form="ids">确定</button>
+                    </span>
+                    <form action="" class="form">
+                        <!--<select name="type" class="select-c" id="t-status">-->
+                            <!--<option value="" >按活动状态筛选</option>-->
+                            <!--<option value="" >全部显示</option>-->
+                            <!--<option value="0" >未开始</option>-->
+                            <!--<option value="1" >进行中</option>-->
+                            <!--<option value="2" >已结束</option>-->
+                        <!--</select>-->
+                        <select name="type" class="select-c" id="shenhe">
+                            <option value="" >按审核状态筛选</option>
+                            <option value="" >全部显示</option>
+                            <option value="1" >待审核</option>
+                            <option value="2" >通过审核</option>
+                            <option value="3" >未通过审核</option>
+
+                        </select>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>活动ID</th>
+                            <th>参加活动商品</th>
+                            <th>ID限购数量</th>
+                            <th>库存准备</th>
+                            <th>限量购价格</th>
+                            <th>活动日期</th>
+                            <th>当天场次</th>
+                            <th>已卖出</th>
+                            <th>赠送积分</th>
+                            <th>申请状态</th>
+                            <th>活动状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td><a href="__MODULE__/Goods/update/id/{$row['goods_id']}">{$row['goods_name']}</a></td>
+                                <td>{$row['limit_num']}</td>
+                                <td>{$row['limit_store']}</td>
+                                <td>¥&nbsp;{$row['limit_price']}</td>
+                                <td>{$row['date']}</td>
+                                <td>{$row['begin_stage']}</td>
+                                <td>{$row['sell_num']}</td>
+                                <td>{$row['integral']}</td>
+                                <td>
+                                    <switch name="row['status']">
+                                        <case value="1"><font color="red">待审核</font></case>
+                                        <case value="2"><font color="green">已通过</font></case>
+                                        <case value="3"><font color="#ccc">未通过</font></case>
+                                    </switch>
+                                </td>
+                                <td>
+                                    <if condition="$row['status'] eq 2">
+                                        <switch name="row['t_status']">
+                                            <case value="0"><font color="blue">未开始</font></case>
+                                            <case value="1"><font color="red">进行中</font></case>
+                                            <case value="2"><font color="#ccc">已结束</font></case>
+                                        </switch>
+                                        <else />
+                                        未开始
+                                    </if>
+
+                                </td>
+                                <td>
+                                    <a href="{:U('LimitBuy/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+
+                                    <switch name="row['status']">
+
+                                        <case value="3">
+                                            <a href="{:U('LimitBuy/singleEdit',array('model'=>'LimitBuy','id'=>$row['id'],'field'=>'status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                                <span class="label label-warning">删除</span></a>&nbsp;
+                                        </case>
+                                        <case value="1"><font color="red">
+                                            <!--<a href="{:U('LimitBuy/singleEdit',array('model'=>'LimitBuy','id'=>$row['id'],'field'=>'status','value'=>2))}" title="通过审核" class="tip-bottom ajax-get ">-->
+                                                <!--<span class="label label-success">通过审核</span></a>&nbsp;-->
+                                        </case>
+                                        <case value="2">
+
+                                            <switch name="row['t_status']">
+                                                <case value="0"></case>
+                                                <case value="1|2"><a href="{:U('LimitBuy/record',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                                    <span class="label label-inverse">活动纪录</span></a>&nbsp;</case>
+
+                                            </switch>
+                                        </case>
+                                    </switch>
+
+
+
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            //审核跳转
+            $('#shenhe').change(function(){
+                var shenhe = $(this).val();
+                if(shenhe){
+                    // 调转到对应ID的url地址
+                    location="__URL__/index/status/"+shenhe;
+                }else{
+                    location="__URL__/index";
+                }
+            });
+            //活动状态跳转
+            $('#t-status').change(function(){
+                var t_status = $(this).val();
+                if(t_status){
+                    // 调转到对应ID的url地址
+                    location="__URL__/index/t_status/"+t_status;
+                }else{
+                    location="__URL__/index";
+                }
+            });
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

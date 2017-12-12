@@ -1,0 +1,59 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('GoodsBrand/update')}" id="form">
+                        <input type="hidden" name="model" value="GoodsBrand">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">品牌名称</label>
+                            <div class="controls">
+                                <input type="text"  name="brand_name" value="{$row['brand_name']}" >
+                                <span class="help-block">10个字符以内</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">品牌Logo</label>
+                            <div class="controls">
+                                {:hook('upload',array('is_first'=>1,'unique_sign'=>'brand_logo','field_name'=>'brand_logo','field_value'=>$row['brand_logo'],'save_path'=>'GoodsBrand'))}
+                                <span class="help-block">Logo比例 3:2</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">品牌简介</label>
+                            <div class="controls">
+                                <textarea name="brand_desc" id="" cols="10" rows="3" placeholder="30字以内即可">{$row['brand_desc']}</textarea>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否启用</label>
+                            <div class="controls">
+                                <select name="status" class="select-c">
+                                    <option value="1" <if condition="$row['status'] eq 1" > selected </if>>启用</option>
+                                    <option value="2" <if condition="$row['status'] eq 2" > selected </if>>不启用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                <input type="text" name="sort" value="{$row['sort'] | default=0}" class="number-only">
+                                <span class="help-block">数值越大越靠前</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

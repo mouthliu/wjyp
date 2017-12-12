@@ -1,0 +1,83 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <button class="btn btn-success new_type">新增</button>&nbsp;
+                </div>
+
+                <!--// search start-->
+                <div class="search-main" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('AcademyType/update')}" id="form">
+                        <div class="search-frame-main">
+                            <input type="hidden" name="model" value="AcademyType">
+                            <input type="hidden" name="id" id="row_id" value="">
+                            <input class="search-frame"  id="row_type_name" style="width:300px;" type="text" name="type_name" value="" placeholder="请输入分类名称">
+                            <input class="search-frame"  id="row_sort" style="width:300px;" type="text" name="sort" value="" placeholder="排序">
+                            <button class="btn btn-inverse ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal" style="margin:4px 10px;">保存</button>
+                        </div>
+                    </form>
+                </div>
+                <!--// search end-->
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/></th>
+                            <th>ID</th>
+                            <th>分类名称</th>
+                            <th>排序</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['type_name']}</td>
+                                <td>{$row['sort']}</td>
+                                <td>{$row['create_time']|date='Y-m-d H:i',###}</td>
+                                <td>
+                                    <a  title="编辑" class="tip-bottom row-edit" data-id="{$row['id']}" data-value="{$row['type_name']}" data-sort="{$row['sort']}" style="cursor: pointer;">
+                                        <span class="label label-success">编辑</span></a>&nbsp;
+                                    <a href="{:U('AcademyType/remove',array('model'=>'AcademyType','ids'=>$row['id']))}" title="删除" class="tip-bottom confirm ajax-get">
+                                        <span class="label label-important">删除</span></a>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $('.new_type').click(function(){
+            $('.search-main').toggle();
+        });
+        $('.row-edit').click(function () {
+            var id = $(this).attr('data-id');
+            var type_name =$(this).attr('data-value');
+            var sort =$(this).attr('data-sort');
+            $('#row_id').val(id);
+            $('#row_type_name').val(type_name);
+            $('#row_sort').val(sort);
+            $('.search-main').show();
+        });
+    </script>
+</block>

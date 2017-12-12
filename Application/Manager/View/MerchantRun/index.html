@@ -1,0 +1,95 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title widget-title-search">
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('/forbid',array('','status'=>0))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('/resume',array('model'=>'','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <form action="{:U('MerchantRun/index')}" method="post" class="form">
+                        <input type="text" name="title" value="{$_REQUEST['title']}" placeholder="商户名称" style="height:auto;">
+                        <select name="is_status" style="margin-bottom: 0px; width: 110px;">
+                            <option value="">--审核状态--</option>
+                            <option value="0">待审核</option>
+                            <option value="1">已通过</option>
+                            <option value="2">已拒绝</option>
+                        </select>
+                        <button class="btn btn-inverse">查询</button>
+                    </form>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>商户名称</th>
+                            <th>经营范围</th>
+                            <th>联系人</th>
+                            <th>联系电话</th>
+                            <th>推荐人</th>
+                            <th>推荐时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['name']}</td>
+                                <td>{:getName('GoodsCategory','short_name',$row['range_id'])}</td>
+                                <td>{$row['link_man']}</td>
+                                <td>{$row['link_phone']}</td>
+                                <td>{:getName('User','nickname',$row['user_id'])}</td>
+                                <td>{:date('Y-m-d',$row['create_time'])}</td>
+
+                                <td>
+                                    {:merReferStatus($row['is_status'])}
+                                </td>
+                                <td>
+
+                                    <a href="{:U('MerchantRun/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-success">查看详情</span></a>&nbsp;
+                                    <if condition="$row['is_status'] eq 1">
+                                        <a href="{:U('Merchant/add',array('parent_id'=>$row['user_id'],'id'=>$row['id']))}" title="开账户" class="tip-bottom">
+                                            <span class="label label-info">开账户</span></a>&nbsp;
+                                    </if>
+                                    <if condition="$row['is_status'] eq 0">
+                                        <a href="{:U('OneBuy/singleEdit',array('model'=>'MerchantRun','id'=>$row['id'],'field'=>'is_status','value'=>1))}" title="通过" class="tip-bottom ajax-get">
+                                            <span class="label label-warning">通过</span></a>&nbsp;
+                                    </if>
+                                    <if condition="$row['is_status'] eq 2">
+                                        <a href="{:U('OneBuy/singleEdit',array('model'=>'MerchantRun','id'=>$row['id'],'field'=>'is_status','value'=>9))}" title="删除" class="tip-bottom ajax-get">
+                                            <span class="label label-reverse">删除</span></a>&nbsp;
+                                    </if>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

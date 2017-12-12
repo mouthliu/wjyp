@@ -1,0 +1,129 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <h5>退换货地址编辑</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Merchant/setBackAddress')}" autocomplete="off">
+                        <empty name="row['merchant_id']">
+                            <input type="hidden" name="merchant_id" value="{:getMerchantId()}">
+                        <else />
+                            <input type="hidden" name="merchant_id" value="{$row['merchant_id']}">
+                        </empty>
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <div class="control-group">
+                            <label class="control-label">收货人</label>
+                            <div class="controls">
+                                <input type="text" name="receiver" value="{$row['receiver']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">收货人电话</label>
+                            <div class="controls">
+                                <input type="text" name="receiver_phone" value="{$row['receiver_phone']}">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">收货地址</label>
+                            <div class="controls">
+                                <select name="province_id" class="province">
+                                    <option value="">省份</option>
+                                    <volist name="province" id="vo">
+                                        <option value="{$vo['id']}" <eq name="vo['id']" value="$row['province_id']">selected</eq> >{$vo['region_name']}</option>
+                                    </volist>
+                                </select>
+
+                                <select name="city_id" class="city">
+
+                                    <if condition="empty($row['city_id'])">
+                                        <option value="">城市</option>
+                                        <else />
+                                        <volist name="city" id="vo1">
+                                            <option value="{$vo1['id']}" <eq name="vo1['id']" value="$row['city_id']">selected</eq> >{$vo1['region_name']}</option>
+                                        </volist>
+                                    </if>
+                                </select>
+                                <select name="area_id" class="area">
+                                    <if condition="empty($row['area_id'])">
+                                        <option value="">地区</option>
+                                        <else />
+                                        <volist name="area" id="vo2">
+                                            <option value="{$vo2['id']}" <eq name="vo2['id']" value="$row['area_id']">selected</eq> >{$vo2['region_name']}</option>
+                                        </volist>
+                                    </if>
+                                </select>
+                                <input type="hidden" name="province_name" value="{$row['province_name']}">
+                                <input type="hidden" name="city_name" value="{$row['city_name']}">
+                                <input type="hidden" name="area_name" value="{$row['area_name']}">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">详细地址</label>
+                            <div class="controls">
+                                  <textarea name="address" >{$row['address']}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post"  target-form="form-horizontal" type="submit" >修 改</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //城市级联
+        $(function(){
+            $('.province').change(function(){
+                var province = $(this).val();
+                $('input[name="province_name"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('Merchant/ajaxGetRegion')}",
+                    type:'get',
+                    data:{id:province},
+                    success:function(data){
+                        var html ='<option value="">城市</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.city').html(html);
+                    }
+                })
+            });
+
+            $('.city').change(function(){
+                var city = $(this).val();
+                $('input[name="city_name"]').val($(this).find('option:selected').text());
+                $.ajax({
+                    url:"{:U('Merchant/ajaxGetRegion')}",
+                    type:'get',
+                    data:{id:city},
+                    success:function(data){
+
+                        var html = '<option value="">区/县</option>';
+                        for(var i in data){
+                            html += '<option value="'+data[i].id+'">'+data[i].region_name+'</option>';
+                        }
+                        $('.area').html(html);
+                    }
+                })
+            });
+            $('.area').change(function(){
+                $('input[name="area_name"]').val($(this).find('option:selected').text());
+            })
+        })
+    </script>
+</block>

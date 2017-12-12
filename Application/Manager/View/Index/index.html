@@ -1,0 +1,80 @@
+<extend name="Public/bases" />
+
+<block name="main">
+    <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <link rel="stylesheet" href="__CSS__/index.css">
+    <div class="row-fluid"  style="margin:50px 0">
+        <div class="">
+            <div class="span4 " onclick="window.location.href='javascript:void(0)'">
+                <div class="color-block-orange">
+                    <div style="margin:10px auto 0px 10px;font-size:50px;">
+                        <i class="fa fa-user"></i>
+                        <span style="float: right;margin:10px 10px auto auto;line-height:30px;color:#FFFFFF">{$user_num}</span>
+                    </div>
+                    <h3 style="float:right;margin:0px 10px auto auto;">用户人数</h3>
+                </div>
+            </div>
+            <div class="span4 ">
+                <div class="color-block-violet" style="">
+                    <div style="margin:10px auto 0px 10px;font-size:50px;">
+                        <i class="fa fa-line-chart"></i>
+                        <span style="float: right;margin:10px 10px auto auto;line-height:30px;color:#FFFFFF">0</span>
+                    </div>
+                    <h3 style="float:right;margin:0px 10px auto auto;">订单数量</h3>
+                </div>
+            </div>
+            <div class="span4 ">
+                <div class="color-block-green" style="">
+                    <div style="margin:10px auto 0px 10px;font-size:50px;">
+                        <i class="fa fa-inbox"></i>
+                        <span style="float: right;margin:10px 10px auto auto;line-height:30px;color:#FFFFFF">0</span>
+                    </div>
+                    <h3 style="float:right;margin:0px 10px auto auto;">商品数量</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="container" style="margin-bottom: 10px"></div>
+
+    <script>
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {     //图表标题
+                    text: '日注册统计',
+                    x: -20 //center
+                },
+                subtitle: {  //图表副标题
+                    text: '',
+                    x: -20
+                },
+                xAxis: {   //X 轴显示的项[1,2,3] 数组形式
+                    categories: {$xAxis}
+                },
+                yAxis: {  //Y 轴显示的项。
+                    title: {  //Y 轴标题
+                        text: '单位：人'
+                    },
+                    plotLines: [{  //警戒线一类  value 表示第几阶  width 表示宽度
+                        value: 0,
+                        width: 1,
+                        color: '#f00'
+                    }]
+                },
+                tooltip: {  //提示信息
+                    valueSuffix: '人'
+                },
+                legend: {   //配置图表的信息(就是说显示啥意思的说明)
+                    layout: 'vertical',       //风格
+                    align: 'right',          //显示的位置 水平位置
+                    verticalAlign: 'middle', //显示的位置 垂直位置
+                    borderWidth: 0           //边框
+                },
+                series: {$yAxis}
+            });
+            });
+    </script>
+</block>

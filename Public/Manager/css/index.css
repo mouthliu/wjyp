@@ -1,0 +1,42 @@
+/*橘色*/
+.color-block-orange
+{
+    height:100px;
+    border:1px solid #f24a15;
+    margin: auto;
+    background:#FF5722;
+    border-radius:5px;
+}
+/*紫色*/
+.color-block-violet
+{
+    height:100px;
+    border:1px solid #e73629;
+    margin: auto;
+    background:#F44336;
+    -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari 和 Chrome */
+    border-radius: 5px; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+}
+/*绿色*/
+.color-block-green
+{
+    height:100px;
+    border:1px solid #3fa243;
+    margin: auto;
+    background:#4CAF50;
+    -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari 和 Chrome */
+    border-radius: 5px; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+}
+/*蓝色*/
+.color-block-blue
+{
+    height:100px;
+    border:1px solid #1489e6;
+    margin: auto;
+    background:#2196F3;
+    -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari 和 Chrome */
+    border-radius: 5px; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+}

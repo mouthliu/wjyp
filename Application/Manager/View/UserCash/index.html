@@ -1,0 +1,85 @@
+<extend name="Public/base" />
+
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+
+                <div class="widget-title widget-title-search">
+                    <h4>会员提现管理</h4>
+                    <!--<button class="btn btn-inverse ajax-post" url="{:U('UserCash/forbid',array('model'=>'UserCash','status'=>2))}" target-form="ids">禁用</button>&nbsp;-->
+                    <!--<button class="btn btn-info ajax-post" url="{:U('UserCash/resume',array('model'=>'UserCash','status'=>1))}" target-form="ids">启用</button>&nbsp;-->
+                    <!--<button class="btn btn-danger confirm ajax-post" url="{:U('UserCash/delete',array('model'=>'UserCash','status'=>9))}" target-form="ids">删除</button>&nbsp;-->
+                    <span style="display: none">
+                    {$select,'target-form','ids'|replace}<button class="btn btn-primary ajax-post" url="{:U('UserCash/move')}" target-form="ids">确定</button>
+                    </span>
+
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped with-check">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="title-checkbox" name="title-checkbox" class="check-all"/><!--<i class="fa fa-resize-vertical"></i>--></th>
+                            <th>编号</th>
+                            <th>会员名称</th>
+                            <th>申请日期</th>
+                            <th>银行卡号</th>
+                            <th>金额</th>
+                            <th>手续费</th>
+                            <th>实际到账金额</th>
+                            <th>到款状态</th>
+                            <th>操作者</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        <volist name="list" id="row">
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="{$row['id']}" class="ids"/></td>
+                                <td>{$row['id']}</td>
+                                <td>{:getName('User','nickname',$row['id_val'])}</td>
+                                <td>{:date("Y-m-d H:i:s",$row['create_time'])}</td>
+                                <td>{$row['bank_card_code']}</td>
+                                <td>¥&nbsp;{$row['money']}</td>
+                                <td>&nbsp;{$row['money']}*{$row['rate']}% = {$row['money']*$row['rate']/100}元</td>
+                                <td>¥&nbsp;{$row['true_money']}</td>
+                                <td>{$row['status']==0?'未确认':($row['status']==1?'已完成':'已拒绝')}</td>
+                                <td>{$row['action_person']}</td>
+                                <td>
+                                    <a href="{:U('UserCash/update',array('id'=>$row['id']))}" title="查看详情" class="tip-bottom">
+                                        <span class="label label-info">查看详情</span></a>&nbsp;
+                                    <!--<if condition="$row['status'] neq 2">-->
+                                        <!--<a href="{:U('UserCash/delete',array('model'=>'UserCash','ids'=>$row['id'],'status'=>2))}" title="取消" class="tip-bottom">-->
+                                            <!--<span class="label label-warning">拒绝</span></a>&nbsp;-->
+                                    <!--</if>-->
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination alternate">
+                    {$page}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script>
+        $(function(){
+            $('button.move').click(function(){
+                if($(this).next('span').css('display') == 'none') {
+                    $(this).next('span').show();
+                } else {
+                    $(this).next('span').hide();
+                }
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,278 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('GroupBuy/update')}" id="form">
+                        <input type="hidden" name="model" value="GroupBuy">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="merchant_id" value="{:getMerchantId()}">
+                        <php>$disabled = $row['status']==2?'disabled':'';</php>
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">选择活动商品</label>-->
+
+                            <!--<div class="controls">-->
+                                <!--<div class="input-append">-->
+                                    <!--<input type="text"  id="goods_info" name="goods_name" value="{$row['goods_name']}" placeholder="请输入商品名称或者ID查找">-->
+                                    <!--<button class="btn" type="button" id="gid">搜ID</button>-->
+                                    <!--<button class="btn" type="button" id="gname">搜名称</button>-->
+                                    <!--<input type="hidden" name="goods_id" value="{$row['goods_id']}">-->
+                                    <!--<input type="hidden" name="merchant_id" value="{$row['merchant_id']}">-->
+                                    <!--<input type="hidden" name="cat_id" value="{$row['cat_id']}">-->
+                                <!--</div>-->
+
+                            <!--</div>-->
+                            <!--<div class="controls" style="width: 500px;max-height: 300px;overflow:auto;display: none;" id="glist">-->
+                                <!--<table class="table table-bordered" >-->
+                                    <!--<tr id="goods_list">-->
+                                        <!--<th>ID</th>-->
+                                        <!--<th width="300">名称</th>-->
+
+                                        <!--<th>选项</th>-->
+                                    <!--</tr>-->
+
+                                <!--</table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="control-group">
+                            <label class="control-label">选择分类</label>
+                            <div class="controls">
+                                <select  name="g-cate" id="g-cate" {$disabled}>
+                                    <option value="0">选择分类</option>
+                                    <volist name="cate_list" id="group_info">
+                                        <option disabled value="{group_info['id']}">{:str_repeat('&nbsp;',3)}├&nbsp;<span>{$group_info['name']}</option>
+                                        <volist name="group_info['underCate']" id="v0">
+                                            <option disabled value="{{$v0['id']}}">{:str_repeat('&nbsp;',7)}└&nbsp;<span>{$v0['name']}</option>
+                                            <notempty name="v0['underCate']">
+                                                <volist name="v0['underCate']" id="v1">
+                                                    <if condition="in_array($v1['id'],explode(',',$cates))">
+                                                        <option value="{$v1['id']}" <if condition="$row['cate_id'] eq $v1['id']">selected</if> >{:str_repeat('&nbsp;',13)}└&nbsp;<span>{$v1['name']}✔</span></option>
+
+                                                    </if>
+                                                </volist>
+
+                                            </notempty>
+                                        </volist>
+
+                                    </volist>
+
+                                </select>
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">选择商品</label>
+                            <div class="controls">
+                                <select  name="goods_id" id="goods_id" {$disabled}>
+                                    <option value="0">请选择</option>
+                                    <if condition="!empty($row['goods_list'])">
+                                        <volist name="row['goods_list']" id="vo">
+                                            <option value="{$vo['id']}" <if condition="$row['goods_id'] eq $vo['id']">selected</if>>{$vo['goods_name']}，¥ {$vo['shop_price']}</option>
+                                        </volist>
+                                    </if>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">拼单类型</label>
+                            <div class="controls">
+                                <select  name="type" {$disabled}>
+                                    <option value="0">请选择</option>
+                                    <option value="1" <if condition="$row['type'] eq 1">selected</if>>试用品拼单</option>
+                                    <option value="2" <if condition="$row['type'] eq 2">selected</if>>常规拼单</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">原价</label>-->
+                            <!--<div class="controls">-->
+                                <!--<input type="number"  name="shop_price" value="{$row['shop_price']|default='0.00'}" min="0" readonly>-->
+                                <!--<span class="help-block">由所选商品决定</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--库存-->
+                        <input type="hidden" name="goods_num" value="{$row['goods_num']}">
+                        <div class="control-group">
+                            <label class="control-label">单买价</label>
+                            <div class="controls">
+                                <input type="number"  name="one_price" value="{$row['one_price']|default='0.00'}" {$disabled} min="0" step="0.01">
+                                <span class="help-block">精确到分</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">团购价</label>
+                            <div class="controls">
+                                <input type="number"  name="group_price" value="{$row['group_price']|default='0.00'}" {$disabled} min="0" step="0.01">
+                                <span class="help-block">精确到分</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">试用品中奖人数</label>
+                            <div class="controls">
+                                <input class="aaa" type="number"  name="try_out" value="{$row['try_out']}" disabled >
+                                <span class="help-block">试用品中奖人数</span>
+                            </div>
+                        </div>
+                        <div class="control-group bbb">
+                            <label class="control-label">成团人数</label>
+                            <div class="controls">
+                                <input type="number"  name="group_num" value="{$row['group_num']|default='0'}" min="0" {$disabled} >
+                                <input type="number"  name="max_num" value="{$row['max_num']|default='0'}" min="0" readonly>
+                                <span class="help-block">成团所需人数...................................成团上限（根据库存得出）</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">结束时间</label>
+                            <div class="controls">
+                                <input type="text" name="end_time" <if condition="!empty($row['end_time'])">value="{$row['end_time']|date='Y-m-d H:i',###}"</if>  class="text-width-10 form_datetime" placeholder="结束时间">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">延期时间</label>
+                            <div class="controls">
+                                <input type="text" name="end_true_time" <if condition="!empty($row['end_true_time'])">value="{$row['end_time']|date='Y-m-d H:i',###}"</if>  class="text-width-10 form_datetime" placeholder="延期时间">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">团长福利</label>
+                            <div class="controls">
+                                <input type="number"  name="total" value="{$row['total']|default=0}" step="0.01">
+                                <span class="help-block">团长福利 百分比 例如 50.55</span>
+                            </div>
+                        </div>
+                        <if condition="$row['status'] eq 2">
+                            <div class="control-group">
+                                <label class="control-label">已成团数</label>
+                                <div class="controls">
+                                    <input type="number"  name="total" value="{$row['total']|default=0}" min="0" disabled>
+                                    <span class="help-block">参与本次团购商品的总人数</span>
+                                </div>
+                            </div>
+                        </if>
+
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <if condition="$row['status'] neq 2">
+                                <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                            </if>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $(function(){
+            $('select[name="type"]').change(function(){
+                if($(this).val() == 1){
+
+                    $('.aaa').attr('disabled',false);
+//                    $('.aaa').show();
+//                    $('.bbb').hide();
+                }else {
+                    $('.aaa').attr('disabled',true);
+//                    $('.aaa').hide();
+//                    $('.bbb').show()
+                }
+            })
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                $("#goods_list").nextAll("h5").remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/GroupBuy/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll("tr").remove();
+                $("#goods_list").nextAll("h5").remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/GroupBuy/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                        }
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var shop_price = $(this).parents('td').attr('data-price');
+                    var cat_id = $(this).parents('td').attr('data-catId');
+                    var num = $(this).parents('td').attr('data-num');
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=shop_price]').val(shop_price);
+                    $('input[name=cat_id]').val(cat_id);
+                    $('input[name=goods_num]').val(num);
+                }
+            })
+            $("input[name='group_num']").change(function(){
+                var num = $(this).val();
+                var goods_num = $("input[name='goods_num']").val();
+                var max_num = Math.floor(goods_num/num);
+                console.log(goods_num);
+                $("input[name='max_num']").val(max_num);
+            })
+            $("select[name=g-cate]").change(function(){
+                var cate_id = $(this).val();
+                $("select[name=goods_id]").children().remove();
+                $.post("__MODULE__/Auction/getGoodsList",{cate_id:cate_id},function(data){
+                    $("select[name=goods_id]").append(data);
+                })
+            })
+            $("select[name=goods_id]").change(function(){
+                var num = $(this).find('option[value='+$(this).val()+']').attr('data-num');
+                console.log(num);
+                $("input[name=goods_num]").val(num);
+            })
+        })
+    </script>
+</block>

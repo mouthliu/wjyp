@@ -1,0 +1,269 @@
+<extend name="Public/base" />
+<block name="style">
+    <link rel="stylesheet" href="__STATIC__/datetimepicker/css/datetimepicker.css" />
+    <style>
+        #datepicker input{
+            width:auto;
+        }
+    </style>
+</block>
+<block name="main">
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form class="form-horizontal" method="post" action="{:U('Ticket/update')}" id="form">
+                        <input type="hidden" name="model" value="Ticket">
+                        <input type="hidden" name="id" value="{$row['id']}">
+                        <input type="hidden" name="merchant_id" value="{$_SESSION['wjyp_merchant']['merchant_admin']['a_id']}">
+                        <div class="control-group">
+                            <label class="control-label">适用分类范围</label>
+                            <div class="controls">
+                                <foreach name="range_list" item="v">
+                                    <label class="radio inline">
+                                        <div class="radio" ><span >
+                                            <input type="radio" name="cate_id" value="{$v['id']}" <if condition="$row['cate_id'] eq $v['id']">checked</if> style="opacity: 0;"></span></div>
+                                            {$v['short_name']}
+                                    </label>
+                                </foreach>
+                                <span class="help-block">仅用于筛选</span>
+                            </div>
+                        </div>
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">适用范围</label>-->
+                            <!--<div class="controls">-->
+
+                                <!--<label class="radio inline">-->
+                                    <!--<div class="radio" id="uniform-optionsRadios2"><span ><input type="radio" name="goods" id="nogoods" value="0" <if condition="$row['goods_id'] eq 0">checked</if> style="opacity: 0;"></span></div>-->
+                                    <!--全店商品-->
+                                <!--</label>-->
+                                <!--&lt;!&ndash;<label class="radio inline">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<div class="radio" id="uniform-optionsRadios2"><span ><input type="radio"  name="goods" id="goods"   style="opacity: 0;" <if condition="$row['goods_id'] neq 0">checked</if>></span></div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;特定商品&ndash;&gt;-->
+                                <!--&lt;!&ndash;</label>&ndash;&gt;-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="control-group" style="display: <if condition="$row['goods_id'] neq 0">block <else />none</if>;" id="selectgoods">-->
+                            <!--<label class="control-label">选择优惠商品</label>-->
+
+                            <!--<div class="controls">-->
+                                <!--<div class="input-append">-->
+                                    <!--<input type="text"  id="goods_info" name="goods_name" value="{$row['goods_name']}" placeholder="若不选择则表示适用于全店商品">-->
+                                    <!--<button class="btn" type="button" id="gid">搜ID</button>-->
+                                    <!--<button class="btn" type="button" id="gname">搜名称</button>-->
+                                    <!--<input type="hidden" name="goods_id" value="{$row['goods_id']|default='0'}">-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="controls" style="width: 500px;max-height: 300px;overflow:auto;display: none;" id="glist">-->
+                                <!--<table class="table table-bordered" >-->
+                                    <!--<tr id="goods_list">-->
+                                        <!--<th>ID</th>-->
+                                        <!--<th width="300">名称</th>-->
+                                        <!--<th>选项</th>-->
+                                    <!--</tr>-->
+                                <!--</table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="control-group" style="display: <if condition="$row['goods_id'] neq 0">block <else />none</if>;" id="shopprice">-->
+                            <!--<label class="control-label">本店售价</label>-->
+                            <!--<div class="controls">-->
+                                <!--<input type="number"  name="shop_price" value="{$row['shop_price']|default='0.00'}" min="0" readonly>-->
+                                <!--<span class="help-block">由所选商品决定</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="control-group">
+                            <label class="control-label">面额</label>
+                            <div class="controls">
+                                <select name="ticket_type" id="">
+                                    <option value="">请选择类型</option>
+                                    <option value="1" <if condition="$row['ticket_type'] eq 1">selected</if>>满减</option>
+                                    <option value="2" <if condition="$row['ticket_type'] eq 2">selected</if>>满折</option>
+                                    <option value="3" <if condition="$row['ticket_type'] eq 3">selected</if>>满赠</option>
+                                </select>
+                                <input type="number" name="value" value="{$row['value']}" placeholder="请根据类型填写面额/或商品id">
+                                <notempty name="row['goods_name']" >
+                                    赠品 ： <a href="__MODULE__/Goods/update/id/{$row['value']}" style="">{$row['goods_name']}</a>
+                                </notempty>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">使用条件</label>
+                            <div class="controls ">
+                                <input type="number"  name="condition" value="{$row['condition']}" <if condition="$row['condition'] eq 0">readonly</if>>
+                                <label class="checkbox inline">
+                                    <span class="checked"><input type="checkbox" name="" id="nocondition" value="0"  style="opacity: 0;" <if condition="$row['condition'] eq 0">checked</if>></span>
+                                    无条件
+                                </label>
+                                <span class="help-block">满多少钱使用</span>
+                            </div>
+
+                        </div>
+
+                        <!--开始结束时间-->
+                        <div class="control-group">
+                            <label class="control-label">有效时间</label>
+                            <div class="controls">
+                                <div class="input-daterange" id="datepicker" style="margin-bottom: 10px;">
+                                    <notempty name="row['id']">
+                                        <input type="text" name="start_time" value="{$row['start_time']|date='Y-m-d H:i',###}" class="text-width-10 form_datetime" placeholder="开始时间">
+                                        ——
+                                        <input type="text" name="end_time" value="{$row['end_time']|date='Y-m-d H:i',###}" class="text-width-10 form_datetime" placeholder="结束时间">
+                                        <else/>
+                                        <input type="text" name="start_time" value="" class="text-width-10 form_datetime" placeholder="开始时间">
+                                        ——
+                                        <input type="text" name="end_time" value="" class="text-width-10 form_datetime" placeholder="结束时间">
+                                    </notempty>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">发布数量</label>
+                            <div class="controls">
+                                <input type="number"  name="ticket_num" value="{$row['ticket_num']}" max="10000">
+                                <span class="help-block">最多10000张</span>
+                            </div>
+                        </div>
+                        <!--<div class="control-group">-->
+                            <!--<label class="control-label">限领数量</label>-->
+                            <!--<div class="controls" >-->
+                                <!--<input type="number"  name="limit_num" value="{$row['limit_num']|default='0'}" max="10000" style="max-width: 70px;" <if condition="$row['limit_num'] eq 0">readonly</if>>张/人-->
+                                <!--<label class="checkbox inline">-->
+                                    <!--<input type="checkbox" name="" id="nolimit" value="0"  style="opacity: 0;" <if condition="$row['limit_num'] eq 0">checked</if>>-->
+                                    <!--不限次数-->
+                                <!--</label>-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="control-group">
+                            <label class="control-label">优惠券名称</label>
+                            <div class="controls">
+                                <input type="text"  name="ticket_name" value="{$row['ticket_name']}">
+                                <span class="help-block">10个字符以内 例如满XXX减XX</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">优惠券说明</label>
+                            <div class="controls">
+                                <textarea name="ticket_desc" id="" cols="10" rows="3">{$row['ticket_desc']}</textarea>
+                            </div>
+                        </div>
+                        <empty name="row['id']">
+                        <div class="control-group">
+                            <label class="control-label">是否直接发布</label>
+                            <div class="controls">
+                            <label class="radio inline">
+                                <div class="radio" id="uniform-optionsRadios2"><span><div class="radio" id="uniform-nogoods"><span class="checked"><input type="radio" name="status" id="nogoods" value="0" checked style="opacity: 0;"></span></div></span></div>
+                                否
+                            </label>
+                            <label class="radio inline">
+                                <div class="radio" id="uniform-optionsRadios2"><span><div class="radio" id="uniform-nogoods"><span class="checked"><input type="radio" name="status" id="nogoods" value="1" style="opacity: 0;"></span></div></span></div>
+                                是
+                            </label>
+                            </div>
+                        </div>
+                        </empty>
+                        <div class="form-actions">
+                            <button class="btn" onclick="javascript:history.back(-1);return false;">返 回</button>　
+                            <button class="btn btn-info ajax-post no-refresh" type="submit" id="submit" target-form="form-horizontal">保 存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language:"zh-CN",
+            autoclose:true
+        });
+        $(function(){
+            $('#gid').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gid = $('#goods_info').val();
+                if(!isNaN(gid) && gid > 0){
+                    $.post("__MODULE__/Ticket/getGoods",{gid:gid},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                            $('#glist').show();
+                        }
+                    })
+                }else{
+                    alert('请输入商品ID');
+                }
+            })
+            $('#gname').click(function(){
+                //清除之前的
+                $("#goods_list").nextAll().remove();
+                var gname = $('#goods_info').val();
+                if(gname){
+                    $.post("__MODULE__/Ticket/getGoods",{gname:gname},function(data){
+                        //将获取到的数据进行添加到节点
+                        if(data){
+                            $('#goods_list').after(data);
+                            $('#glist').show();
+                        }else{
+                            $('#goods_list').after($("<h5>查询无果</h5>"));
+                            $('#glist').show();
+                        }
+
+                    })
+                }else{
+                    alert('请输入商品名称');
+                }
+            })
+
+            $("a.xuan").live({
+                'click':function(){
+                    //获取到商品的名称
+                    var goods_name = $(this).parents('td').siblings('td.goods_name').text();
+                    var goods_id = $(this).parents('td').siblings('td.goods_id').text();
+                    var merchant_id = $(this).parents('td').siblings('td.goods_name').attr("data-mid");
+                    var shop_price = $(this).parents('td').attr('data-price');
+                    $('#goods_info').val(goods_name);
+                    //设置值
+                    $('input[name=goods_id]').val(goods_id);
+                    $('input[name=merchant_id]').val(merchant_id);
+                    $('input[name=shop_price]').val(shop_price);
+                }
+            })
+        })
+        $('#nocondition').click(function(){
+            if($(this).attr('checked')){
+                $('input[name=condition]').val('0').attr('readonly',true);
+            }else{
+                $('input[name=condition]').attr('readonly',false);
+            }
+        })
+        $('#nolimit').click(function(){
+            if($(this).attr('checked')){
+                $('input[name=limit_num]').val('0').attr('readonly',true);
+            }else{
+                $('input[name=limit_num]').val('1').attr('readonly',false);
+            }
+        })
+//        $('#nogoods').click(function(){
+//                $('#selectgoods').hide();
+//                $('#shopprice').hide();
+//                $('input[name=goods_id]').val(0);
+//        })
+//        $('#goods').click(function(){
+//            $('#selectgoods').show();
+//            $('#shopprice').show();
+//        })
+    </script>
+</block>
