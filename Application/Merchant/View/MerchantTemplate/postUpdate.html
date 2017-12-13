@@ -97,11 +97,16 @@
                                         <div class="modal-body" style="margin-left: 10px;margin-top: 15px;height:600px;">
                                             <h5>华东地区：
                                                 <volist name="area_ec" id="vo1">
-                                                    <input type="checkbox" name="province-name" value="{$vo1['id']}">{$vo1['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo1['id']}">{$vo1['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                      <div class="city-block">
                                                          <div class="city-display">
                                                              <div class="hidden"></div>
+                                                             <volist name="vo1['city']" id="v1">
+                                                                      <label class="checkbox">
+                                                                          <input type="checkbox" name="city_id[]" value="{$v1['id']}" region="{$v1['city_name']}">{$v1['city_name']}
+                                                                     </label>
+                                                             </volist>
                                                          </div>
                                                          <p class="select-btn">
                                                              <input type="button" class="confirm" value="确 定">
@@ -113,11 +118,16 @@
                                             </h5>
                                             <h5>华南地区：
                                                 <volist name="area_sc" id="vo2">
-                                                    <input type="checkbox" name="province-name" value="{$vo2['id']}">{$vo2['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo2['id']}">{$vo2['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                              <div class="city-display">
                                                                  <div class="hidden"></div>
+                                                                 <volist name="vo2['city']" id="v2">
+                                                                     <label class="checkbox">
+                                                                          <input type="checkbox" name="city_id[]" value="{$v2['id']}" region="{$v2['city_name']}">{$v2['city_name']}
+                                                                     </label>
+                                                                 </volist>
                                                              </div>
                                                              <p class="select-btn">
                                                                  <input type="button" class="confirm" value="确 定">
@@ -129,11 +139,16 @@
                                             </h5>
                                             <h5>华中地区：
                                                 <volist name="area_mc" id="vo3">
-                                                    <input type="checkbox" name="province-name" value="{$vo3['id']}">{$vo3['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo3['id']}">{$vo3['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
+                                                                <volist name="vo3['city']" id="v3">
+                                                                    <label class="checkbox">
+                                                                        <input type="checkbox" name="city_id[]" value="{$v3['id']}" region="{$v3['city_name']}">{$v3['city_name']}
+                                                                    </label>
+                                                                 </volist>
                                                             </div>
                                                            <p class="select-btn">
                                                                  <input type="button" class="confirm" value="确 定">
@@ -145,11 +160,16 @@
                                             </h5>
                                             <h5>华北地区：
                                                 <volist name="area_nc" id="vo4">
-                                                    <input type="checkbox" name="province-name" value="{$vo4['id']}">{$vo4['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo4['id']}">{$vo4['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
+                                                                 <volist name="vo4['city']" id="v4">
+                                                                    <label class="checkbox">
+                                                                        <input type="checkbox" name="city_id[]" value="{$v4['id']}" region="{$v4['city_name']}">{$v4['city_name']}
+                                                                     </label>
+                                                                 </volist>
                                                             </div>
                                                             <p class="select-btn">
                                                                  <input type="button" class="confirm" value="确 定">
@@ -161,11 +181,16 @@
                                             </h5>
                                             <h5>西南地区：
                                                 <volist name="area_sw" id="vo5">
-                                                    <input type="checkbox" name="province-name" value="{$vo5['id']}">{$vo5['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo5['id']}">{$vo5['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
+                                                                <volist name="vo5['city']" id="v5">
+                                                                    <label class="checkbox">
+                                                                         <input type="checkbox" name="city_id[]" value="{$v5['id']}" region="{$v5['city_name']}">{$v5['city_name']}
+                                                                     </label>
+                                                                 </volist>
                                                             </div>
                                                             <p class="select-btn">
                                                                  <input type="button" class="confirm" value="确 定">
@@ -177,11 +202,16 @@
                                             </h5>
                                             <h5>东北地区：
                                                 <volist name="area_ne" id="vo6">
-                                                    <input type="checkbox" name="province-name" value="{$vo6['id']}">{$vo6['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo6['id']}">{$vo6['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
+                                                                <volist name="vo6['city']" id="v6">
+                                                                    <label class="checkbox">
+                                                                        <input type="checkbox" name="city_id[]" value="{$v6['id']}" region="{$v6['city_name']}">{$v6['city_name']}
+                                                                    </label>
+                                                                </volist>
                                                             </div>
                                                            <p class="select-btn">
                                                                  <input type="button" class="confirm" value="确 定">
@@ -193,11 +223,16 @@
                                             </h5>
                                             <h5>西北地区：
                                                 <volist name="area_nw" id="vo7">
-                                                    <input type="checkbox" name="province-name" value="{$vo7['id']}">{$vo7['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo7['id']}">{$vo7['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                          <div class="city-block">
                                                              <div class="city-display">
                                                                  <div class="hidden"></div>
+                                                                 <volist name="vo7['city']" id="v7">
+                                                                     <label class="checkbox">
+                                                                        <input type="checkbox" name="city_id[]" value="{$v7['id']}" region="{$v7['city_name']}">{$v7['city_name']}
+                                                                    </label>
+                                                                 </volist>
                                                              </div>
                                                              <p class="select-btn">
                                                                  <input type="button" class="confirm" value="确 定">
@@ -209,11 +244,16 @@
                                             </h5>
                                             <h5>港澳台地区：
                                                 <volist name="area_hmt" id="vo8">
-                                                    <input type="checkbox" name="province-name" value="{$vo8['id']}">{$vo8['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo8['id']}">{$vo8['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                      <div class="city-block">
                                                          <div class="city-display">
                                                              <div class="hidden"></div>
+                                                              <volist name="vo8['city']" id="v8">
+                                                                     <label class="checkbox">
+                                                                        <input type="checkbox" name="city_id[]" value="{$v8['id']}" region="{$v8['city_name']}">{$v8['city_name']}
+                                                                    </label>
+                                                              </volist>
                                                          </div>
                                                          <p class="select-btn">
                                                              <input type="button" class="confirm" value="确 定">
@@ -266,6 +306,7 @@
             $('.back').click(function(){
                 location.href = $('input[name="template_id"]').attr('url');
             });
+            if(){}
 
             var aIcon        =  $('.icon-chevron-down');
             var aCityBlock   =  $('.city-block');
@@ -282,36 +323,6 @@
                             $(aCityBlock).hide();
                             $(aIcon[i]).removeClass('icon-chevron-down');
                             $(aIcon[i]).addClass('icon-chevron-up');
-                            var oProvinceId = $(aCheckBox[i]).attr('value');
-                            var oCheckExist = $(aCityBlock[i]).find('input[type="checkbox"]');
-                            if( oCheckExist.length == 0 ){
-                                $.ajax({
-                                    url:"{:U('MerchantTemplate/ajaxGetCity')}",
-                                    type:'post',
-                                    data:{p_id:oProvinceId},
-                                    success:function(data){
-                                        html= '';
-                                        for(var j in data){
-                                            html += '<input type="checkbox" value="'+data[j].id+'" region="'+data[j].region_name+'" name="city_id[]">'+data[j].region_name;
-                                        }
-                                        $(aCityDisplay[i]).append(html);
-                                        var aCheck = $(aCityBlock[i]).find('input[type="checkbox"]');
-                                        var oValue = $('.city-box').find('input[type="hidden"]');
-                                        for( var m=0; m<aCheck.length; m++ ){
-                                            (function(m){
-                                                for( var n=0; n<oValue.length; n++){
-                                                    (function(n){
-                                                        console.log($(aCheck[m]).attr('region'));
-                                                        if ( $(aCheck[m]).attr('value') == $(oValue[n]).attr('value')) {
-                                                            $(aCheck[m]).attr('checked',true);
-                                                        }
-                                                    })(n);
-                                                }
-                                            })(m);
-                                        }
-                                    }
-                                });
-                            }
                             $(aCityBlock[i]).slideDown();
                             var aInput = $(aCityDisplay[i]).find("input:checked");
                             if( aInput.length>0 ){
@@ -323,7 +334,6 @@
                                 }
                                 $(aHidden[i]).html(oContent);
                             }
-
                         }else{
                             $(aIcon[i]).removeClass('icon-chevron-up');
                             $(aIcon[i]).addClass('icon-chevron-down');
@@ -350,13 +360,17 @@
                     });
                     $(aCancel[i]).click(function(){
                         var oCheckExist = $(aCityBlock[i]).find('input[type="checkbox"]');
+                        var oCheckSpan = $(aCityBlock[i]).find('span');
+                        $(oCheckSpan).removeClass('checked');
                         $(oCheckExist).attr('checked',false);
+
                         var aInputHidden = $(aHidden[i]).find("input[type='hidden']");
                         for( var m=0; m<aInputHidden.length; m++ ){
                             (function(m){
                                 for (var n = 0; n < oCheckExist.length; n++) {
                                     (function (n) {
                                         if ( $(oCheckExist[n]).attr('value') == $(aInputHidden[m]).attr('value')) {
+                                            $(oCheckExist[n]).parent('span').addClass('checked');
                                             $(oCheckExist[n]).attr('checked',true);
                                         }
                                     })(n);
@@ -373,38 +387,77 @@
             var oButtonSuccess = $('.btn-success');
             var aCityBlock     = $('.city-block');
             var aCityDisplay   = $('.city-display');
+
             for( var i=0; i<aCityBlock.length; i++ ){
-                $(oButtonSuccess).click(function(){
-                    var aInput = $(aCityDisplay).find("input:checked");
-                    if( aInput.length == 0 ){
-                        html='选择地区';
-                        $('.select-area').html(html);
-                    } else {
-                        html = '';
-                        for( var j=0; j< aInput.length; j++  ){
-                            (function(j){
-                                html +=  $(aInput[j]).attr('region')+',';
-                            })(j);
+                (function(i){
+                    $(oButtonSuccess).click(function(){
+                        var aInputDemo = $(aCityDisplay).find("input:checked");
+                        // var aInput    = $(aCityDisplay[i]).find("input:checked");
+                        // var aInputBox = $(aCityDisplay[i]).find("input[type='checkbox']");
+                        // var aProvinceName = $('input[name="province_name"]');
+                        if( aInputDemo.length == 0 ){
+                            var html='选择地区';
+                            $('.select-area').html(html);
+                        } else {
+                            html = '';
+                            for( var j=0; j< aInputDemo.length; j++  ){
+                                (function(j){
+                                    html +=  $(aInputDemo[j]).attr('region')+',';
+                                })(j);
+                            }
+
+                            var html=html.substring(0,html.length-1);
+                            $('.select-area').html(html);
                         }
-                        var html=html.substring(0,html.length-1);
-                        $('.select-area').html(html);
-                    }
-                });
+                    });
+                })(i)
+
             }
             var aCityDisplay   = $('.city-display');
-            var aProvinceName  = $('input[name="province-name"]');
+            var aProvinceName  = $('input[name="province_name"]');
 
             for( var i=0; i<aProvinceName.length; i++ ){
                 (function(i){
                     $(aProvinceName[i]).change(function(){
                         if($(aProvinceName[i]).is(':checked')){
                             $(aCityDisplay[i]).find('input[type="checkbox"]').attr('checked',true);
+                            $(aCityDisplay[i]).find('span').addClass('checked');
                         }else{
                             $(aCityDisplay[i]).find('input[type="checkbox"]').attr('checked',false);
+                            $(aCityDisplay[i]).find('span').removeClass('checked');
                         }
                     })
                 })(i);
             }
+
+            var aCityBlock     = $('.city-block');
+            var aCityDisplay     = $('.city-block');
+            var aProvinceName  = $('input[name="province_name"]');
+
+            for( var i=0; i<aCityDisplay.length; i++ ){
+                (function(i){
+                    var aCheck     = $(aCityBlock[i]).find('input[type="checkbox"]');
+                    var oValue = $('.city-box').find('input[type="hidden"]');
+                    for( var m=0; m<aCheck.length; m++ ){
+                        (function(m){
+                            for( var n=0; n<oValue.length; n++){
+                                (function(n){
+                                    if ( $(aCheck[m]).attr('value') == $(oValue[n]).attr('value')) {
+                                        $(aCheck[m]).attr('checked',true);
+                                        $(aCheck[m]).parent('span').addClass('checked');
+                                    }
+                                })(n);
+                            }
+                        })(m);
+                    }
+                    var aCheckBox  = $(aCityBlock[i]).find('input:checked');
+                    if(aCheck.length == aCheckBox.length){
+                        $(aProvinceName[i]).attr('checked',true);
+                        $(aProvinceName[i]).parent('span').addClass('checked');
+                    }
+                })(i);
+            }
+
 
             var aEfPostage   = $('.ef-postage');
             var aNumPackage  = $("p.num-package");

@@ -142,9 +142,10 @@ class MerchantTemplateLogic extends BaseLogic {
             $result = D($model)->data($data)->add();
             //自定义运费 新增数据
             if($request['is_postage'] == 1){
-               for( $i=0;$i<count($request['first_piece']); $i++ ){
+               for( $i=0; $i<count($request['trans_method']); $i++ ){
                    if(!empty($request['first_piece'][$i]) && !empty($request['first_price'][$i])
-                   && !empty($request['another_piece'][$i]) && !empty($request['another_price'][$i])){
+                   && !empty($request['another_piece'][$i]) && !empty($request['another_price'][$i])
+                       && !empty($request['trans_method'][$i])){
                        $list['tem_id'] = $result;
                        $list['unit']   = $request['unit'];
                        $list['trans_method'] = $request['trans_method'][$i];
@@ -155,19 +156,22 @@ class MerchantTemplateLogic extends BaseLogic {
                        $list['create_time']  = time();
 
                        M('TemplateList')->data($list)->add();
+                   }else{
+                       continue;
                    }
                }
+
             } else {
                 //卖家包邮 新增数据
-                for( $i=0; $i<count($request['trans_method']); $i++ ){
+                for( $i=0; $i<count($request['tran_method']); $i++ ){
                         $list['tem_id'] = $result;
-                        $list['trans_method'] = $request['trans_method'][$i];
+                        $list['trans_method'] = $request['tran_method'][$i];
                         $list['create_time']  = time();
-                        if($request['trans_method'][$i] == 1){
+                        if($request['tran_method'][$i] == 1){
                             for( $j=0;$j<count($request['express_company']);$j++) {
                                 $list['trans_company'] .= $request['express_company'][$j].',';
                             }
-                        }elseif($request['trans_method'][$i] == 4){
+                        }elseif($request['tran_method'][$i] == 4){
                             for( $j=0;$j<count($request['logistics_company']);$j++) {
                                 $list['trans_company'] .= $request['logistics_company'][$j].',';
                             }
@@ -189,6 +193,49 @@ class MerchantTemplateLogic extends BaseLogic {
             $result = D($model)->where($where)->data($data)->save();
             if(!$result) {
                 $this->setLogicError('您未修改任何值！'); return false;
+            }
+            if($request['is_postage'] == 1){
+                $datas = array('status'=>9,'update_time'=>time());
+                M('TemplateList')->where(array('tem_id'=>$request['id']))->data($datas)->save();
+                for( $i=0;$i<count($request['first_piece']); $i++ ){
+                    if(!empty($request['first_piece'][$i]) && !empty($request['first_price'][$i])
+                        && !empty($request['another_piece'][$i]) && !empty($request['another_price'][$i])
+                        && !empty($request['trans_method'][$i])){
+                        $list['tem_id'] = $request['id'];
+                        $list['unit']   = $request['unit'];
+                        $list['trans_method'] = $request['trans_method'][$i];
+                        $list['first_piece']  = $request['first_piece'][$i];
+                        $list['first_price']  = $request['first_price'][$i];
+                        $list['another_piece']= $request['another_piece'][$i];
+                        $list['another_price']= $request['another_price'][$i];
+                        $list['create_time']  = $datas['update_time'];
+                        $list['update_time']  = time();
+
+                        M('TemplateList')->data($list)->add();
+                    }
+                }
+            } else {
+                //卖家包邮 修改数据
+                $datas = array('status'=>9,'update_time'=>time());
+                M('NoPostage')->where(array('tem_id'=>$request['id']))->data($datas)->save();
+                for( $i=0; $i<count($request['tran_method']); $i++ ){
+                    $list['tem_id'] = $request['id'];
+                    $list['trans_method'] = $request['tran_method'][$i];
+                    $list['create_time']  = $datas['update_time'];
+                    $list['update_time']  = time();
+                    if($request['tran_method'][$i] == 1){
+                        for( $j=0;$j<count($request['express_company']);$j++) {
+                            $list['trans_company'] .= $request['express_company'][$j].',';
+                        }
+                    }elseif($request['tran_method'][$i] == 4){
+                        for( $j=0;$j<count($request['logistics_company']);$j++) {
+                            $list['trans_company'] .= $request['logistics_company'][$j].',';
+                        }
+                    }else{
+                        $list['trans_company']='';
+                    }
+                    M('NoPostage')->data($list)->add();
+                }
             }
             //行为日志
             api('Merchant/ActionLog/actionLog', array('edit',$model,$data['id'],AID));

@@ -31,7 +31,6 @@ class MerchantAddressLogic extends BaseLogic {
             $area_name = M('Region')->where(array('id'=>$v['area_id']))->getField('region_name');
             $street_name = M('Street')->where(array('street_id'=>$v['street_id']))->getField('street_name');
             $result['list'][$k]['address'] = $province_name.$city_name.$area_name.$street_name.$v['address'];
-
         }
 
 

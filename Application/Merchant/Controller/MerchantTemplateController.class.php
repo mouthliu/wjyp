@@ -67,9 +67,96 @@ class MerchantTemplateController extends BaseController {
             $street_name = M('street')->where(array('street_id'=>$v['street_id']))->getField('street_name');
             $back_address[$k]['address'] = $province_name.$city_name.$area_name.$street_name.$v['address'];
         }
+
+        $express_company   = M('shipping')->field('id,shipping_name')->where(array('company_type'=>1,'status'=>1))->select();
+        $logistics_company = M('shipping')->field('id,shipping_name')->where(array('company_type'=>2,'status'=>1))->select();
+        $this->assign('express_company',$express_company);
+        $this->assign('logistics_company',$logistics_company);
         $this->assign('back_address',$back_address);
         $this->assign('shipping_address',$shipping_address);
 
+        $ret = D('MerchantTemplate')->field('is_postage')->where(array('id'=>$_GET['id'],'status'=>1))->select();
+        if( $ret[0]['is_postage'] == 1 ){
+           $list =  M('TemplateList')->field('unit,trans_method,first_piece,first_price,another_piece,another_price')->where(array('tem_id'=>$_GET['id'],'status'=>1))->select();
+            foreach($list as $k=>$v){
+                $unit = $v['unit'];
+                if( $v['trans_method'] == 1 ){
+                    $trans_method_one  = $v['trans_method'];
+                    $first_piece_one   = $v['first_piece'];
+                    $first_price_one   = $v['first_price'];
+                    $another_piece_one = $v['another_piece'];
+                    $another_price_one = $v['another_price'];
+
+                }
+                if( $v['trans_method'] == 2 ){
+                    $trans_method_two = $v['trans_method'];
+                    $first_piece_two   = $v['first_piece'];
+                    $first_price_two   = $v['first_price'];
+                    $another_piece_two = $v['another_piece'];
+                    $another_price_two = $v['another_price'];
+                }
+                if( $v['trans_method'] == 3 ){
+                    $trans_method_three = $v['trans_method'];
+                    $first_piece_three   = $v['first_piece'];
+                    $first_price_three   = $v['first_price'];
+                    $another_piece_three = $v['another_piece'];
+                    $another_price_three = $v['another_price'];
+                }
+                if( $v['trans_method'] == 4 ){
+                    $trans_method_four = $v['trans_method'];
+                    $first_piece_four   = $v['first_piece'];
+                    $first_price_four   = $v['first_price'];
+                    $another_piece_four = $v['another_piece'];
+                    $another_price_four = $v['another_price'];
+                }
+            }
+            $this->assign('trans_method_one',$trans_method_one);
+            $this->assign('trans_method_two',$trans_method_two);
+            $this->assign('trans_method_three',$trans_method_three);
+            $this->assign('trans_method_four',$trans_method_four);
+            $this->assign('first_piece_one',$first_piece_one);
+            $this->assign('first_price_one',$first_price_one);
+            $this->assign('another_piece_one',$another_piece_one);
+            $this->assign('another_price_one',$another_price_one);
+            $this->assign('first_piece_two',$first_piece_two);
+            $this->assign('first_price_two',$first_price_two);
+            $this->assign('another_piece_two',$another_piece_two);
+            $this->assign('another_price_two',$another_price_two);
+            $this->assign('first_piece_three',$first_piece_three);
+            $this->assign('first_price_three',$first_price_three);
+            $this->assign('another_piece_three',$another_piece_three);
+            $this->assign('another_price_three',$another_price_three);
+            $this->assign('first_piece_four',$first_piece_four);
+            $this->assign('first_price_four',$first_price_four);
+            $this->assign('another_piece_four',$another_piece_four);
+            $this->assign('another_price_four',$another_price_four);
+            $this->assign('unit',$unit);
+        } elseif( $ret[0]['is_postage'] == 2 ){
+            $list =  M('NoPostage')->field('trans_method,trans_company')->where(array('tem_id'=>$_GET['id'],'status'=>1))->select();
+            //分割快递公司id 并且将其id组成索引数组
+            foreach ($list as $k=>$v){
+                $tran_method[$k]=$v['trans_method'];
+                if($v['trans_method']==1){
+                    if(!empty($v['trans_company'])){
+                        foreach (explode(',',$v['trans_company']) as $key=>$val){
+                            $data[$key] = M('shipping')->field('id')->where(array('id'=>$val))->select();
+                            $express_company_id[$key] = $data[$key][0]['id'];
+                        }
+                    }
+                }elseif ($v['trans_method']==4){
+                    if(!empty($v['trans_company'])){
+                        foreach (explode(',',$v['trans_company']) as $key=>$val){
+                            $data[$key] = M('shipping')->field('id')->where(array('id'=>$val))->select();
+                            $logistics_company_id[$key] = $data[$key][0]['id'];
+                        }
+                    }
+                }
+
+            }
+            $this->assign('tran_method',$tran_method);
+            $this->assign('express_company_id',array_filter($express_company_id));
+            $this->assign('logistics_company_id',array_filter($logistics_company_id));
+        }
 
     }
 
@@ -550,34 +637,74 @@ class MerchantTemplateController extends BaseController {
             if($v['belong_area_id']==1){
                 $area_ec[$k]['region_name']=$v['region_name'];
                 $area_ec[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_ec[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_ec[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==2){
                 $area_sc[$k]['region_name']=$v['region_name'];
                 $area_sc[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_sc[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_sc[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==3){
                 $area_mc[$k]['region_name']=$v['region_name'];
                 $area_mc[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_mc[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_mc[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==4){
                 $area_nc[$k]['region_name']=$v['region_name'];
                 $area_nc[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_nc[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_nc[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==5){
                 $area_sw[$k]['region_name']=$v['region_name'];
                 $area_sw[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_sw[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_sw[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==6){
                 $area_ne[$k]['region_name']=$v['region_name'];
                 $area_ne[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_ne[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_ne[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==7){
                 $area_nw[$k]['region_name']=$v['region_name'];
                 $area_nw[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_nw[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_nw[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
             if($v['belong_area_id']==8){
                 $area_hmt[$k]['region_name']=$v['region_name'];
                 $area_hmt[$k]['id']=$v['id'];
+                $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                foreach($city[$k] as $key =>$val ){
+                    $area_hmt[$k]['city'][$key]['city_name'] = $val['region_name'];
+                    $area_hmt[$k]['city'][$key]['id'] = $val['id'];
+                }
             }
         }
         $this->assign('area_ec',$area_ec);
@@ -619,34 +746,75 @@ class MerchantTemplateController extends BaseController {
                     if($v['belong_area_id']==1){
                         $area_ec[$k]['region_name']=$v['region_name'];
                         $area_ec[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_ec[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_ec[$k]['city'][$key]['id'] = $val['id'];
+
+                        }
                     }
                     if($v['belong_area_id']==2){
                         $area_sc[$k]['region_name']=$v['region_name'];
                         $area_sc[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_sc[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_sc[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                     if($v['belong_area_id']==3){
                         $area_mc[$k]['region_name']=$v['region_name'];
                         $area_mc[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_mc[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_mc[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                     if($v['belong_area_id']==4){
                         $area_nc[$k]['region_name']=$v['region_name'];
                         $area_nc[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_nc[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_nc[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                     if($v['belong_area_id']==5){
                         $area_sw[$k]['region_name']=$v['region_name'];
                         $area_sw[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_sw[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_sw[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                     if($v['belong_area_id']==6){
                         $area_ne[$k]['region_name']=$v['region_name'];
                         $area_ne[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_ne[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_ne[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                     if($v['belong_area_id']==7){
                         $area_nw[$k]['region_name']=$v['region_name'];
                         $area_nw[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_nw[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_nw[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                     if($v['belong_area_id']==8){
                         $area_hmt[$k]['region_name']=$v['region_name'];
                         $area_hmt[$k]['id']=$v['id'];
+                        $city[$k] =  M('region')->field('id,region_name')->where(array('parent_id'=>$v['id']))->select();
+                        foreach($city[$k] as $key =>$val ){
+                            $area_hmt[$k]['city'][$key]['city_name'] = $val['region_name'];
+                            $area_hmt[$k]['city'][$key]['id'] = $val['id'];
+                        }
                     }
                 }
                 $this->assign('area_ec',$area_ec);
