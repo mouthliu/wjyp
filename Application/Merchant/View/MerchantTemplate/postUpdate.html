@@ -97,7 +97,7 @@
                                         <div class="modal-body" style="margin-left: 10px;margin-top: 15px;height:600px;">
                                             <h5>华东地区：
                                                 <volist name="area_ec" id="vo1">
-                                                    <input type="checkbox" name="province_name" value="{$vo1['id']}">{$vo1['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo1['id']}" province_name="{$vo1['region_name']}">{$vo1['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                      <div class="city-block">
                                                          <div class="city-display">
@@ -118,7 +118,7 @@
                                             </h5>
                                             <h5>华南地区：
                                                 <volist name="area_sc" id="vo2">
-                                                    <input type="checkbox" name="province_name" value="{$vo2['id']}">{$vo2['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo2['id']}" province_name="{$vo2['region_name']}">{$vo2['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                              <div class="city-display">
@@ -139,7 +139,7 @@
                                             </h5>
                                             <h5>华中地区：
                                                 <volist name="area_mc" id="vo3">
-                                                    <input type="checkbox" name="province_name" value="{$vo3['id']}">{$vo3['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo3['id']}" province_name="{$vo3['region_name']}">{$vo3['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -160,7 +160,7 @@
                                             </h5>
                                             <h5>华北地区：
                                                 <volist name="area_nc" id="vo4">
-                                                    <input type="checkbox" name="province_name" value="{$vo4['id']}">{$vo4['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo4['id']}" province_name="{$vo4['region_name']}">{$vo4['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -181,7 +181,7 @@
                                             </h5>
                                             <h5>西南地区：
                                                 <volist name="area_sw" id="vo5">
-                                                    <input type="checkbox" name="province_name" value="{$vo5['id']}">{$vo5['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo5['id']}" province_name="{$vo5['region_name']}">{$vo5['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -202,7 +202,7 @@
                                             </h5>
                                             <h5>东北地区：
                                                 <volist name="area_ne" id="vo6">
-                                                    <input type="checkbox" name="province_name" value="{$vo6['id']}">{$vo6['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo6['id']}" province_name="{$vo6['region_name']}">{$vo6['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -223,7 +223,7 @@
                                             </h5>
                                             <h5>西北地区：
                                                 <volist name="area_nw" id="vo7">
-                                                    <input type="checkbox" name="province_name" value="{$vo7['id']}">{$vo7['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo7['id']}" province_name="{$vo7['region_name']}">{$vo7['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                          <div class="city-block">
                                                              <div class="city-display">
@@ -244,7 +244,7 @@
                                             </h5>
                                             <h5>港澳台地区：
                                                 <volist name="area_hmt" id="vo8">
-                                                    <input type="checkbox" name="province_name" value="{$vo8['id']}">{$vo8['region_name']}
+                                                    <input type="checkbox" name="province_name" value="{$vo8['id']}" province_name="{$vo8['region_name']}">{$vo8['region_name']}
                                                     <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                      <div class="city-block">
                                                          <div class="city-display">
@@ -306,12 +306,10 @@
             $('.back').click(function(){
                 location.href = $('input[name="template_id"]').attr('url');
             });
-            if(){}
 
             var aIcon        =  $('.icon-chevron-down');
             var aCityBlock   =  $('.city-block');
             var aCityDisplay =  $('.city-display');
-            var aCheckBox    =  $('.modal-body').find('input[type="checkbox"]');
             var aHidden      =  $('.hidden');
 
             for( var i=0;i<aIcon.length;i++ ){
@@ -348,8 +346,8 @@
             var aIcon        =  $('.icon-chevron-down');
             var aCityBlock   =  $('.city-block');
             var aConfirm     =  $('.confirm');
-            var aCityDisplay =  $('.city-display');
             var aHidden      =  $('.hidden');
+
 
             for( var i=0; i<aConfirm.length; i++ ){
                 (function(i){
@@ -357,6 +355,8 @@
                         $(aIcon).removeClass('icon-chevron-up');
                         $(aIcon).addClass('icon-chevron-down');
                         $(aCityBlock[i]).slideUp();
+
+
                     });
                     $(aCancel[i]).click(function(){
                         var oCheckExist = $(aCityBlock[i]).find('input[type="checkbox"]');
@@ -385,34 +385,44 @@
             }
 
             var oButtonSuccess = $('.btn-success');
+            var aIcon        =  $('.icon-chevron-down');
             var aCityBlock     = $('.city-block');
             var aCityDisplay   = $('.city-display');
+            var aProvince      = $('input[name="province_name"]');
 
-            for( var i=0; i<aCityBlock.length; i++ ){
-                (function(i){
-                    $(oButtonSuccess).click(function(){
-                        var aInputDemo = $(aCityDisplay).find("input:checked");
-                        // var aInput    = $(aCityDisplay[i]).find("input:checked");
-                        // var aInputBox = $(aCityDisplay[i]).find("input[type='checkbox']");
-                        // var aProvinceName = $('input[name="province_name"]');
-                        if( aInputDemo.length == 0 ){
-                            var html='选择地区';
-                            $('.select-area').html(html);
-                        } else {
-                            html = '';
-                            for( var j=0; j< aInputDemo.length; j++  ){
-                                (function(j){
-                                    html +=  $(aInputDemo[j]).attr('region')+',';
-                                })(j);
+
+            $(oButtonSuccess).click(function(){
+                $(aIcon).removeClass('icon-chevron-up');
+                $(aIcon).addClass('icon-chevron-down');
+                $(aCityBlock).hide();
+                var htmls           = '';
+                var html            = '';
+                for( var i=0; i<aCityBlock.length; i++ ){
+                    (function(i){
+                        if($(aProvince[i]).is(':checked')){
+                            var aProvinceName = $(aProvince[i]).attr('province_name');
+                            htmls += aProvinceName+',';
+                        }else if($(aProvince[i]).not(':checked')){
+                            var aInputDemo = $(aCityDisplay[i]).find("input:checked");
+                            var aInput     = $(aCityDisplay).find("input:checked");
+                            if(aInput.length == 0){
+                                html='选择地区';
+                            }else{
+                                for( var j=0; j< aInputDemo.length; j++ ){
+                                    (function(j){
+                                        if($(aInputDemo[j]).attr('region')!=''){
+                                            html +=  $(aInputDemo[j]).attr('region')+',';
+                                        }
+                                    })(j);
+                                }
                             }
-
-                            var html=html.substring(0,html.length-1);
-                            $('.select-area').html(html);
                         }
-                    });
-                })(i)
+                        $('.select-area').html(htmls+html);
+                    })(i)
+                }
+            });
 
-            }
+
             var aCityDisplay   = $('.city-display');
             var aProvinceName  = $('input[name="province_name"]');
 

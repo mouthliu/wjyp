@@ -306,13 +306,28 @@ class MerchantTemplateController extends BaseController {
                 }
             }
 
-            foreach( $list as $k=>$v){
-                foreach (explode(',',$v['trans_address']) as $key=>$val){
-                  $a[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
-                  $list[$k]['address'] .= $a[$key][0]['region_name'].',';
-                }
 
+            foreach( $list as $k=>$v){
+                if($v['province_address']){
+                    foreach (explode(',',$v['province_address']) as $key=>$val){
+                        $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                        $list[$k]['province_id'] .= $ret[$key][0]['region_name'].',';
+                    }
+
+
+                    foreach (explode(',',$v['trans_address']) as $key=>$val){
+                        $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                        $list[$k]['city_address'] .= $ret[$key][0]['region_name'].',';
+                    }
+                    $list[$k]['address'] = $list[$k]['province_id'].$list[$k]['city_address'];
+                }else{
+                    foreach (explode(',',$v['trans_address']) as $key=>$val){
+                        $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                        $list[$k]['address'] .= $ret[$key][0]['region_name'].',';
+                    }
+                }
             }
+
 
             $this->assign('list',$list);
             $this->assign('template_name', $template_name);
@@ -434,13 +449,27 @@ class MerchantTemplateController extends BaseController {
                 $areas ='';
                 $list = M('TemplateList')->where(array('id'=>$_GET['id'],'trans_address'=>array('neq', 0),'status' => array('neq', 9)))->select();
                 foreach( $list as $k=>$v){
-                    foreach (explode(',',$v['trans_address']) as $key=>$val){
-                        $address[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
-                        $areas .= $address[$key][0]['region_name'].',';
+                    if($v['province_address']){
+                        foreach (explode(',',$v['province_address']) as $key=>$val){
+                            $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $list[$k]['province_id'] .= $ret[$key][0]['region_name'].',';
+                        }
+
+
+                        foreach (explode(',',$v['trans_address']) as $key=>$val){
+                            $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $list[$k]['city_address'] .= $ret[$key][0]['region_name'].',';
+                        }
+                        $areas = $list[$k]['province_id'].$list[$k]['city_address'];
+                    }else{
+                        foreach (explode(',',$v['trans_address']) as $key=>$val){
+                            $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $list[$k]['address'] .= $ret[$key][0]['region_name'].',';
+                        }
+                        $areas =  $list[$k]['address'];
                     }
-                    $city_id=explode(',',$v['trans_address']);
                 }
-                $this->assign('city_id',$city_id);
+//                $this->assign('city_id',$city_id);
 
 
                 $area = M('region')->field('id,region_name,belong_area_id')->select();

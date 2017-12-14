@@ -430,7 +430,29 @@ class MerchantTemplateLogic extends BaseLogic {
      */
 
     public function areaUpdate($request=array()){
-        $request['trans_address'] = implode(',', $request['city_id']);
+        $pro_id =array();
+        $province_id=array();
+        if($request['province_name']){
+            $request['province_address'] = implode(',', $request['province_name']);
+            foreach ($request['province_name'] as $k=>$v){
+                $ret[$k] = M('Region')->field('id')->where(array('parent_id'=>$v))->select();
+            };
+            foreach ($ret as $k=>$v){
+                foreach ($v as $key=>$val){
+                    $pro_id[] = $val['id'];
+                }
+            }
+            foreach($request['city_id'] as $k=>$v){
+                if(!in_array($v,$pro_id)){
+                    $province_id[]= $v;
+                    $request['trans_address'] = implode(',',$province_id);
+                }
+            }
+
+        }else{
+            $request['trans_address'] = implode(',', $request['city_id']);
+        }
+
         $model = $request['model'];
         unset($request['model']);
         //获取数据对象
@@ -481,7 +503,30 @@ class MerchantTemplateLogic extends BaseLogic {
      */
 
     public function postUpdate($request=array()){
-        $request['ef_postage_area'] = implode(',', $request['city_id']);
+        $pro_id =array();
+        $province_id=array();
+        //判断是否有省id传过来
+        if($request['province_name']){
+            $request['province_address'] = implode(',', $request['province_name']);
+            foreach ($request['province_name'] as $k=>$v){
+                $ret[$k] = M('Region')->field('id')->where(array('parent_id'=>$v))->select();
+            };
+            foreach ($ret as $k=>$v){
+                foreach ($v as $key=>$val){
+                    $pro_id[] = $val['id'];
+                }
+            }
+            foreach($request['city_id'] as $k=>$v){
+                //判断所提交的市id是否在所提交的省id下边
+                if(!in_array($v,$pro_id)){
+                    $province_id[]= $v;
+                    $request['trans_address'] = implode(',',$province_id);
+                }
+            }
+        }else{
+            $request['trans_address'] = implode(',', $request['city_id']);
+        }
+
         $model = $request['model'];
         unset($request['model']);
         //获取数据对象
