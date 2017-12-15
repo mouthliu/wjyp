@@ -131,6 +131,16 @@ class MerchantTemplateController extends BaseController {
             $this->assign('another_piece_four',$another_piece_four);
             $this->assign('another_price_four',$another_price_four);
             $this->assign('unit',$unit);
+
+            if ($unit == 1) {
+                $unit_name = '件';
+            } elseif ($unit== 2) {
+                $unit_name = 'KG';
+            } elseif ($unit == 3) {
+                $unit_name = 'M<sup>3</sup>';
+            }
+            $this->assign('unit_name',$unit_name);
+
         } elseif( $ret[0]['is_postage'] == 2 ){
             $list =  M('NoPostage')->field('trans_method,trans_company')->where(array('tem_id'=>$_GET['id'],'status'=>1))->select();
             //分割快递公司id 并且将其id组成索引数组

@@ -76,13 +76,13 @@
                                 <div class="control-group postage-type" style="display: none;">
                                     <label class="control-label">运送方式</label>
                                     <div class="controls">
-                                        <input type="checkbox" name="tran_method[]" value="1" <if condition="in_array(1,$tran_method)">checked</if>>快递 <span class="icon-chevron-down" id="express" style="cursor: pointer;"></span>&nbsp;
+                                        <input type="checkbox" name="tran_method[]" value="1" <if condition="in_array(1,$tran_method)">checked</if>>快递
                                         <input type="checkbox" name="tran_method[]" value="2" <if condition="in_array(2,$tran_method)">checked</if>>EMS &nbsp;
                                         <input type="checkbox" name="tran_method[]" value="3" <if condition="in_array(3,$tran_method)">checked</if>>平邮 &nbsp;
-                                        <input type="checkbox" name="tran_method[]" value="4" <if condition="in_array(4,$tran_method)">checked</if>>物流 <span class="icon-chevron-down"  id="logistics" style="cursor: pointer;"></span>&nbsp;
+                                        <input type="checkbox" name="tran_method[]" value="4" <if condition="in_array(4,$tran_method)">checked</if>>物流 &nbsp;
                                     </div>
                                 </div>
-                                <div class="control-group express" style="display: none;margin-top: 15px;">
+                                <div class="control-group express" style="margin-top: 15px;">
                                     <div class="controls">
                                         <volist name="express_company" id="vo">
                                             <input type="checkbox" name="express_company[]" value="{$vo['id']}" <if condition="in_array($vo['id'],$express_company_id)">checked</if>>{$vo['shipping_name']} &nbsp;
@@ -119,10 +119,18 @@
                                                     <tr>
                                                         <th>选择</th>
                                                         <th>运送方式</th>
-                                                        <th>首件</th>
-                                                        <th>首件价格</th>
-                                                        <th>续件</th>
-                                                        <th>续件价格</th>
+                                                        <if condition="empty($unit_name)">
+                                                            <th>首件 (<span class="change-unit">件</span>)</th>
+                                                            <else/>
+                                                            <th>首件 (<span class="change-unit">{$unit_name}</span>)</th>
+                                                        </if>
+                                                        <th>首件价格 (元)</th>
+                                                        <if condition="empty($unit_name)">
+                                                            <th>首件 (<span class="change-unit">件</span>)</th>
+                                                            <else/>
+                                                            <th>首件 (<span class="change-unit">{$unit_name}</span>)</th>
+                                                        </if>
+                                                        <th>续件价格 (元)</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody class="tbody">
@@ -173,15 +181,8 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-
-                                        </form>
-
                                     </div>
-
-
                                 </div>
-
-
                                 <!--<div class="control-group">-->
                                 <!--<label class="control-label">物流信息</label>-->
                                 <!--<div class="controls">-->
@@ -213,10 +214,8 @@
                 e.preventDefault();
                 $(this).tab('show');
             });
-
-
             // 编辑的时候改变checkbox的状态
-            var aCheckbox = $('tbody tr');
+            var aCheckbox = $('#table-father tbody tr');
             for( var i=0;i<aCheckbox.length;i++){
                 (function(i){
                     if( $(aCheckbox[i]).find('input[type="checkbox"]').attr('check') != ''){
@@ -230,9 +229,19 @@
                     })
                 })(i);
             }
+            $(".radio input[name='unit']").bind('change',function(){
+                if($(".radio input[name='unit']:checked").attr('value') == 1 ){
+                    $(".change-unit").html('件');
+                }
+                else if($(".radio input[name='unit']:checked").attr('value') == 2 ){
+                    $(".change-unit").html('KG');
+                }
+                else if($(".radio input[name='unit']:checked").attr('value') == 3 ){
+                    $(".change-unit").html('M<sup>3</sup>');
+                }
+            });
 
-
-            var aCheckbox = $('tbody tr');
+            var aCheckbox = $('#table-father tbody tr');
             for( var i=0;i<aCheckbox.length;i++){
                 (function(i){
                     if($(aCheckbox[i]).find('input[type="checkbox"]').is(':checked')){
@@ -242,7 +251,7 @@
                     }
                 })(i);
             }
-            for( var i=0;i<aCheckbox.length;i++){
+            for( var i=0;i<aCheckbox.length;i++ ){
                 (function(i){
                    $(aCheckbox[i]).find('input[type="checkbox"]').change(function(){
                        if($(aCheckbox[i]).find('input[type="checkbox"]').is(':checked')){
@@ -253,6 +262,7 @@
                    })
                 })(i);
             }
+
             function pageShow(){
                 var aIsPostage  = $('input[name="is_postage"]');
                 for(var i=0;i<aIsPostage.length;i++){
@@ -266,7 +276,6 @@
                                 $('.express').hide();
                                 $('.logistics').hide();
                                 $('.unit').show();
-                                $('.unit').find('input[name="unit"]').removeAttr('disabled');
                                 $('#table-father').show();
                                 $('.postage-type').hide();
                             }
@@ -289,35 +298,28 @@
                 }
             });
 
-            $('#express').click(function () {
 
-                if($('.express').is(':hidden')){
-                    $('.express').show();
-                    $('.logistics').hide();
-                    $(this).removeClass('icon-chevron-down');
-                    $(this).addClass('icon-chevron-up');
-                    $('#logistics').removeClass('icon-chevron-up');
-                    $('#logistics').addClass('icon-chevron-down');
-                }else{
-                    $('.express').hide();
-                    $(this).removeClass('icon-chevron-up');
-                    $(this).addClass('icon-chevron-down');
-                }
-            });
-            $('#logistics').click(function () {
-                if($('.logistics').is(':hidden')){
-                    $('.logistics').show();
-                    $('.express').hide();
-                    $(this).removeClass('icon-chevron-down');
-                    $(this).addClass('icon-chevron-up');
-                    $('#express').removeClass('icon-chevron-up');
-                    $('#express').addClass('icon-chevron-down');
-                }else{
-                    $('.logistics').hide();
-                    $(this).removeClass('icon-chevron-up');
-                    $(this).addClass('icon-chevron-down');
-                }
-            });
+            var aTransMethod = $('.postage-type').find('input[type="checkbox"]');
+            for( var i=0; i<aTransMethod.length; i++){
+                (function(i){
+                    $(aTransMethod[i]).change(function(){
+                        if(i==0){
+                            if( $(aTransMethod[i]).is(':checked')){
+                                $('.express').show();
+                            }else{
+                                $('.express').hide();
+                            }
+                        }
+                        if(i==3){
+                            if( $(aTransMethod[i]).is(':checked')){
+                                $('.logistics').show();
+                            }else{
+                                $('.logistics').hide();
+                            }
+                        }
+                    })
+                })(i)
+            }
         });
     </script>
 </block>

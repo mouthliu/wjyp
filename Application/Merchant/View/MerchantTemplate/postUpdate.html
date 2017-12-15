@@ -100,8 +100,8 @@
                                             <h5>华东地区：
                                                 <volist name="area_ec" id="vo1">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo1['id']}" province_name="{$vo1['region_name']}" class="province-name">{$vo1['region_name']}
-
+                                                        <input type="checkbox" name="province_name[]" value="{$vo1['id']}" province_name="{$vo1['region_name']}" class="province-name"><span class="change-color">{$vo1['region_name']}</span>
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                          <div class="city-display">
                                                              <div class="hidden"></div>
@@ -122,7 +122,7 @@
                                             <h5>华南地区：
                                                 <volist name="area_sc" id="vo2">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo2['id']}" province_name="{$vo2['region_name']}" class="province-name">{$vo2['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo2['id']}" province_name="{$vo2['region_name']}" class="province-name"><span class="change-color">{$vo2['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                              <div class="city-display">
@@ -144,7 +144,7 @@
                                             <h5>华中地区：
                                                 <volist name="area_mc" id="vo3">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo3['id']}" province_name="{$vo3['region_name']}" class="province-name">{$vo3['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo3['id']}" province_name="{$vo3['region_name']}" class="province-name"><span class="change-color">{$vo3['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -166,7 +166,7 @@
                                             <h5>华北地区：
                                                 <volist name="area_nc" id="vo4">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo4['id']}" province_name="{$vo4['region_name']}" class="province-name">{$vo4['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo4['id']}" province_name="{$vo4['region_name']}" class="province-name"><span class="change-color">{$vo4['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -188,7 +188,7 @@
                                             <h5>西南地区：
                                                 <volist name="area_sw" id="vo5">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo5['id']}" province_name="{$vo5['region_name']}" class="province-name">{$vo5['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo5['id']}" province_name="{$vo5['region_name']}" class="province-name"><span class="change-color">{$vo5['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -210,7 +210,7 @@
                                             <h5>东北地区：
                                                 <volist name="area_ne" id="vo6">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo6['id']}" province_name="{$vo6['region_name']}" class="province-name">{$vo6['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo6['id']}" province_name="{$vo6['region_name']}" class="province-name"><span class="change-color">{$vo6['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
@@ -232,7 +232,7 @@
                                             <h5>西北地区：
                                                 <volist name="area_nw" id="vo7">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo7['id']}" province_name="{$vo7['region_name']}" class="province-name">{$vo7['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo7['id']}" province_name="{$vo7['region_name']}" class="province-name"><span class="change-color">{$vo7['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                          <div class="city-block">
                                                              <div class="city-display">
@@ -254,7 +254,7 @@
                                             <h5>港澳台地区：
                                                 <volist name="area_hmt" id="vo8">
                                                     <span class="select-city">
-                                                        <input type="checkbox" name="province_name[]" value="{$vo8['id']}" province_name="{$vo8['region_name']}" class="province-name">{$vo8['region_name']}
+                                                        <input type="checkbox" name="province_name[]" value="{$vo8['id']}" province_name="{$vo8['region_name']}" class="province-name"><span class="change-color">{$vo8['region_name']}</span>
                                                         <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                          <div class="city-display">
@@ -364,6 +364,8 @@
             var aCityBlock   =  $('.city-block');
             var aConfirm     =  $('.confirm');
             var aHidden      =  $('.hidden');
+            var aChangeColor =  $('.change-color');
+            var aProvinceName    = $('input.province-name');
 
 
             for( var i=0; i<aConfirm.length; i++ ){
@@ -372,7 +374,15 @@
                         $(aIcon).removeClass('icon-chevron-up');
                         $(aIcon).addClass('icon-chevron-down');
                         $(aCityBlock[i]).slideUp();
-
+                        if($(aCityBlock[i]).find('input[type="checkbox"]').is(':checked')){
+                            $(aChangeColor[i]).css('color','#FF6347');
+                            if($(aCityBlock[i]).find('input[type="checkbox"]').length == $(aCityBlock[i]).find('input:checked').length){
+                                $(aProvinceName[i]).attr('checked',true);
+                                $(aProvinceName[i]).parent('span').addClass('checked');
+                            }
+                        }else{
+                            $(aChangeColor[i]).css('color','#333');
+                        }
 
                     });
                     $(aCancel[i]).click(function(){
@@ -406,6 +416,25 @@
             var aCityBlock     = $('.city-block');
             var aCityDisplay   = $('.city-display');
             var aProvince      = $('input.province-name');
+            var aChangeColor =  $('.change-color');
+
+            $('.select-area').click(function(){
+                for( var i=0; i<aCityBlock.length; i++ ){
+                    (function(i){
+                        var aCheckBox = $(aCityBlock[i]).find('input:checked');
+                        if($(aProvince[i]).is(':checked')){
+                            $(aChangeColor[i]).css('color','#FF6347');
+                        }else{
+                            $(aChangeColor[i]).css('color','#333');
+                        }
+                        if(aCheckBox.length){
+                            $(aChangeColor[i]).css('color','#FF6347');
+                        }else{
+                            $(aChangeColor[i]).css('color','#333');
+                        }
+                    })(i)
+                }
+            });
 
 
             $(oButtonSuccess).click(function(){
@@ -443,6 +472,8 @@
 
             var aCityDisplay   = $('.city-display');
             var aProvinceName  = $('input.province-name');
+            var aChangeColor =  $('.change-color');
+
 
             for( var i=0; i<aProvinceName.length; i++ ){
                 (function(i){
@@ -450,9 +481,11 @@
                         if($(aProvinceName[i]).is(':checked')){
                             $(aCityDisplay[i]).find('input[type="checkbox"]').attr('checked',true);
                             $(aCityDisplay[i]).find('span').addClass('checked');
+                            $(aChangeColor[i]).css('color','#FF6347');
                         }else{
                             $(aCityDisplay[i]).find('input[type="checkbox"]').attr('checked',false);
                             $(aCityDisplay[i]).find('span').removeClass('checked');
+                            $(aChangeColor[i]).css('color','#333');
                         }
                     })
                 })(i);
