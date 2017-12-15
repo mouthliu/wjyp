@@ -446,34 +446,50 @@ class MerchantTemplateController extends BaseController {
     {
         if (!IS_POST) {
             if ($_GET['id']) {
+                //地区运费编辑
                 $areas ='';
+                $city =array();
                 $list = M('TemplateList')->where(array('id'=>$_GET['id'],'trans_address'=>array('neq', 0),'status' => array('neq', 9)))->select();
                 foreach( $list as $k=>$v){
+                    //判断数据库是否有省id
                     if($v['province_address']){
+                        //分割省id  并且获取省名称，将其拼接，根据省id获取其下所有市id
                         foreach (explode(',',$v['province_address']) as $key=>$val){
                             $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $city_id_one[$key] = M('region')->field('id')->where(array('parent_id'=>$val))->select();
                             $list[$k]['province_id'] .= $ret[$key][0]['region_name'].',';
                         }
-
-
+                        //拼接市名称
                         foreach (explode(',',$v['trans_address']) as $key=>$val){
                             $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
                             $list[$k]['city_address'] .= $ret[$key][0]['region_name'].',';
                         }
+                        //将省名称和市名称连接起来
                         $areas = $list[$k]['province_id'].$list[$k]['city_address'];
+                        $city_id_two = explode(',',$v['trans_address']);
+                        //将省下边的 市id和数据库里的市id整合到一个数组里边
+                        foreach ($city_id_one as $k=>$v){
+                            foreach ($v as $key=>$val){
+                                $city_id[] = $val['id'];
+                            }
+                        }
+                        foreach ($city_id_two as $k=>$v){
+                            $city_id[]=$v;
+                        }
                     }else{
+                        //当数据库里边没有省id的时候，将市id整合到一个数组里边
                         foreach (explode(',',$v['trans_address']) as $key=>$val){
                             $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
                             $list[$k]['address'] .= $ret[$key][0]['region_name'].',';
                         }
                         $areas =  $list[$k]['address'];
+                        $city_id = explode(',',$v['trans_address']);
                     }
                 }
-//                $this->assign('city_id',$city_id);
-
-
+                $this->assign('city_id',$city_id);
                 $area = M('region')->field('id,region_name,belong_area_id')->select();
 
+                //获取各个地区省以及对应的下边市的id和名称
                 foreach ($area as $k => $v ) {
                     if($v['belong_area_id']==1){
                         $area_ec[$k]['region_name']=$v['region_name'];
@@ -636,9 +652,23 @@ class MerchantTemplateController extends BaseController {
             }
 
             foreach( $list as $k=>$v){
-                foreach (explode(',',$v['ef_postage_area']) as $key=>$val){
-                    $a[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
-                    $list[$k]['address'] .= $a[$key][0]['region_name'].',';
+                if($v['province_address']){
+                    foreach (explode(',',$v['province_address']) as $key=>$val){
+                        $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                        $list[$k]['province_id'] .= $ret[$key][0]['region_name'].',';
+                    }
+
+
+                    foreach (explode(',',$v['ef_postage_area']) as $key=>$val){
+                        $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                        $list[$k]['city_address'] .= $ret[$key][0]['region_name'].',';
+                    }
+                    $list[$k]['address'] = $list[$k]['province_id'].$list[$k]['city_address'];
+                }else{
+                    foreach (explode(',',$v['ef_postage_area']) as $key=>$val){
+                        $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                        $list[$k]['address'] .= $ret[$key][0]['region_name'].',';
+                    }
                 }
             }
             $this->assign('list',$list);
@@ -758,17 +788,47 @@ class MerchantTemplateController extends BaseController {
     {
         if (!IS_POST) {
             if ($_GET['id']) {
+                //地区运费编辑
                 $areas ='';
+                $city =array();
                 $list = M('EfPostage')->where(array('id'=>$_GET['id'],'status' => array('neq', 9)))->select();
                 foreach( $list as $k=>$v){
-                    foreach (explode(',',$v['ef_postage_area']) as $key=>$val){
-                        $address[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
-                        $areas .= $address[$key][0]['region_name'].',';
+                    //判断数据库是否有省id
+                    if($v['province_address']){
+                        //分割省id  并且获取省名称，将其拼接，根据省id获取其下所有市id
+                        foreach (explode(',',$v['province_address']) as $key=>$val){
+                            $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $city_id_one[$key] = M('region')->field('id')->where(array('parent_id'=>$val))->select();
+                            $list[$k]['province_id'] .= $ret[$key][0]['region_name'].',';
+                        }
+                        //拼接市名称
+                        foreach (explode(',',$v['ef_postage_area']) as $key=>$val){
+                            $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $list[$k]['city_address'] .= $ret[$key][0]['region_name'].',';
+                        }
+                        //将省名称和市名称连接起来
+                        $areas = $list[$k]['province_id'].$list[$k]['city_address'];
+                        $city_id_two = explode(',',$v['ef_postage_area']);
+                        //将省下边的 市id和数据库里的市id整合到一个数组里边
+                        foreach ($city_id_one as $k=>$v){
+                            foreach ($v as $key=>$val){
+                                $city_id[] = $val['id'];
+                            }
+                        }
+                        foreach ($city_id_two as $k=>$v){
+                            $city_id[]=$v;
+                        }
+                    }else{
+                        //当数据库里边没有省id的时候，将市id整合到一个数组里边
+                        foreach (explode(',',$v['ef_postage_area']) as $key=>$val){
+                            $ret[$key] = M('region')->field('region_name')->where(array('id'=>$val))->select();
+                            $list[$k]['address'] .= $ret[$key][0]['region_name'].',';
+                        }
+                        $areas =  $list[$k]['address'];
+                        $city_id = explode(',',$v['ef_postage_area']);
                     }
-                    $city_id=explode(',',$v['ef_postage_area']);
                 }
                 $this->assign('city_id',$city_id);
-
                 $area = M('region')->field('id,region_name,belong_area_id')->select();
 
                 foreach ($area as $k => $v ) {

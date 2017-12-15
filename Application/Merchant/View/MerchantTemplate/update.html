@@ -253,9 +253,6 @@
                    })
                 })(i);
             }
-
-
-
             function pageShow(){
                 var aIsPostage  = $('input[name="is_postage"]');
                 for(var i=0;i<aIsPostage.length;i++){
@@ -281,22 +278,13 @@
             $('input[name="is_postage"]').change(function(){
                 if( $(this).attr('value') == 2 ){
                     $('.unit').hide();
-                    $('.unit').find('input[type="radio"]').attr('disabled',true);
                     $('#table-father').hide();
-                    $('#table-father').find('input[type="checkbox"]').attr('disabled',true);
                     $('.postage-type').show();
-                    $('.postage-type').find('input[type="checkbox"]').removeAttr('disabled');
-                    $('.express').find('input[type="checkbox"]').removeAttr('disabled');
-                    $('.logistics').find('input[type="checkbox"]').removeAttr('disabled');
                 } else {
                     $('.express').hide();
                     $('.logistics').hide();
-                    // $('.express').find('input[type="checkbox"]').attr('disabled',true);
-                    $('.logistics').find('input[type="checkbox"]').attr('disabled',true);
                     $('.unit').show();
                     $('#table-father').show();
-                    $('#table-father').find('input[type="checkbox"]').removeAttr('disabled');
-                    $('#table-father').find('input[type="checkbox"]').parent('div').removeClass('disabled');
                     $('.postage-type').hide();
                 }
             });

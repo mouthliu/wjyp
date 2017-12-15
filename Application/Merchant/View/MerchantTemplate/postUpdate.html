@@ -3,11 +3,11 @@
 <block name="main">
     <style type="text/css">
 
-        .select-city{
-            position: relative;
-        }
         .condition p{
             display: none;
+        }
+        .select-city{
+            position: relative;
         }
 
         input.confirm{
@@ -30,9 +30,9 @@
 
         .city-block{
             position: absolute;
-            left:0px;
-            top: 15px;
-            width: 130px;
+            left:-20px;
+            top: 18px;
+            width: 120px;
             background:	#F7F7F7;
             display: none;
             z-index: 100;
@@ -40,12 +40,11 @@
         }
 
         .city-display{
-            padding: 10px 10px;
+            padding: 10px 0;
         }
 
         .select-btn{
             margin-top: 15px;
-            margin-left: 5px;
         }
 
     </style>
@@ -64,7 +63,7 @@
                             <thead>
                             <tr>
                                 <th>运送方式</th>
-                                <th>包邮方式</th>
+                                <th style="width: auto;">包邮方式</th>
                                 <th>包邮地区</th>
                                 <th>包邮条件</th>
                                 <th>操作</th>
@@ -80,7 +79,7 @@
                                         <option value="3" <eq name="row['ef_postage_type']" value="3">selected</eq>>平邮</option>
                                     </select>
                                 </td>
-                                <td>
+                                <td style="width: auto;">
                                     <select name="ef_postage_condition" class="ef-postage">
                                         <option value="">请选择包邮方式</option>
                                         <option value="1" <eq name="row['ef_postage_condition']" value="1">selected</eq>>件数</option>
@@ -89,17 +88,18 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <div id="example" class="modal hide fade in" style="display: none;  min-width:950px;">
+                                    <div id="example" class="modal hide fade in" style="display: none;  min-width:830px;">
                                         <div class="modal-header">
                                             <a class="close" data-dismiss="modal">×</a>
                                             <h3>选择区域</h3>
                                         </div>
-                                        <div class="modal-body" style="margin-left: 10px;margin-top: 15px;height:600px;">
+                                        <div class="modal-body" style="margin-left: 10px;margin-top: 15px;">
                                             <h5>华东地区：
                                                 <volist name="area_ec" id="vo1">
-                                                    <input type="checkbox" name="province_name" value="{$vo1['id']}" province_name="{$vo1['region_name']}">{$vo1['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
-                                                     <div class="city-block">
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo1['id']}" province_name="{$vo1['region_name']}" class="province-name">{$vo1['region_name']}
+
+                                                        <div class="city-block">
                                                          <div class="city-display">
                                                              <div class="hidden"></div>
                                                              <volist name="vo1['city']" id="v1">
@@ -118,8 +118,9 @@
                                             </h5>
                                             <h5>华南地区：
                                                 <volist name="area_sc" id="vo2">
-                                                    <input type="checkbox" name="province_name" value="{$vo2['id']}" province_name="{$vo2['region_name']}">{$vo2['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo2['id']}" province_name="{$vo2['region_name']}" class="province-name">{$vo2['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                              <div class="city-display">
                                                                  <div class="hidden"></div>
@@ -139,8 +140,9 @@
                                             </h5>
                                             <h5>华中地区：
                                                 <volist name="area_mc" id="vo3">
-                                                    <input type="checkbox" name="province_name" value="{$vo3['id']}" province_name="{$vo3['region_name']}">{$vo3['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo3['id']}" province_name="{$vo3['region_name']}" class="province-name">{$vo3['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
@@ -160,8 +162,9 @@
                                             </h5>
                                             <h5>华北地区：
                                                 <volist name="area_nc" id="vo4">
-                                                    <input type="checkbox" name="province_name" value="{$vo4['id']}" province_name="{$vo4['region_name']}">{$vo4['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo4['id']}" province_name="{$vo4['region_name']}" class="province-name">{$vo4['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
@@ -181,8 +184,9 @@
                                             </h5>
                                             <h5>西南地区：
                                                 <volist name="area_sw" id="vo5">
-                                                    <input type="checkbox" name="province_name" value="{$vo5['id']}" province_name="{$vo5['region_name']}">{$vo5['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo5['id']}" province_name="{$vo5['region_name']}" class="province-name">{$vo5['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
@@ -202,8 +206,9 @@
                                             </h5>
                                             <h5>东北地区：
                                                 <volist name="area_ne" id="vo6">
-                                                    <input type="checkbox" name="province_name" value="{$vo6['id']}" province_name="{$vo6['region_name']}">{$vo6['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo6['id']}" province_name="{$vo6['region_name']}" class="province-name">{$vo6['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                         <div class="city-block">
                                                             <div class="city-display">
                                                                 <div class="hidden"></div>
@@ -223,8 +228,9 @@
                                             </h5>
                                             <h5>西北地区：
                                                 <volist name="area_nw" id="vo7">
-                                                    <input type="checkbox" name="province_name" value="{$vo7['id']}" province_name="{$vo7['region_name']}">{$vo7['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo7['id']}" province_name="{$vo7['region_name']}" class="province-name">{$vo7['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
                                                          <div class="city-block">
                                                              <div class="city-display">
                                                                  <div class="hidden"></div>
@@ -244,9 +250,10 @@
                                             </h5>
                                             <h5>港澳台地区：
                                                 <volist name="area_hmt" id="vo8">
-                                                    <input type="checkbox" name="province_name" value="{$vo8['id']}" province_name="{$vo8['region_name']}">{$vo8['region_name']}
-                                                    <span class="select-city"><span class="icon-chevron-down" style="cursor: pointer;"></span>
-                                                     <div class="city-block">
+                                                    <span class="select-city">
+                                                        <input type="checkbox" name="province_name[]" value="{$vo8['id']}" province_name="{$vo8['region_name']}" class="province-name">{$vo8['region_name']}
+                                                        <span class="icon-chevron-down" style="cursor: pointer;"></span>
+                                                        <div class="city-block">
                                                          <div class="city-display">
                                                              <div class="hidden"></div>
                                                               <volist name="vo8['city']" id="v8">
@@ -271,7 +278,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <a href="#" class="btn btn-success" data-dismiss="modal">确定</a>
-                                            <a href="#" class="btn" data-dismiss="modal">关闭</a>
+                                            <a href="#" class="btn btn-close" data-dismiss="modal">关闭</a>
                                         </div>
                                     </div>
                                     <p><a data-toggle="modal" href="#example" class="select-area"><if condition="!empty($areas)">{$areas}<else />选择地区</if></a></p>
@@ -305,6 +312,13 @@
         $(document).ready(function(){
             $('.back').click(function(){
                 location.href = $('input[name="template_id"]').attr('url');
+            });
+            var aIcon        =  $('.icon-chevron-down');
+            var aCityBlock     = $('.city-block');
+            $('.btn-close').click(function(){
+                $(aIcon).removeClass('icon-chevron-up');
+                $(aIcon).addClass('icon-chevron-down');
+                $(aCityBlock).hide();
             });
 
             var aIcon        =  $('.icon-chevron-down');
@@ -388,10 +402,11 @@
             var aIcon        =  $('.icon-chevron-down');
             var aCityBlock     = $('.city-block');
             var aCityDisplay   = $('.city-display');
-            var aProvince      = $('input[name="province_name"]');
+            var aProvince      = $('input.province-name');
 
 
             $(oButtonSuccess).click(function(){
+                $('.city-box').remove();
                 $(aIcon).removeClass('icon-chevron-up');
                 $(aIcon).addClass('icon-chevron-down');
                 $(aCityBlock).hide();
@@ -424,7 +439,7 @@
 
 
             var aCityDisplay   = $('.city-display');
-            var aProvinceName  = $('input[name="province_name"]');
+            var aProvinceName  = $('input.province-name');
 
             for( var i=0; i<aProvinceName.length; i++ ){
                 (function(i){
@@ -442,7 +457,7 @@
 
             var aCityBlock     = $('.city-block');
             var aCityDisplay     = $('.city-block');
-            var aProvinceName  = $('input[name="province_name"]');
+            var aProvinceName  = $('input.province-name');
 
             for( var i=0; i<aCityDisplay.length; i++ ){
                 (function(i){

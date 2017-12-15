@@ -197,6 +197,7 @@ class MerchantTemplateLogic extends BaseLogic {
             if($request['is_postage'] == 1){
                 $datas = array('status'=>9,'update_time'=>time());
                 M('TemplateList')->where(array('tem_id'=>$request['id']))->data($datas)->save();
+                M('NoPostage')->where(array('tem_id'=>$request['id']))->data($datas)->save();
                 for( $i=0;$i<count($request['first_piece']); $i++ ){
                     if(!empty($request['first_piece'][$i]) && !empty($request['first_price'][$i])
                         && !empty($request['another_piece'][$i]) && !empty($request['another_price'][$i])
@@ -218,6 +219,7 @@ class MerchantTemplateLogic extends BaseLogic {
                 //卖家包邮 修改数据
                 $datas = array('status'=>9,'update_time'=>time());
                 M('NoPostage')->where(array('tem_id'=>$request['id']))->data($datas)->save();
+                M('TemplateList')->where(array('tem_id'=>$request['id']))->data($datas)->save();
                 for( $i=0; $i<count($request['tran_method']); $i++ ){
                     $list['tem_id'] = $request['id'];
                     $list['trans_method'] = $request['tran_method'][$i];
@@ -403,12 +405,10 @@ class MerchantTemplateLogic extends BaseLogic {
             $where['id'] = $request['ids'];
             $ids = $request['ids'];
         }
-
         $data = array(
             'status'        => $request['status'],
             'update_time'   => time()
         );
-
         $result = M('EfPostage')->where($where)->data($data)->save();
 
         if($result) {
@@ -432,8 +432,10 @@ class MerchantTemplateLogic extends BaseLogic {
     public function areaUpdate($request=array()){
         $pro_id =array();
         $province_id=array();
+        // 判断是否获取到省id
         if($request['province_name']){
             $request['province_address'] = implode(',', $request['province_name']);
+            //拼接省id
             foreach ($request['province_name'] as $k=>$v){
                 $ret[$k] = M('Region')->field('id')->where(array('parent_id'=>$v))->select();
             };
@@ -442,14 +444,15 @@ class MerchantTemplateLogic extends BaseLogic {
                     $pro_id[] = $val['id'];
                 }
             }
+            //拼接市id
             foreach($request['city_id'] as $k=>$v){
                 if(!in_array($v,$pro_id)){
                     $province_id[]= $v;
                     $request['trans_address'] = implode(',',$province_id);
                 }
             }
-
         }else{
+            //拼接市id
             $request['trans_address'] = implode(',', $request['city_id']);
         }
 
@@ -466,11 +469,8 @@ class MerchantTemplateLogic extends BaseLogic {
         if(empty($data['id'])) {
             //新增数据
             $data['create_time']=time();
-
             $result = M('template_list')->data($data)->add();
-
             if(!$result) {
-
                 $this->setLogicError('新增时出错！'); return false;
             }
 
@@ -505,8 +505,10 @@ class MerchantTemplateLogic extends BaseLogic {
     public function postUpdate($request=array()){
         $pro_id =array();
         $province_id=array();
-        //判断是否有省id传过来
+        //判断是否能获取到省id
+
         if($request['province_name']){
+            //拼接省id
             $request['province_address'] = implode(',', $request['province_name']);
             foreach ($request['province_name'] as $k=>$v){
                 $ret[$k] = M('Region')->field('id')->where(array('parent_id'=>$v))->select();
@@ -516,17 +518,18 @@ class MerchantTemplateLogic extends BaseLogic {
                     $pro_id[] = $val['id'];
                 }
             }
+            //拼接市id
             foreach($request['city_id'] as $k=>$v){
                 //判断所提交的市id是否在所提交的省id下边
                 if(!in_array($v,$pro_id)){
                     $province_id[]= $v;
-                    $request['trans_address'] = implode(',',$province_id);
+                    $request['ef_postage_area'] = implode(',',$province_id);
                 }
             }
         }else{
-            $request['trans_address'] = implode(',', $request['city_id']);
+            //拼接市id
+            $request['ef_postage_area'] = implode(',', $request['city_id']);
         }
-
         $model = $request['model'];
         unset($request['model']);
         //获取数据对象
@@ -541,9 +544,7 @@ class MerchantTemplateLogic extends BaseLogic {
             //新增数据
             $data['create_time']=time();
             $result = M('ef_postage')->data($data)->add();
-
             if(!$result) {
-
                 $this->setLogicError('新增时出错！'); return false;
             }
 
