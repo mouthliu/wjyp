@@ -3,6 +3,9 @@
 <block name="main">
     <style type="text/css">
 
+        th,td{
+            min-width: 200px;
+        }
         .condition p{
             display: none;
         }
@@ -63,7 +66,7 @@
                             <thead>
                             <tr>
                                 <th>运送方式</th>
-                                <th style="width: auto;">包邮方式</th>
+                                <th>包邮方式</th>
                                 <th>包邮地区</th>
                                 <th>包邮条件</th>
                                 <th>操作</th>
@@ -79,7 +82,7 @@
                                         <option value="3" <eq name="row['ef_postage_type']" value="3">selected</eq>>平邮</option>
                                     </select>
                                 </td>
-                                <td style="width: auto;">
+                                <td>
                                     <select name="ef_postage_condition" class="ef-postage">
                                         <option value="">请选择包邮方式</option>
                                         <option value="1" <eq name="row['ef_postage_condition']" value="1">selected</eq>>件数</option>
